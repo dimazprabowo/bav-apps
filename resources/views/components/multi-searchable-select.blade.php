@@ -15,6 +15,7 @@
 @php
     $componentId = $id ?? 'multi-searchable-select-' . uniqid();
     $wireModel = $attributes->wire('model')->value();
+    $wireKey = $attributes->get('wire:key');
 @endphp
 
 <div 
@@ -107,7 +108,8 @@
     x-on:keydown.escape.window="closeDropdown()"
     x-on:scroll.window="if(open) checkPosition()"
     x-on:resize.window="if(open) checkPosition()"
-    class="relative w-full"
+    class="relative w-full mt-1"
+    @if($wireKey) wire:key="{{ $wireKey }}" @endif
     wire:ignore.self
 >
     {{-- Trigger Button --}}
@@ -116,8 +118,8 @@
         x-ref="trigger"
         x-on:click="toggleDropdown()"
         @if($disabled) disabled @endif
-        {{ $attributes->except(['wire:model', 'wire:model.live', 'wire:model.change'])->merge([
-            'class' => 'relative w-full cursor-pointer rounded-xl border bg-white dark:bg-gray-900 py-2.5 pl-4 pr-10 text-left shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 ' . 
+        {{ $attributes->except(['wire:model', 'wire:model.live', 'wire:model.change', 'wire:key'])->merge([
+            'class' => 'relative w-full cursor-pointer rounded-lg border bg-white dark:bg-gray-700 py-2.5 pl-4 pr-10 text-left text-sm shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ' .
                 ($error ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600') .
                 ($disabled ? ' opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800' : ' hover:border-gray-400 dark:hover:border-gray-500')
         ]) }}
@@ -196,7 +198,7 @@
         </div>
 
         {{-- Action Buttons --}}
-        <div class="flex items-center justify-between px-3 py-2 bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex items-center justify-between px-3 py-2 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
             <button
                 type="button"
                 x-on:click.stop="selectAll()"

@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
 use Illuminate\Database\Eloquent\Collection;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RolePermissionService
 {
@@ -77,14 +77,32 @@ class RolePermissionService
             'Dashboard' => [
                 ['name' => 'dashboard_view', 'label' => 'Lihat Dashboard'],
             ],
-            'Perusahaan' => [
-                ['name' => 'companies_view',         'label' => 'Lihat Perusahaan'],
-                ['name' => 'companies_create',       'label' => 'Tambah Perusahaan'],
-                ['name' => 'companies_update',       'label' => 'Edit Perusahaan'],
-                ['name' => 'companies_delete',       'label' => 'Hapus Perusahaan'],
-                ['name' => 'companies_export_excel', 'label' => 'Export Excel Perusahaan'],
-                ['name' => 'companies_export_pdf',   'label' => 'Export PDF Perusahaan'],
-                ['name' => 'manage_own_company',     'label' => 'Kelola Perusahaan Sendiri'],
+            'Cabang' => [
+                ['name' => 'cabang_view',         'label' => 'Lihat Cabang'],
+                ['name' => 'cabang_create',       'label' => 'Tambah Cabang'],
+                ['name' => 'cabang_update',       'label' => 'Edit Cabang'],
+                ['name' => 'cabang_delete',       'label' => 'Hapus Cabang'],
+                ['name' => 'cabang_export_excel', 'label' => 'Export Excel Cabang'],
+                ['name' => 'cabang_export_pdf',   'label' => 'Export PDF Cabang'],
+            ],
+            'Alat' => [
+                ['name' => 'alat_view',         'label' => 'Lihat Alat'],
+                ['name' => 'alat_create',       'label' => 'Tambah Alat'],
+                ['name' => 'alat_update',       'label' => 'Edit Alat'],
+                ['name' => 'alat_delete',       'label' => 'Hapus Alat'],
+                ['name' => 'alat_review',       'label' => 'Review Alat'],
+                ['name' => 'alat_export_excel', 'label' => 'Export Excel Alat'],
+                ['name' => 'alat_export_pdf',   'label' => 'Export PDF Alat'],
+            ],
+            'LogBook Peminjaman' => [
+                ['name' => 'logbook_view',         'label' => 'Lihat LogBook'],
+                ['name' => 'logbook_create',       'label' => 'Ajukan Peminjaman'],
+                ['name' => 'logbook_update',       'label' => 'Edit LogBook'],
+                ['name' => 'logbook_delete',       'label' => 'Hapus LogBook'],
+                ['name' => 'logbook_approve',      'label' => 'Approve Peminjaman'],
+                ['name' => 'logbook_return',       'label' => 'Kembalikan Alat'],
+                ['name' => 'logbook_export_excel', 'label' => 'Export Excel LogBook'],
+                ['name' => 'logbook_export_pdf',   'label' => 'Export PDF LogBook'],
             ],
             'Konfigurasi System' => [
                 ['name' => 'configuration_view',         'label' => 'Lihat Konfigurasi'],
@@ -118,6 +136,9 @@ class RolePermissionService
                 ['name' => 'chat_create', 'label' => 'Buat Chat'],
                 ['name' => 'chat_delete', 'label' => 'Hapus Chat'],
             ],
+            'Akses Data' => [
+                ['name' => 'access_all_cabang', 'label' => 'Akses Semua Cabang (COE/Pusat)'],
+            ],
         ];
 
         $allPermissions = Permission::pluck('name')->toArray();
@@ -126,9 +147,9 @@ class RolePermissionService
 
         $groups = $groupMapping;
 
-        if (!empty($unmapped)) {
+        if (! empty($unmapped)) {
             $groups['Lainnya'] = array_values(array_map(
-                fn($p) => ['name' => $p, 'label' => ucwords(str_replace('_', ' ', $p))],
+                fn ($p) => ['name' => $p, 'label' => ucwords(str_replace('_', ' ', $p))],
                 $unmapped
             ));
         }

@@ -37,5 +37,15 @@ return [
             'max_size' => 20480, // 20 MB
             'mimes' => ['pdf', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'csv', 'zip', 'rar', 'jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg'],
         ],
+
+        'alat-evidence' => [
+            'max_size' => 20480, // 20 MB
+            'mimes' => ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx', 'xls', 'xlsx'],
+        ],
+
+        'alat-kalibrasi' => [
+            'max_size' => 20480, // 20 MB
+            'mimes' => ['pdf', 'jpg', 'jpeg', 'png'],
+        ],
     ],
 ];

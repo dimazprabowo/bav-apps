@@ -34,13 +34,11 @@ class="fixed inset-0 z-50 overflow-y-auto">
                             <div class="mt-4 space-y-4">
                                 <!-- New Password -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                        Password Baru <span class="text-red-500">*</span>
-                                    </label>
-                                    <div class="relative">
+                                    <x-input-label for="newPassword" value="Password Baru" :required="true" />
+                                    <div class="relative mt-1">
                                         <input wire:model="newPassword"
                                                :type="showPassword ? 'text' : 'password'"
-                                               class="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                                               class="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm"
                                                placeholder="Masukkan password baru">
                                         <button type="button"
                                                 @click="showPassword = !showPassword"
@@ -54,20 +52,16 @@ class="fixed inset-0 z-50 overflow-y-auto">
                                             </svg>
                                         </button>
                                     </div>
-                                    @error('newPassword') 
-                                        <span class="text-red-500 text-xs mt-1">{{ $message }}</span> 
-                                    @enderror
+                                    <x-input-error :messages="$errors->get('newPassword')" class="mt-2" />
                                 </div>
 
                                 <!-- Confirm Password -->
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                        Konfirmasi Password <span class="text-red-500">*</span>
-                                    </label>
-                                    <div class="relative">
+                                    <x-input-label for="newPasswordConfirmation" value="Konfirmasi Password" :required="true" />
+                                    <div class="relative mt-1">
                                         <input wire:model="newPasswordConfirmation"
                                                :type="showPasswordConfirmation ? 'text' : 'password'"
-                                               class="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                                               class="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm"
                                                placeholder="Konfirmasi password baru">
                                         <button type="button"
                                                 @click="showPasswordConfirmation = !showPasswordConfirmation"
@@ -81,9 +75,7 @@ class="fixed inset-0 z-50 overflow-y-auto">
                                             </svg>
                                         </button>
                                     </div>
-                                    @error('newPasswordConfirmation') 
-                                        <span class="text-red-500 text-xs mt-1">{{ $message }}</span> 
-                                    @enderror
+                                    <x-input-error :messages="$errors->get('newPasswordConfirmation')" class="mt-2" />
                                 </div>
 
                                 <div class="text-xs text-gray-500 dark:text-gray-400">
@@ -102,7 +94,7 @@ class="fixed inset-0 z-50 overflow-y-auto">
                         Reset Password
                     </x-loading-button>
                     <x-cancel-button wire:click="closeResetPasswordModal" target="closeResetPasswordModal"
-                        class="mt-3 sm:mt-0 w-full sm:w-auto sm:ml-3" />
+                        variant="secondary" size="lg" class="mt-3 sm:mt-0 w-full sm:w-auto sm:ml-3" />
                 </div>
             </form>
         </div>

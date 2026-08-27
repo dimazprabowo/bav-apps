@@ -2,15 +2,19 @@
 
 namespace App\Providers;
 
+use App\Models\Alat;
+use App\Models\Cabang;
 use App\Models\Chat;
 use App\Models\ChatMessage;
-use App\Models\Company;
+use App\Models\LogBookPeminjaman;
 use App\Models\Notification;
 use App\Models\SystemConfiguration;
 use App\Models\User;
+use App\Policies\AlatPolicy;
+use App\Policies\CabangPolicy;
 use App\Policies\ChatPolicy;
-use App\Policies\CompanyPolicy;
 use App\Policies\DashboardPolicy;
+use App\Policies\LogBookPeminjamanPolicy;
 use App\Policies\NotificationPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\SystemConfigurationPolicy;
@@ -37,7 +41,9 @@ class AppServiceProvider extends ServiceProvider
     {
         // Register Policies
         Gate::policy(User::class, UserPolicy::class);
-        Gate::policy(Company::class, CompanyPolicy::class);
+        Gate::policy(Cabang::class, CabangPolicy::class);
+        Gate::policy(Alat::class, AlatPolicy::class);
+        Gate::policy(LogBookPeminjaman::class, LogBookPeminjamanPolicy::class);
         Gate::policy(SystemConfiguration::class, SystemConfigurationPolicy::class);
         Gate::policy(Role::class, RolePolicy::class);
         Gate::policy(Notification::class, NotificationPolicy::class);
@@ -62,7 +68,7 @@ class AppServiceProvider extends ServiceProvider
     private function applySystemConfigurations(): void
     {
         try {
-            if (!Schema::hasTable('system_configurations')) {
+            if (! Schema::hasTable('system_configurations')) {
                 return;
             }
 

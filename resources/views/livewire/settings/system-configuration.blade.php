@@ -145,15 +145,15 @@
 
                             <div class="space-y-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Key <span class="text-red-500">*</span></label>
+                                    <x-input-label for="key" value="Key" :required="true" />
                                     <input wire:model="key" type="text" {{ $editMode ? 'readonly' : '' }}
                                         placeholder="Contoh: app_name"
-                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white {{ $editMode ? 'bg-gray-100 dark:bg-gray-900' : '' }}">
-                                    @error('key') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                        class="mt-1 w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm {{ $editMode ? 'bg-gray-100 dark:bg-gray-900' : '' }}">
+                                    <x-input-error :messages="$errors->get('key')" class="mt-2" />
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Kategori <span class="text-red-500">*</span></label>
+                                    <x-input-label for="category" value="Kategori" :required="true" />
                                     <x-searchable-select
                                         wire:model.live="category"
                                         :options="collect($categories)->map(fn($label, $key) => ['value' => $key, 'label' => $label])->values()->toArray()"
@@ -161,36 +161,36 @@
                                         searchPlaceholder="Cari kategori..."
                                         :error="$errors->has('category')"
                                     />
-                                    @error('category') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    <x-input-error :messages="$errors->get('category')" class="mt-2" />
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Value @if($data_type !== 'datetime')<span class="text-red-500">*</span>@endif</label>
+                                    <x-input-label for="value" value="Value" :required="$data_type !== 'datetime'" />
                                     @if($data_type === 'datetime')
                                         <input wire:model="value" type="datetime-local"
                                             placeholder="Pilih tanggal dan waktu"
-                                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                                            class="mt-1 w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm">
                                         <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Pilih tanggal dan waktu. Kosongkan jika tidak ada batas waktu.</p>
                                     @elseif($data_type === 'boolean')
                                         <select wire:model="value"
-                                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                                            class="mt-1 w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm">
                                             <option value="1">Ya (True)</option>
                                             <option value="0">Tidak (False)</option>
                                         </select>
                                     @elseif($data_type === 'integer')
                                         <input wire:model="value" type="number"
                                             placeholder="Masukkan nilai numerik"
-                                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                                            class="mt-1 w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm">
                                     @else
                                         <input wire:model="value" type="text"
                                             placeholder="Masukkan nilai"
-                                            class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                                            class="mt-1 w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm">
                                     @endif
-                                    @error('value') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    <x-input-error :messages="$errors->get('value')" class="mt-2" />
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipe Data <span class="text-red-500">*</span></label>
+                                    <x-input-label for="data_type" value="Tipe Data" :required="true" />
                                     <x-searchable-select
                                         wire:model.live="data_type"
                                         :options="collect($dataTypes)->map(fn($label, $key) => ['value' => $key, 'label' => $label])->values()->toArray()"
@@ -198,15 +198,15 @@
                                         searchPlaceholder="Cari tipe data..."
                                         :error="$errors->has('data_type')"
                                     />
-                                    @error('data_type') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    <x-input-error :messages="$errors->get('data_type')" class="mt-2" />
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Deskripsi</label>
+                                    <x-input-label for="description" value="Deskripsi" />
                                     <textarea wire:model="description" rows="3"
                                         placeholder="Deskripsi konfigurasi (opsional)"
-                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"></textarea>
-                                    @error('description') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                        class="mt-1 w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm"></textarea>
+                                    <x-input-error :messages="$errors->get('description')" class="mt-2" />
                                 </div>
 
                                 <div class="flex items-center gap-4">
@@ -228,7 +228,7 @@
                                 Update
                             </x-loading-button>
                             <x-cancel-button wire:click="closeModal" target="closeModal"
-                                class="mt-3 sm:mt-0 w-full sm:w-auto" />
+                                variant="secondary" size="lg" class="mt-3 sm:mt-0 w-full sm:w-auto" />
                         </div>
                     </form>
                 </div>

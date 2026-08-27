@@ -16,7 +16,7 @@ class PermissionSeeder extends Seeder
      *
      * Konvensi penamaan:
      *   {entity}_{action}
-     *   entity : dashboard, companies, configuration, users, roles, notifications, chat
+     *   entity : dashboard, cabang, alat, logbook, configuration, users, roles, notifications, chat
      *   action : view, create, update, delete, export_excel, export_pdf, send
      *
      * Format ini memudahkan grouping otomatis di UI berdasarkan entity prefix.
@@ -29,13 +29,32 @@ class PermissionSeeder extends Seeder
             // Dashboard
             'dashboard_view',
 
-            // Master Data — Perusahaan
-            'companies_view',
-            'companies_create',
-            'companies_update',
-            'companies_delete',
-            'companies_export_excel',
-            'companies_export_pdf',
+            // Master Data — Cabang
+            'cabang_view',
+            'cabang_create',
+            'cabang_update',
+            'cabang_delete',
+            'cabang_export_excel',
+            'cabang_export_pdf',
+
+            // Master Data — Alat
+            'alat_view',
+            'alat_create',
+            'alat_update',
+            'alat_delete',
+            'alat_review',
+            'alat_export_excel',
+            'alat_export_pdf',
+
+            // Operasional — LogBook Peminjaman
+            'logbook_view',
+            'logbook_create',
+            'logbook_update',
+            'logbook_delete',
+            'logbook_approve',
+            'logbook_return',
+            'logbook_export_excel',
+            'logbook_export_pdf',
 
             // Konfigurasi System
             'configuration_view',
@@ -69,8 +88,9 @@ class PermissionSeeder extends Seeder
             'chat_create',
             'chat_delete',
 
-            // Profile - Company Management
-            'manage_own_company',
+            // Data Scope — akses lintas-cabang (COE/Pusat). Dicek di Service/Policy
+            // untuk bypass scoping cabang_id pada Alat & LogBook Peminjaman.
+            'access_all_cabang',
         ];
 
         foreach ($permissions as $permission) {

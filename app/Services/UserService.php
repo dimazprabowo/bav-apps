@@ -4,9 +4,9 @@ namespace App\Services;
 
 use App\Models\User;
 use App\Traits\HasDynamicLike;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class UserService
 {
@@ -18,15 +18,15 @@ class UserService
         ?string $isActive = null,
         int $perPage = 15
     ): LengthAwarePaginator {
-        $query = User::with(['roles', 'company']);
+        $query = User::with(['roles', 'cabang']);
 
         if ($search) {
             $operator = $this->getLikeOperator();
             $query->where(function ($q) use ($search, $operator) {
                 $q->where('name', $operator, "%{$search}%")
-                  ->orWhere('email', $operator, "%{$search}%")
-                  ->orWhere('phone', $operator, "%{$search}%")
-                  ->orWhere('position', $operator, "%{$search}%");
+                    ->orWhere('email', $operator, "%{$search}%")
+                    ->orWhere('phone', $operator, "%{$search}%")
+                    ->orWhere('position', $operator, "%{$search}%");
             });
         }
 
@@ -47,7 +47,7 @@ class UserService
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'company_id' => $data['company_id'] ?? null,
+            'cabang_id' => $data['cabang_id'] ?? null,
             'phone' => $data['phone'] ?? null,
             'position' => $data['position'] ?? null,
             'is_active' => $data['is_active'] ?? true,
@@ -64,20 +64,20 @@ class UserService
         $updateData = [
             'name' => $data['name'],
             'email' => $data['email'],
-            'company_id' => $data['company_id'] ?? null,
+            'cabang_id' => $data['cabang_id'] ?? null,
             'phone' => $data['phone'] ?? null,
             'position' => $data['position'] ?? null,
             'is_active' => $data['is_active'] ?? true,
         ];
 
-        if (!empty($data['password'])) {
+        if (! empty($data['password'])) {
             $updateData['password'] = Hash::make($data['password']);
         }
 
         $user->update($updateData);
         $user->syncRoles($roles);
 
-        if (!$user->is_active) {
+        if (! $user->is_active) {
             $this->invalidateSessions($user);
         }
 
@@ -91,9 +91,9 @@ class UserService
 
     public function toggleActive(User $user): User
     {
-        $user->update(['is_active' => !$user->is_active]);
+        $user->update(['is_active' => ! $user->is_active]);
 
-        if (!$user->is_active) {
+        if (! $user->is_active) {
             $this->invalidateSessions($user);
         }
 

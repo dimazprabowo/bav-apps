@@ -11,7 +11,7 @@
     <div class="mt-4 flex flex-col sm:flex-row gap-3">
         <div class="flex-1">
             <input wire:model.live.debounce.300ms="search" type="text" placeholder="Cari nama atau email..."
-                class="w-full px-4 py-2.5 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-xl text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition text-sm">
+                class="w-full px-4 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-sm">
         </div>
         <x-filter-popover :filters="['roleFilter']">
             <div>
@@ -26,10 +26,10 @@
         </x-filter-popover>
     </div>
 
-    <div class="mt-4 overflow-hidden bg-white dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-700">
+    <div class="mt-4 overflow-hidden bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-gray-800">
+                <thead class="bg-gray-50 dark:bg-gray-700/50">
                     <tr>
                         <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">User</th>
                         <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Role</th>
@@ -38,7 +38,7 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200 dark:divide-gray-700">
                     @forelse($users as $user)
-                        <tr wire:key="impersonate-user-{{ $user->id }}" class="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                        <tr wire:key="impersonate-user-{{ $user->id }}" class="hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors">
                             <td class="px-4 py-2 whitespace-nowrap">
                                 <div class="flex items-center">
                                     <div class="flex-shrink-0 h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white text-xs font-semibold">

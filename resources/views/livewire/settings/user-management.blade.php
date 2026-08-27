@@ -65,7 +65,7 @@
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">User</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Email</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Role</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Company</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Cabang</th>
                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
                         <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Aksi</th>
                     </tr>
@@ -98,12 +98,9 @@
                                 @php
                                     $roleColors = [
                                         'super admin' => 'bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-400',
-                                        'admin' => 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400',
-                                        'manager' => 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400',
-                                        'sbu' => 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400',
-                                        'kacab' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400',
-                                        'inspector' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400',
-                                        'user' => 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400',
+                                        'admin pusat' => 'bg-purple-100 text-purple-800 dark:bg-purple-900/20 dark:text-purple-400',
+                                        'admin cabang' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400',
+                                        'staff cabang' => 'bg-gray-100 text-gray-800 dark:bg-gray-900/20 dark:text-gray-400',
                                     ];
                                 @endphp
                                 @if($user->roles->isNotEmpty())
@@ -121,16 +118,23 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900 dark:text-white">
-                                    {{ $user->company->name ?? '-' }}
+                                    @if($user->cabang)
+                                        <span class="inline-flex items-center px-2 py-0.5 text-xs font-medium rounded bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300">
+                                            {{ $user->cabang->name }}
+                                        </span>
+                                    @else
+                                        <span class="text-xs text-gray-400 dark:text-gray-500">Semua Cabang</span>
+                                    @endif
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                @can('users_update')
-                                    <button wire:click="toggleActive({{ $user->id }})" 
-                                        @if($user->id == auth()->id()) disabled title="Tidak dapat menonaktifkan akun sendiri" @endif
-                                        class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
-                                            {{ $user->is_active ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700' }}
-                                            {{ $user->id == auth()->id() ? 'opacity-50 cursor-not-allowed' : '' }}">
+                                @can('toggleActive', $user)
+                                    <button wire:click="toggleActive({{ $user->id }})"
+                                        wire:loading.attr="disabled"
+                                        wire:target="toggleActive({{ $user->id }})"
+                                        wire:key="btn-toggle-{{ $user->id }}"
+                                        class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-50
+                                            {{ $user->is_active ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700' }}">
                                         <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform
                                             {{ $user->is_active ? 'translate-x-6' : 'translate-x-1' }}"></span>
                                     </button>
@@ -142,7 +146,7 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                 <div class="flex items-center justify-end gap-2">
-                                    @can('users_update')
+                                    @can('update', $user)
                                         <button wire:key="edit-btn-{{ $user->id }}"
                                             wire:click="edit({{ $user->id }})"
                                             wire:loading.attr="disabled"
@@ -156,6 +160,7 @@
                                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                             </svg>
                                         </button>
+                                        @can('resetPassword', $user)
                                         <button wire:key="reset-btn-{{ $user->id }}"
                                             wire:click="openResetPasswordModal({{ $user->id }})"
                                             wire:loading.attr="disabled"
@@ -169,23 +174,22 @@
                                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                             </svg>
                                         </button>
+                                        @endcan
                                     @endcan
-                                    @can('users_delete')
-                                        @if($user->id != auth()->id())
-                                            <button wire:key="delete-btn-{{ $user->id }}"
-                                                wire:click="confirmDelete({{ $user->id }})"
-                                                wire:loading.attr="disabled"
-                                                class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50"
-                                                title="Hapus">
-                                                <svg wire:loading.remove wire:target="confirmDelete({{ $user->id }})" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                                </svg>
-                                                <svg wire:loading wire:target="confirmDelete({{ $user->id }})" class="animate-spin w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                                </svg>
-                                            </button>
-                                        @endif
+                                    @can('delete', $user)
+                                        <button wire:key="delete-btn-{{ $user->id }}"
+                                            wire:click="confirmDelete({{ $user->id }})"
+                                            wire:loading.attr="disabled"
+                                            class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 disabled:opacity-50"
+                                            title="Hapus">
+                                            <svg wire:loading.remove wire:target="confirmDelete({{ $user->id }})" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                            </svg>
+                                            <svg wire:loading wire:target="confirmDelete({{ $user->id }})" class="animate-spin w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                            </svg>
+                                        </button>
                                     @endcan
                                 </div>
                             </td>
@@ -223,34 +227,31 @@
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div class="md:col-span-2">
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Lengkap <span class="text-red-500">*</span></label>
+                                    <x-input-label for="name" value="Nama Lengkap" :required="true" />
                                     <input wire:model="name" type="text"
                                         placeholder="Masukkan nama lengkap"
-                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
-                                    @error('name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                        class="mt-1 w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm">
+                                    <x-input-error :messages="$errors->get('name')" class="mt-2" />
                                 </div>
 
                                 <div class="md:col-span-2">
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email <span class="text-red-500">*</span></label>
+                                    <x-input-label for="email" value="Email" :required="true" />
                                     <input wire:model="email" type="email"
                                         placeholder="nama@email.com"
-                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
-                                    @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                        class="mt-1 w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm">
+                                    <x-input-error :messages="$errors->get('email')" class="mt-2" />
                                 </div>
 
                                 <div x-data="{ showPassword: false }">
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                        Password @if(!$editMode)<span class="text-red-500">*</span>@endif
-                                        <br>
-                                        <span class="text-xs text-gray-500 dark:text-gray-400">
-                                            {{ $editMode ? '(kosongkan jika tidak ingin mengubah)' : '' }}
-                                        </span>
-                                    </label>
-                                    
+                                    <x-input-label for="password" value="Password" :required="!$editMode" />
+                                    @if($editMode)
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">(kosongkan jika tidak ingin mengubah)</p>
+                                    @endif
+
                                     <div class="relative">
                                         <input wire:model="password" :type="showPassword ? 'text' : 'password'"
                                             placeholder="{{ $editMode ? 'Kosongkan jika tidak diubah' : 'Masukkan password' }}"
-                                            class="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                                            class="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm">
                                         <button type="button"
                                                 @click="showPassword = !showPassword"
                                                 class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
@@ -263,21 +264,18 @@
                                             </svg>
                                         </button>
                                     </div>
-                                    @error('password') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    <x-input-error :messages="$errors->get('password')" class="mt-2" />
                                 </div>
 
                                 <div x-data="{ showPasswordConfirmation: false }">
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                                        Konfirmasi Password @if(!$editMode)<span class="text-red-500">*</span>@endif
-                                        <br>
-                                        <span class="text-xs text-gray-500 dark:text-gray-400">
-                                            {{ $editMode ? '(kosongkan jika tidak ingin mengubah)' : '' }}
-                                        </span>
-                                    </label>
+                                    <x-input-label for="password_confirmation" value="Konfirmasi Password" :required="!$editMode" />
+                                    @if($editMode)
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">(kosongkan jika tidak ingin mengubah)</p>
+                                    @endif
                                     <div class="relative">
                                         <input wire:model="password_confirmation" :type="showPasswordConfirmation ? 'text' : 'password'"
                                             placeholder="{{ $editMode ? 'Kosongkan jika tidak diubah' : 'Ulangi password' }}"
-                                            class="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
+                                            class="w-full px-3 py-2.5 pr-10 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm">
                                         <button type="button"
                                                 @click="showPasswordConfirmation = !showPasswordConfirmation"
                                                 class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
@@ -290,10 +288,11 @@
                                             </svg>
                                         </button>
                                     </div>
+                                    <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Role <span class="text-red-500">*</span></label>
+                                    <x-input-label for="selectedRoles" value="Role" :required="true" />
                                     <x-multi-searchable-select
                                         wire:model="selectedRoles"
                                         :options="$roles->map(fn($r) => ['value' => $r->name, 'label' => ucfirst($r->name)])->toArray()"
@@ -301,36 +300,45 @@
                                         searchPlaceholder="Cari role..."
                                         :error="$errors->has('selectedRoles')"
                                     />
-                                    @error('selectedRoles') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                                    @error('selectedRoles.*') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    <x-input-error :messages="$errors->get('selectedRoles')" class="mt-2" />
+                                    <x-input-error :messages="$errors->get('selectedRoles.*')" class="mt-2" />
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Company (Optional)</label>
+                                    @php
+                                        $cabangScopedRoles = ['admin cabang', 'staff cabang'];
+                                        $needsCabang = !empty(array_intersect($selectedRoles ?? [], $cabangScopedRoles));
+                                    @endphp
+                                    <x-input-label for="cabang_id" value="Cabang" :required="$needsCabang" />
+                                    @if($needsCabang)
+                                        <p class="text-xs text-amber-600 dark:text-amber-400 mb-1">Wajib untuk role Admin Cabang / Staff Cabang.</p>
+                                    @else
+                                        <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Kosongkan untuk role Super Admin / Admin Pusat (akses lintas-cabang).</p>
+                                    @endif
                                     <x-searchable-select
-                                        wire:model.live="company_id"
-                                        :options="$companies->map(fn($c) => ['value' => $c->id, 'label' => $c->name])->toArray()"
-                                        placeholder="Tidak ada"
-                                        searchPlaceholder="Cari perusahaan..."
-                                        :error="$errors->has('company_id')"
+                                        wire:model.live="cabang_id"
+                                        :options="$cabangs->map(fn($c) => ['value' => $c->id, 'label' => $c->name])->toArray()"
+                                        placeholder="Tidak ada (akses semua cabang)"
+                                        searchPlaceholder="Cari cabang..."
+                                        :error="$errors->has('cabang_id')"
                                     />
-                                    @error('company_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                    <x-input-error :messages="$errors->get('cabang_id')" class="mt-2" />
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Telepon</label>
+                                    <x-input-label for="phone" value="Telepon" />
                                     <input wire:model="phone" type="text"
                                         placeholder="08123456789"
-                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
-                                    @error('phone') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                        class="mt-1 w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm">
+                                    <x-input-error :messages="$errors->get('phone')" class="mt-2" />
                                 </div>
 
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Posisi/Jabatan</label>
+                                    <x-input-label for="position" value="Posisi/Jabatan" />
                                     <input wire:model="position" type="text"
                                         placeholder="Contoh: Manager, Staff"
-                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white">
-                                    @error('position') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                        class="mt-1 w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm">
+                                    <x-input-error :messages="$errors->get('position')" class="mt-2" />
                                 </div>
 
                                 <div class="md:col-span-2">
@@ -348,7 +356,7 @@
                                 {{ $editMode ? 'Update' : 'Simpan' }}
                             </x-loading-button>
                             <x-cancel-button wire:click="closeModal" target="closeModal"
-                                class="mt-3 sm:mt-0 w-full sm:w-auto" />
+                                variant="secondary" size="lg" class="mt-3 sm:mt-0 w-full sm:w-auto" />
                         </div>
                     </form>
                 </div>

@@ -9,12 +9,12 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('company_id')->nullable()->after('id')->constrained('companies')->onDelete('set null');
+            $table->foreignId('cabang_id')->nullable()->after('id')->constrained('cabangs')->nullOnDelete();
             $table->string('phone', 20)->nullable()->after('email');
             $table->string('position')->nullable()->after('phone');
             $table->boolean('is_active')->default(true)->after('position');
-            
-            $table->index('company_id');
+
+            $table->index('cabang_id');
             $table->index('is_active');
         });
     }
@@ -22,8 +22,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign(['company_id']);
-            $table->dropColumn(['company_id', 'phone', 'position', 'is_active']);
+            $table->dropForeign(['cabang_id']);
+            $table->dropColumn(['cabang_id', 'phone', 'position', 'is_active']);
         });
     }
 };

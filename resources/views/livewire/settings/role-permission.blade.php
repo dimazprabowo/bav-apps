@@ -145,11 +145,11 @@
 
                             <div class="space-y-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nama Role <span class="text-red-500">*</span></label>
+                                    <x-input-label for="roleName" value="Nama Role" :required="true" />
                                     <input wire:model="roleName" type="text" {{ $editMode ? 'readonly' : '' }}
                                         placeholder="Contoh: admin, manager, surveyor"
-                                        class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white {{ $editMode ? 'bg-gray-100 dark:bg-gray-900' : '' }}">
-                                    @error('roleName') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                                        class="mt-1 w-full px-3 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white text-sm {{ $editMode ? 'bg-gray-100 dark:bg-gray-900' : '' }}">
+                                    <x-input-error :messages="$errors->get('roleName')" class="mt-2" />
                                 </div>
 
                                 <div>
@@ -185,7 +185,7 @@
                                 {{ $editMode ? 'Update' : 'Simpan' }}
                             </x-loading-button>
                             <x-cancel-button wire:click="closeModal" target="closeModal"
-                                class="mt-3 sm:mt-0 w-full sm:w-auto" />
+                                variant="secondary" size="lg" class="mt-3 sm:mt-0 w-full sm:w-auto" />
                         </div>
                     </form>
                 </div>

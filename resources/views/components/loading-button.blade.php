@@ -46,8 +46,8 @@
 >
     {{-- Spinner (shown during loading) --}}
     @if($target)
-        <svg wire:loading wire:target="{{ $target }}"
-            class="animate-spin {{ $spinnerSize }}"
+        <svg class="animate-spin {{ $spinnerSize }} hidden"
+            wire:loading.class.remove="hidden" wire:loading.class.add="inline-flex" wire:target="{{ $target }}"
             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -56,15 +56,15 @@
 
     {{-- Icon slot (hidden during loading) --}}
     @if($hasIcon)
-        <span @if($target) wire:loading.class.remove="inline-block" wire:loading.class.add="hidden" wire:target="{{ $target }}" @endif>
+        <span class="inline-flex" @if($target) wire:loading.class.remove="inline-flex" wire:loading.class.add="hidden" wire:target="{{ $target }}" @endif>
             {{ $icon }}
         </span>
     @endif
 
     {{-- Text (with optional loading text swap) --}}
     @if($target && $loadingText)
-        <span wire:loading.class.remove="inline-block" wire:loading.class.add="hidden" wire:target="{{ $target }}">{{ $slot }}</span>
-        <span wire:loading wire:target="{{ $target }}">{{ $loadingText }}</span>
+        <span class="inline-flex" wire:loading.class.remove="inline-flex" wire:loading.class.add="hidden" wire:target="{{ $target }}">{{ $slot }}</span>
+        <span class="hidden" wire:loading.class.remove="hidden" wire:loading.class.add="inline-flex" wire:target="{{ $target }}">{{ $loadingText }}</span>
     @else
         {{ $slot }}
     @endif

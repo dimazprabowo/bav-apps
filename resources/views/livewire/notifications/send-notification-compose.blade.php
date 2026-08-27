@@ -162,14 +162,12 @@
 
             {{-- Title --}}
             <div>
-                <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">
-                    Judul <span class="text-red-500">*</span>
-                </label>
+                <x-input-label for="title" value="Judul" :required="true" class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5" />
                 <input type="text"
                        wire:model.blur="title"
                        placeholder="Contoh: Pembaruan Sistem"
                        maxlength="255"
-                       class="w-full px-3 py-2 text-sm border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors
+                       class="w-full px-3 py-2.5 text-sm border rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors
                               {{ $errors->has('title') ? 'border-red-400 dark:border-red-500' : 'border-gray-300 dark:border-gray-600' }}">
                 <div class="flex items-center justify-between mt-1">
                     @error('title')
@@ -183,9 +181,7 @@
 
             {{-- Message --}}
             <div>
-                <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5">
-                    Pesan <span class="text-red-500">*</span>
-                </label>
+                <x-input-label for="notifMessage" value="Pesan" :required="true" class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1.5" />
                 <textarea wire:model.blur="notifMessage"
                           placeholder="Tulis isi notifikasi di sini..."
                           rows="4"

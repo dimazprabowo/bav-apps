@@ -16,6 +16,7 @@
     $componentId = $id ?? 'searchable-select-' . uniqid();
     $wireModel = $attributes->wire('model')->value();
     $isLive = $attributes->wire('model')->hasModifier('live');
+    $wireKey = $attributes->get('wire:key');
 @endphp
 
 <div
@@ -48,6 +49,7 @@
         },
 
         selectOption(option) {
+            if (option.disabled) return;
             this.value = option.value;
             this.open = false;
             this.search = '';
@@ -89,7 +91,8 @@
     x-on:keydown.escape.window="closeDropdown()"
     x-on:scroll.window="if(open) checkPosition()"
     x-on:resize.window="if(open) checkPosition()"
-    class="relative w-full"
+    class="relative w-full mt-1"
+    @if($wireKey) wire:key="{{ $wireKey }}" @endif
     wire:ignore.self
 >
     {{-- Trigger Button --}}
@@ -98,8 +101,8 @@
         x-ref="trigger"
         x-on:click="toggleDropdown()"
         @if($disabled) disabled @endif
-        {{ $attributes->except(['wire:model', 'wire:model.live', 'wire:model.change'])->merge([
-            'class' => 'relative w-full cursor-pointer rounded-lg border bg-white dark:bg-gray-700 py-2.5 pl-4 pr-10 text-left shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ' . 
+        {{ $attributes->except(['wire:model', 'wire:model.live', 'wire:model.change', 'wire:key'])->merge([
+            'class' => 'relative w-full cursor-pointer rounded-lg border bg-white dark:bg-gray-700 py-2.5 pl-4 pr-10 text-left text-sm shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ' . 
                 ($error ? 'border-red-500 dark:border-red-500' : 'border-gray-300 dark:border-gray-600') .
                 ($disabled ? ' opacity-50 cursor-not-allowed bg-gray-100 dark:bg-gray-800' : ' hover:border-gray-400 dark:hover:border-gray-500')
         ]) }}
@@ -195,30 +198,38 @@
                 <li
                     x-on:click="selectOption(option)"
                     :class="{
-                        'bg-blue-50 dark:bg-blue-900/30': String(value) === String(option.value),
-                        'hover:bg-gray-100 dark:hover:bg-gray-700': String(value) !== String(option.value)
+                        'bg-blue-50 dark:bg-blue-900/30': String(value) === String(option.value) && !option.disabled,
+                        'hover:bg-gray-100 dark:hover:bg-gray-700': String(value) !== String(option.value) && !option.disabled,
+                        'cursor-not-allowed opacity-60': option.disabled
                     }"
-                    class="relative cursor-pointer select-none py-2.5 px-4 transition-colors"
-                    role="option"
+                    class="relative select-none py-2.5 px-4 transition-colors"
+                    :role="option.disabled ? 'presentation' : 'option'"
                 >
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
-                            <span 
+                            <span
                                 x-text="option.label"
-                                :class="String(value) === String(option.value) ? 'font-semibold text-blue-700 dark:text-blue-300' : 'text-gray-900 dark:text-white'"
+                                :class="String(value) === String(option.value) && !option.disabled ? 'font-semibold text-blue-700 dark:text-blue-300' : (option.disabled ? 'text-gray-500 dark:text-gray-400' : 'text-gray-900 dark:text-white')"
                                 class="block truncate"
                             ></span>
                             <template x-if="option.sublabel">
-                                <span 
+                                <span
                                     x-text="option.sublabel"
-                                    class="block truncate text-xs text-gray-500 dark:text-gray-400 mt-0.5"
+                                    :class="option.disabled ? 'text-amber-600 dark:text-amber-400' : 'text-gray-500 dark:text-gray-400'"
+                                    class="block truncate text-xs mt-0.5"
                                 ></span>
                             </template>
                         </div>
                         {{-- Check Icon --}}
-                        <template x-if="String(value) === String(option.value)">
+                        <template x-if="String(value) === String(option.value) && !option.disabled">
                             <svg class="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 ml-2" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            </svg>
+                        </template>
+                        {{-- Lock Icon for disabled --}}
+                        <template x-if="option.disabled">
+                            <svg class="h-4 w-4 text-amber-500 flex-shrink-0 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                             </svg>
                         </template>
                     </div>

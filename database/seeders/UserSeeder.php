@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Cabang;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -10,6 +11,9 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
+        $cabangPriok = Cabang::where('code', 'TGP')->first();
+        $cabangSurabaya = Cabang::where('code', 'SBY')->first();
+
         // Super Admin
         $superAdmin = User::firstOrCreate(
             ['email' => 'superadmin@app.com'],
@@ -22,40 +26,58 @@ class UserSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
-        if (!$superAdmin->hasRole('super admin')) {
+        if (! $superAdmin->hasRole('super admin')) {
             $superAdmin->assignRole('super admin');
         }
 
-        // Admin
-        $admin = User::firstOrCreate(
+        // Admin Pusat (COE) - akses lintas-cabang, tidak terikat 1 cabang
+        $adminPusat = User::firstOrCreate(
             ['email' => 'admin@app.com'],
             [
-                'name' => 'Administrator',
+                'name' => 'Admin Pusat',
                 'password' => Hash::make('password'),
                 'phone' => '021-1234567',
-                'position' => 'System Administrator',
+                'position' => 'COE / Pusat',
                 'is_active' => true,
                 'email_verified_at' => now(),
             ]
         );
-        if (!$admin->hasRole('admin')) {
-            $admin->assignRole('admin');
+        if (! $adminPusat->hasRole('admin pusat')) {
+            $adminPusat->assignRole('admin pusat');
         }
 
-        // User
-        $user = User::firstOrCreate(
+        // Admin Cabang - contoh: Cabang Utama Klas Tanjung Priok
+        $adminCabang = User::firstOrCreate(
+            ['email' => 'admincabang@app.com'],
+            [
+                'name' => 'Admin Cabang Tanjung Priok',
+                'password' => Hash::make('password'),
+                'cabang_id' => $cabangPriok?->id,
+                'phone' => '021-1234568',
+                'position' => 'Kepala Cabang',
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ]
+        );
+        if (! $adminCabang->hasRole('admin cabang')) {
+            $adminCabang->assignRole('admin cabang');
+        }
+
+        // Staff Cabang - contoh: Cabang Surabaya
+        $staffCabang = User::firstOrCreate(
             ['email' => 'user@app.com'],
             [
-                'name' => 'Sample User',
+                'name' => 'Staff Cabang Surabaya',
                 'password' => Hash::make('password'),
-                'phone' => '021-1234568',
+                'cabang_id' => $cabangSurabaya?->id,
+                'phone' => '021-1234569',
                 'position' => 'Staff',
                 'is_active' => true,
                 'email_verified_at' => now(),
             ]
         );
-        if (!$user->hasRole('user')) {
-            $user->assignRole('user');
+        if (! $staffCabang->hasRole('staff cabang')) {
+            $staffCabang->assignRole('staff cabang');
         }
     }
 }

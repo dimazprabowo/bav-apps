@@ -28,13 +28,12 @@
         <thead>
             <tr>
                 <th style="width: 5%;">No</th>
-                <th style="width: 20%;">Nama</th>
-                <th style="width: 20%;">Email</th>
-                <th style="width: 10%;">Telepon</th>
-                <th style="width: 10%;">Role</th>
-                <th style="width: 18%;">Perusahaan</th>
-                <th style="width: 8%;">Status</th>
-                <th style="width: 9%;">Tgl Dibuat</th>
+                <th style="width: 22%;">Nama</th>
+                <th style="width: 22%;">Email</th>
+                <th style="width: 12%;">Telepon</th>
+                <th style="width: 14%;">Role</th>
+                <th style="width: 10%;">Status</th>
+                <th style="width: 15%;">Tgl Dibuat</th>
             </tr>
         </thead>
         <tbody>
@@ -50,7 +49,6 @@
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->phone ?? '-' }}</td>
                     <td>{{ ucfirst($user->getRoleNames()->join(', ') ?: 'No Role') }}</td>
-                    <td>{{ $user->company->name ?? '-' }}</td>
                     <td>
                         <span class="badge {{ $user->is_active ? 'badge-active' : 'badge-inactive' }}">
                             {{ $user->is_active ? 'Aktif' : 'Nonaktif' }}

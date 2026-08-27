@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Notifications\CustomVerifyEmail;
 use App\Notifications\CustomResetPassword;
+use App\Notifications\CustomVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,14 +15,14 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, HasRoles, Notifiable;
 
     protected $fillable = [
         'name',
         'email',
         'password',
         'pending_email',
-        'company_id',
+        'cabang_id',
         'phone',
         'position',
         'is_active',
@@ -44,9 +44,9 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     // Relationships
-    public function company(): BelongsTo
+    public function cabang(): BelongsTo
     {
-        return $this->belongsTo(Company::class);
+        return $this->belongsTo(Cabang::class);
     }
 
     public function userNotifications(): HasMany
@@ -72,20 +72,40 @@ class User extends Authenticatable implements MustVerifyEmail
         return $query->role($role);
     }
 
-    public function scopeByCompany($query, int $companyId)
+    /**
+     * Terapkan scoping cabang ke query builder MODEL LAIN (Alat, LogBookPeminjaman, dst),
+     * KECUALI user punya akses lintas-cabang (permission `access_all_cabang`).
+     * Bukan Eloquent local scope (tidak diawali "scope" agar tidak tertukar) —
+     * dipanggil manual: $user->applyCabangScope($query).
+     * Single source of truth untuk data-scoping COE vs Cabang di seluruh Service/Export.
+     */
+    public function applyCabangScope($query, string $column = 'cabang_id')
     {
-        return $query->where('company_id', $companyId);
+        if ($this->hasGlobalCabangAccess()) {
+            return $query;
+        }
+
+        return $query->where($column, $this->cabang_id);
     }
 
     // Accessors
     public function getIsAdminAttribute(): bool
     {
-        return $this->hasRole(['super admin', 'admin']);
+        return $this->hasRole(['super admin', 'admin pusat']);
+    }
+
+    /**
+     * Apakah user ini punya akses lintas-cabang (COE/Pusat)?
+     * SELALU lewat permission `access_all_cabang`, JANGAN cek nama role.
+     */
+    public function hasGlobalCabangAccess(): bool
+    {
+        return $this->can('access_all_cabang');
     }
 
     public function getFullNameAttribute(): string
     {
-        return $this->name . ($this->position ? " ({$this->position})" : '');
+        return $this->name.($this->position ? " ({$this->position})" : '');
     }
 
     /**
@@ -104,7 +124,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         // Determine which email to send to
         $emailTo = $this->pending_email ?? $this->email;
-        
+
         // Send notification directly to the specific email
         \Illuminate\Support\Facades\Notification::route('mail', $emailTo)
             ->notify(new CustomVerifyEmail($this));
@@ -117,7 +137,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         // Determine which email to send to
         $emailTo = $this->pending_email ?? $this->email;
-        
+
         // Send notification directly to the specific email
         \Illuminate\Support\Facades\Notification::route('mail', $emailTo)
             ->notify(new CustomResetPassword($token, $this));
