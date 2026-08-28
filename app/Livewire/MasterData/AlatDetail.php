@@ -113,6 +113,12 @@ class AlatDetail extends Component
         $this->resetKalibrasiForm();
     }
 
+    public function removeKalibrasiFile(): void
+    {
+        $this->kal_file = null;
+        $this->resetErrorBag('kal_file');
+    }
+
     protected function resetKalibrasiForm(): void
     {
         $this->kal_tanggal = null;

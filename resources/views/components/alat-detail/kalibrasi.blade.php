@@ -72,40 +72,6 @@
                                     <dd class="text-gray-900 dark:text-white">{{ $kalibrasi->catatan ?: '-' }}</dd>
                                 </div>
                             </dl>
-                            {{-- File status --}}
-                            @if($kalibrasi->hasFile() || $kalibrasi->isProcessing())
-                                <div class="mt-3 flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                                    @if($kalibrasi->isProcessing())
-                                        <svg class="animate-spin w-4 h-4 text-blue-500 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
-                                        <span class="text-xs text-blue-600 dark:text-blue-400">Sertifikat sedang diproses...</span>
-                                    @elseif($kalibrasi->isFailed())
-                                        <svg class="w-4 h-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                                        </svg>
-                                        <span class="text-xs text-red-600 dark:text-red-400">Gagal: {{ $kalibrasi->file_error }}</span>
-                                    @elseif($kalibrasi->isCompleted())
-                                        <svg class="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                                        </svg>
-                                        <span class="text-xs text-gray-700 dark:text-gray-300 truncate flex-1">{{ $kalibrasi->file_name }}</span>
-                                        <button type="button" wire:click="downloadKalibrasiFile({{ $kalibrasi->id }})"
-                                            wire:loading.attr="disabled" wire:target="downloadKalibrasiFile({{ $kalibrasi->id }})"
-                                            wire:key="btn-dl-kal-{{ $kalibrasi->id }}"
-                                            class="text-blue-500 hover:text-blue-700 p-1 disabled:opacity-50" title="Download sertifikat">
-                                            <svg wire:loading.remove wire:target="downloadKalibrasiFile({{ $kalibrasi->id }})" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
-                                            </svg>
-                                            <svg wire:loading wire:target="downloadKalibrasiFile({{ $kalibrasi->id }})" class="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                            </svg>
-                                        </button>
-                                    @endif
-                                </div>
-                            @endif
                         </div>
                         @can('update', $alat)
                             <div class="flex items-center gap-1 flex-shrink-0">
@@ -136,6 +102,41 @@
                             </div>
                         @endcan
                     </div>
+
+                    {{-- File status (full-width card, download button aligned below edit/delete) --}}
+                    @if($kalibrasi->hasFile() || $kalibrasi->isProcessing())
+                        <div class="mt-3 flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                            @if($kalibrasi->isProcessing())
+                                <svg class="animate-spin w-4 h-4 text-blue-500 flex-shrink-0" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span class="text-xs text-blue-600 dark:text-blue-400">Sertifikat sedang diproses...</span>
+                            @elseif($kalibrasi->isFailed())
+                                <svg class="w-4 h-4 text-red-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                <span class="text-xs text-red-600 dark:text-red-400 truncate flex-1">Gagal: {{ $kalibrasi->file_error }}</span>
+                            @elseif($kalibrasi->isCompleted())
+                                <svg class="w-4 h-4 text-emerald-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                </svg>
+                                <span class="text-xs text-gray-700 dark:text-gray-300 truncate flex-1">{{ $kalibrasi->file_name }}</span>
+                                <button type="button" wire:click="downloadKalibrasiFile({{ $kalibrasi->id }})"
+                                    wire:loading.attr="disabled" wire:target="downloadKalibrasiFile({{ $kalibrasi->id }})"
+                                    wire:key="btn-dl-kal-{{ $kalibrasi->id }}"
+                                    class="text-blue-500 hover:text-blue-700 p-1 disabled:opacity-50 flex-shrink-0" title="Download sertifikat">
+                                    <svg wire:loading.remove wire:target="downloadKalibrasiFile({{ $kalibrasi->id }})" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                    </svg>
+                                    <svg wire:loading wire:target="downloadKalibrasiFile({{ $kalibrasi->id }})" class="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>
+                                </button>
+                            @endif
+                        </div>
+                    @endif
                 </div>
             @endforeach
         </div>

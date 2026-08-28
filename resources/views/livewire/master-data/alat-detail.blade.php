@@ -74,29 +74,56 @@
                                 </div>
                                 <div class="md:col-span-2">
                                     <x-input-label for="kal_file" value="Sertifikat File (PDF/JPG/PNG, max 20MB)" />
-                                    <div x-data="{ uploading: false, progress: 0 }"
-                                         x-on:livewire-upload-start="uploading = true"
-                                         x-on:livewire-upload-finish="uploading = false; progress = 0"
-                                         x-on:livewire-upload-cancel="uploading = false"
-                                         x-on:livewire-upload-error="uploading = false"
-                                         x-on:livewire-upload-progress="progress = $event.detail.progress">
-                                        <label class="flex flex-col items-center justify-center w-full px-3 py-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 transition-colors bg-white dark:bg-gray-800">
-                                            <div x-show="!uploading" class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+
+                                    @if($kal_file && is_object($kal_file))
+                                        {{-- File Selected State (match evidence section pattern) --}}
+                                        <div class="flex items-center gap-2 px-3 py-2.5 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                                            <svg class="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                                            </svg>
+                                            <span class="text-xs text-blue-700 dark:text-blue-300 truncate flex-1">{{ $kal_file->getClientOriginalName() }}</span>
+                                            <span class="text-xs text-blue-500 dark:text-blue-400">{{ number_format($kal_file->getSize() / 1024, 0) }} KB</span>
+                                            <button type="button" wire:click="removeKalibrasiFile"
+                                                wire:loading.attr="disabled"
+                                                wire:target="removeKalibrasiFile"
+                                                wire:key="btn-remove-kal-file"
+                                                class="text-red-500 hover:text-red-700 p-0.5 disabled:opacity-50" title="Hapus file">
+                                                <svg wire:loading.class="hidden" wire:target="removeKalibrasiFile" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                                                 </svg>
-                                                <span>Klik untuk upload sertifikat kalibrasi</span>
-                                            </div>
-                                            <div x-show="uploading" x-cloak class="flex items-center justify-center gap-2">
-                                                <svg class="animate-spin w-3 h-3 text-blue-500" fill="none" viewBox="0 0 24 24">
+                                                <svg wire:loading wire:target="removeKalibrasiFile" class="animate-spin w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                                 </svg>
-                                                <span class="text-xs text-blue-600" x-text="progress + '%'"></span>
-                                            </div>
-                                            <input type="file" wire:model="kal_file" class="hidden" accept=".pdf,.jpg,.jpeg,.png">
-                                        </label>
-                                    </div>
+                                            </button>
+                                        </div>
+                                    @else
+                                        {{-- Upload Area with Loading Progress --}}
+                                        <div x-data="{ uploading: false, progress: 0 }"
+                                             x-on:livewire-upload-start="uploading = true"
+                                             x-on:livewire-upload-finish="uploading = false; progress = 0"
+                                             x-on:livewire-upload-cancel="uploading = false"
+                                             x-on:livewire-upload-error="uploading = false"
+                                             x-on:livewire-upload-progress="progress = $event.detail.progress">
+                                            <label class="flex flex-col items-center justify-center w-full px-3 py-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 transition-colors bg-white dark:bg-gray-800">
+                                                <div x-show="!uploading" class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+                                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+                                                    </svg>
+                                                    <span>Klik untuk upload sertifikat kalibrasi</span>
+                                                </div>
+                                                <div x-show="uploading" x-cloak class="flex items-center justify-center gap-2">
+                                                    <svg class="animate-spin w-3 h-3 text-blue-500" fill="none" viewBox="0 0 24 24">
+                                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                    </svg>
+                                                    <span class="text-xs text-blue-600" x-text="progress + '%'"></span>
+                                                </div>
+                                                <input type="file" wire:model="kal_file" class="hidden" accept=".pdf,.jpg,.jpeg,.png">
+                                            </label>
+                                        </div>
+                                    @endif
+
                                     <x-input-error :messages="$errors->get('kal_file')" class="mt-2" />
                                     @if($editingKalibrasiId)
                                         @php
