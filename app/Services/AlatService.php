@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\AlatKondisi;
 use App\Enums\AlatReviewStatus;
 use App\Enums\AlatStatusKalibrasi;
 use App\Jobs\ProcessAlatEvidence;
@@ -341,6 +342,16 @@ class AlatService
             'active' => (clone $base)->active()->count(),
             'approved' => (clone $base)->approved()->count(),
             'pending_review' => (clone $base)->where('review_status', AlatReviewStatus::Pending)->count(),
+            // Kondisi peralatan (3 grup ringkas: Baik / Rusak / Hilang)
+            'kondisi_baik' => (clone $base)->where('kondisi', AlatKondisi::Baik)->count(),
+            'kondisi_rusak_ringan' => (clone $base)->where('kondisi', AlatKondisi::RusakRingan)->count(),
+            'kondisi_rusak_berat' => (clone $base)->where('kondisi', AlatKondisi::RusakBerat)->count(),
+            'kondisi_hilang' => (clone $base)->where('kondisi', AlatKondisi::Hilang)->count(),
+            'kondisi_rusak' => (clone $base)->whereIn('kondisi', [
+                AlatKondisi::RusakRingan,
+                AlatKondisi::RusakBerat,
+            ])->count(),
+            // Kalibrasi
             'calibration_expired' => (clone $base)->whereHas('kalibrasis', function ($q) use ($today) {
                 $q->whereNotNull('tanggal_kalibrasi_berikutnya')
                     ->where('tanggal_kalibrasi_berikutnya', '<', $today);

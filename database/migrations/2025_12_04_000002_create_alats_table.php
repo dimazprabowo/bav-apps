@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->foreignId('cabang_id')->constrained('cabangs')->restrictOnDelete();
             $table->string('lokasi')->nullable();
-            $table->enum('kondisi', ['baik', 'rusak_ringan', 'rusak_berat'])->default('baik');
+            $table->enum('kondisi', ['baik', 'rusak_ringan', 'rusak_berat', 'hilang'])->default('baik');
             $table->enum('status_kepemilikan', ['milik_sendiri', 'sewa', 'pinjam', 'leasing'])->default('milik_sendiri');
             $table->boolean('is_active')->default(true);
 

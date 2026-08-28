@@ -219,6 +219,24 @@ class AlatSeeder extends Seeder
                     ],
                 ],
             ],
+            [
+                'code' => 'ALT-008',
+                'name' => 'Insulation Tester Kyoritsu 3125A',
+                'merk_type' => 'Kyoritsu 3125A',
+                'serial_number' => 'KYO-3125A-99887766',
+                'kode_inventaris' => 'INV-ALT-008',
+                'description' => 'Tester isolasi 5000V untuk pengujian tahanan isolasi kabel.',
+                'cabang_id' => $surabaya->id,
+                'lokasi' => 'Gudang Alat Surabaya',
+                'kondisi' => AlatKondisi::Hilang->value,
+                'status_kepemilikan' => AlatStatusKepemilikan::MilikSendiri->value,
+                'is_active' => false,
+                'review_status' => AlatReviewStatus::Approved->value,
+                'reviewed_by' => $admin?->id,
+                'reviewed_at' => now()->subDays(45),
+                'approval_note' => 'Approved sebelum dilaporkan hilang.',
+                'kalibrasis' => [],
+            ],
         ];
 
         foreach ($alats as $alatData) {

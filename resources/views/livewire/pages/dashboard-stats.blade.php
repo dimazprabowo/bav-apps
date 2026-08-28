@@ -22,9 +22,11 @@
         </div>
     </div>
 
-    {{-- Stat Cards --}}
+    {{-- Stat Cards: User & Role (gated by respective entity permissions) --}}
+    @canany(['users_view', 'roles_view'])
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
+        @can('users_view')
         {{-- Total Users --}}
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
             <div class="flex items-center justify-between">
@@ -40,7 +42,9 @@
                 </div>
             </div>
         </div>
+        @endcan
 
+        @can('roles_view')
         {{-- Total Roles --}}
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
             <div class="flex items-center justify-between">
@@ -56,10 +60,98 @@
                 </div>
             </div>
         </div>
+        @endcan
 
     </div>
+    @endcanany
 
-    {{-- Quick Actions --}}
+    {{-- Kondisi Peralatan (gated by alat_view; cabang-scoped via service) --}}
+    @can('alat_view')
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Kondisi Peralatan</h3>
+            <a href="{{ route('master-data.alat.index') }}" wire:navigate
+               class="text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">
+                Lihat detail &rarr;
+            </a>
+        </div>
+
+        {{-- Total + 3 grup kondisi (Baik / Rusak / Hilang) --}}
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+
+            {{-- Total Alat --}}
+            <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Total Alat</p>
+                <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{{ number_format($alatStats['total']) }}</p>
+                <p class="mt-0.5 text-xs text-gray-400 dark:text-gray-500">Seluruh peralatan</p>
+            </div>
+
+            {{-- Baik --}}
+            <div class="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                <p class="text-xs font-medium text-green-600 dark:text-green-400">Baik</p>
+                <p class="mt-1 text-2xl font-bold text-green-700 dark:text-green-300">{{ number_format($alatStats['kondisi_baik']) }}</p>
+                <p class="mt-0.5 text-xs text-green-500/80 dark:text-green-500/60">Layak pakai</p>
+            </div>
+
+            {{-- Rusak (Ringan + Berat digabung) --}}
+            <div class="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
+                <p class="text-xs font-medium text-red-600 dark:text-red-400">Rusak</p>
+                <p class="mt-1 text-2xl font-bold text-red-700 dark:text-red-300">{{ number_format($alatStats['kondisi_rusak']) }}</p>
+                <p class="mt-0.5 text-xs text-red-500/80 dark:text-red-500/60">
+                    R. Ringan {{ $alatStats['kondisi_rusak_ringan'] }} &middot; R. Berat {{ $alatStats['kondisi_rusak_berat'] }}
+                </p>
+            </div>
+
+            {{-- Hilang --}}
+            <div class="p-4 bg-gray-100 dark:bg-gray-700/70 rounded-lg">
+                <p class="text-xs font-medium text-gray-600 dark:text-gray-300">Hilang</p>
+                <p class="mt-1 text-2xl font-bold text-gray-700 dark:text-gray-200">{{ number_format($alatStats['kondisi_hilang']) }}</p>
+                <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">Tidak ditemukan</p>
+            </div>
+
+        </div>
+    </div>
+
+    {{-- Status Kalibrasi (gated by alat_view; cabang-scoped via service) --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        {{-- Kalibrasi Expired --}}
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Kalibrasi Expired</p>
+                    <p class="mt-2 text-3xl font-bold text-red-600 dark:text-red-400">{{ number_format($alatStats['calibration_expired']) }}</p>
+                    <p class="mt-1 text-xs text-gray-400 dark:text-gray-500">Sudah jatuh tempo</p>
+                </div>
+                <div class="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl">
+                    <svg class="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        {{-- Kalibrasi Jatuh Tempo --}}
+        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Kalibrasi Jatuh Tempo</p>
+                    <p class="mt-2 text-3xl font-bold text-amber-600 dark:text-amber-400">{{ number_format($alatStats['calibration_pending']) }}</p>
+                    <p class="mt-1 text-xs text-gray-400 dark:text-gray-500">&le; 30 hari ke depan</p>
+                </div>
+                <div class="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl">
+                    <svg class="w-8 h-8 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    @endcan
+
+    {{-- Quick Actions (only render if user has at least one relevant permission) --}}
+    @canany(['users_view', 'roles_view', 'configuration_view'])
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
         <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4">Aksi Cepat</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -112,8 +204,10 @@
 
         </div>
     </div>
+    @endcanany
 
-    {{-- System Info --}}
+    {{-- System Info (gated by configuration_view — internal app info) --}}
+    @can('configuration_view')
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
         <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4">Informasi System</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -147,5 +241,6 @@
             </div>
         </div>
     </div>
+    @endcan
 
 </div>
