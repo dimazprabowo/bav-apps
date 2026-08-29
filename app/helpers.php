@@ -1,6 +1,6 @@
 <?php
 
-if (!function_exists('email_logo_url')) {
+if (! function_exists('email_logo_url')) {
     /**
      * Get the public URL for the email logo
      * Logo is hosted on DigitalOcean Spaces (S3) for email client compatibility
@@ -11,85 +11,84 @@ if (!function_exists('email_logo_url')) {
     }
 }
 
-if (!function_exists('get_max_upload_size')) {
+if (! function_exists('get_max_upload_size')) {
     /**
      * Get maximum upload size in KB for a specific field
-     * 
-     * @param string|null $fieldName Field name from config/file_upload.php
+     *
+     * @param  string|null  $fieldName  Field name from config/file_upload.php
      * @return int Size in KB
      */
     function get_max_upload_size(?string $fieldName = null): int
     {
-        $config = config('file_upload.fields.' . $fieldName, config('file_upload.default'));
+        $config = config('file_upload.fields.'.$fieldName, config('file_upload.default'));
+
         return (int) $config['max_size'];
     }
 }
 
-if (!function_exists('get_allowed_mimes')) {
+if (! function_exists('get_allowed_mimes')) {
     /**
      * Get allowed MIME types for a specific field
      * Returns comma-separated string
-     * 
-     * @param string|null $fieldName Field name from config/file_upload.php
-     * @return string
+     *
+     * @param  string|null  $fieldName  Field name from config/file_upload.php
      */
     function get_allowed_mimes(?string $fieldName = null): string
     {
-        $config = config('file_upload.fields.' . $fieldName, config('file_upload.default'));
+        $config = config('file_upload.fields.'.$fieldName, config('file_upload.default'));
+
         return implode(',', $config['mimes']);
     }
 }
 
-if (!function_exists('get_allowed_mimes_array')) {
+if (! function_exists('get_allowed_mimes_array')) {
     /**
      * Get allowed MIME types as array for a specific field
-     * 
-     * @param string|null $fieldName Field name from config/file_upload.php
-     * @return array
+     *
+     * @param  string|null  $fieldName  Field name from config/file_upload.php
      */
     function get_allowed_mimes_array(?string $fieldName = null): array
     {
-        $config = config('file_upload.fields.' . $fieldName, config('file_upload.default'));
+        $config = config('file_upload.fields.'.$fieldName, config('file_upload.default'));
+
         return $config['mimes'];
     }
 }
 
-if (!function_exists('file_upload_validation_rule')) {
+if (! function_exists('file_upload_validation_rule')) {
     /**
      * Get complete file upload validation rule string for a specific field
      * Example: "nullable|file|max:2048|mimes:jpg,jpeg,png,pdf"
-     * 
-     * @param string|null $fieldName Field name from config/file_upload.php (e.g., 'photo-config', 'file-config')
-     * @param bool $required Whether file is required
-     * @return string
+     *
+     * @param  string|null  $fieldName  Field name from config/file_upload.php (e.g., 'photo-config', 'file-config')
+     * @param  bool  $required  Whether file is required
      */
     function file_upload_validation_rule(?string $fieldName = null, bool $required = false): string
     {
         $rules = [];
-        
+
         $rules[] = $required ? 'required' : 'nullable';
         $rules[] = 'file';
-        $rules[] = 'max:' . get_max_upload_size($fieldName);
-        $rules[] = 'mimes:' . get_allowed_mimes($fieldName);
-        
+        $rules[] = 'max:'.get_max_upload_size($fieldName);
+        $rules[] = 'mimes:'.get_allowed_mimes($fieldName);
+
         return implode('|', $rules);
     }
 }
 
-if (!function_exists('get_upload_config_display')) {
+if (! function_exists('get_upload_config_display')) {
     /**
      * Get human-readable upload configuration for display
      * Example: "Max: 2 MB | Types: JPG, JPEG, PNG, PDF"
-     * 
-     * @param string|null $fieldName Field name from config/file_upload.php
-     * @return string
+     *
+     * @param  string|null  $fieldName  Field name from config/file_upload.php
      */
     function get_upload_config_display(?string $fieldName = null): string
     {
         $maxSizeKB = get_max_upload_size($fieldName);
         $maxSizeMB = $maxSizeKB / 1024;
         $mimes = strtoupper(str_replace(',', ', ', get_allowed_mimes($fieldName)));
-        
+
         return "Max: {$maxSizeMB} MB | Types: {$mimes}";
     }
 }
@@ -98,11 +97,9 @@ if (!function_exists('get_upload_config_display')) {
 // System Configuration Helpers
 // ============================================================================
 
-if (!function_exists('app_name')) {
+if (! function_exists('app_name')) {
     /**
      * Get application name from system configuration
-     * 
-     * @return string
      */
     function app_name(): string
     {
@@ -110,12 +107,12 @@ if (!function_exists('app_name')) {
     }
 }
 
-if (!function_exists('system_config')) {
+if (! function_exists('system_config')) {
     /**
      * Get system configuration value
-     * 
-     * @param string $key Configuration key
-     * @param mixed $default Default value if not found
+     *
+     * @param  string  $key  Configuration key
+     * @param  mixed  $default  Default value if not found
      * @return mixed
      */
     function system_config(string $key, $default = null)
@@ -124,11 +121,9 @@ if (!function_exists('system_config')) {
     }
 }
 
-if (!function_exists('is_registration_open')) {
+if (! function_exists('is_registration_open')) {
     /**
      * Check if registration is currently open
-     * 
-     * @return bool
      */
     function is_registration_open(): bool
     {
@@ -136,11 +131,9 @@ if (!function_exists('is_registration_open')) {
     }
 }
 
-if (!function_exists('registration_deadline')) {
+if (! function_exists('registration_deadline')) {
     /**
      * Get registration deadline as Carbon instance
-     * 
-     * @return \Carbon\Carbon|null
      */
     function registration_deadline(): ?\Carbon\Carbon
     {
@@ -148,11 +141,9 @@ if (!function_exists('registration_deadline')) {
     }
 }
 
-if (!function_exists('registration_closed_message')) {
+if (! function_exists('registration_closed_message')) {
     /**
      * Get registration closed message
-     * 
-     * @return string
      */
     function registration_closed_message(): string
     {
@@ -160,7 +151,7 @@ if (!function_exists('registration_closed_message')) {
     }
 }
 
-if (!function_exists('file_disk')) {
+if (! function_exists('file_disk')) {
     /**
      * Get the configured filesystem disk for permanent file storage.
      * Uses Laravel's default filesystem disk (FILESYSTEM_DISK in .env).
@@ -171,17 +162,36 @@ if (!function_exists('file_disk')) {
     }
 }
 
-if (!function_exists('upload_path')) {
+if (! function_exists('auth_layout_position')) {
+    /**
+     * Get the validated authentication layout position.
+     *
+     * Reads from config('auth_layout.position') which is sourced from
+     * LOGIN_POSITION in .env. Invalid values fall back to "center".
+     *
+     * @return string One of: 'left', 'center', 'right'
+     */
+    function auth_layout_position(): string
+    {
+        $position = strtolower((string) config('auth_layout.position', 'center'));
+
+        return in_array($position, ['left', 'center', 'right'], true)
+            ? $position
+            : 'center';
+    }
+}
+
+if (! function_exists('upload_path')) {
     /**
      * Build a permanent storage path following the app-wide convention:
      *   {app_env}/{feature}/{...segments}/{slug-name}_{YmdHis}.{ext}
      *
      * Centralized via FileStorageService to avoid duplicating path logic.
      *
-     * @param string        $feature      Menu/feature name, e.g. 'personel-certificates'
-     * @param array<string> $segments     Extra path segments (auto-slugged), e.g. [$itemSlug]
-     * @param string        $originalName Original file name (used for extension & base name)
-     * @param string|null   $baseName     Override base file name (default: from originalName)
+     * @param  string  $feature  Menu/feature name, e.g. 'personel-certificates'
+     * @param  array<string>  $segments  Extra path segments (auto-slugged), e.g. [$itemSlug]
+     * @param  string  $originalName  Original file name (used for extension & base name)
+     * @param  string|null  $baseName  Override base file name (default: from originalName)
      */
     function upload_path(string $feature, array $segments, string $originalName, ?string $baseName = null): string
     {

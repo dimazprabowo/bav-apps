@@ -20,6 +20,9 @@ export default {
         'lg:p-2.5',
         'lg:px-0',
         'lg:px-2',
+        // Auth layout position classes (generated dynamically in auth-shell)
+        'lg:flex-row',
+        'lg:flex-row-reverse',
     ],
 
     theme: {
