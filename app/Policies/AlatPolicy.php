@@ -72,4 +72,9 @@ class AlatPolicy
     {
         return $user->can('alat_export_pdf');
     }
+
+    public function sendReminder(User $user): bool
+    {
+        return $user->can('alat_send_reminder');
+    }
 }

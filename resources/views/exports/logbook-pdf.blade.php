@@ -16,7 +16,7 @@
 <table>
     <thead>
         <tr>
-            <th>No</th><th>Alat</th><th>Peminjam</th><th>Cabang</th><th>Tgl Pinjam</th><th>Rencana Kembali</th><th>Status</th>
+            <th>No</th><th>Alat</th><th>Peminjam</th><th>Pekerjaan</th><th>Cabang</th><th>Tgl Pinjam</th><th>Rencana Kembali</th><th>Status</th>
         </tr>
     </thead>
     <tbody>
@@ -25,6 +25,7 @@
             <td>{{ $i + 1 }}</td>
             <td>{{ $log->alat?->name ?? '-' }}</td>
             <td>{{ $log->peminjam?->name ?? '-' }}</td>
+            <td>{{ $log->deskripsi_pekerjaan ?? '-' }}</td>
             <td>{{ $log->cabang?->name ?? '-' }}</td>
             <td>{{ $log->tanggal_pinjam->format('d/m/Y') }}</td>
             <td>{{ $log->tanggal_kembali_rencana->format('d/m/Y') }}</td>

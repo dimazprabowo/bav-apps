@@ -45,6 +45,7 @@ class PermissionSeeder extends Seeder
             'alat_review',
             'alat_export_excel',
             'alat_export_pdf',
+            'alat_send_reminder',
 
             // Operasional — LogBook Peminjaman
             'logbook_view',
@@ -53,6 +54,7 @@ class PermissionSeeder extends Seeder
             'logbook_delete',
             'logbook_approve',
             'logbook_return',
+            'logbook_cancel',
             'logbook_export_excel',
             'logbook_export_pdf',
 

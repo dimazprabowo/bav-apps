@@ -84,7 +84,7 @@ class UserManagement extends Component
         $rules = [
             'name' => 'required|string|max:255',
             'email' => ['required', 'email', $this->editMode ? 'unique:users,email,'.$this->userId : 'unique:users,email'],
-            'cabang_id' => $needsCabang ? 'required|exists:cabang,id' : 'nullable|exists:cabang,id',
+            'cabang_id' => $needsCabang ? 'required|exists:cabangs,id' : 'nullable|exists:cabangs,id',
             'phone' => 'nullable|string|max:20',
             'position' => 'nullable|string|max:100',
             'is_active' => 'boolean',

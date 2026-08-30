@@ -10,6 +10,7 @@ use App\Exports\AlatExport;
 use App\Livewire\Traits\HasNotification;
 use App\Models\Alat;
 use App\Models\Cabang;
+use App\Services\AlatReminderService;
 use App\Services\AlatService;
 use App\Traits\HasDynamicLike;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -302,6 +303,31 @@ class AlatManagement extends Component
             fn () => print ($pdf->output()),
             'alat-'.now()->format('Y-m-d-His').'.pdf'
         );
+    }
+
+    public function sendReminders(AlatReminderService $service)
+    {
+        $this->authorize('sendReminder', Alat::class);
+
+        try {
+            $result = $service->sendReminders();
+
+            // Reminder dinonaktifkan di konfigurasi sistem
+            if (! empty($result['skipped'])) {
+                $this->notifyWarning('Reminder kalibrasi dinonaktifkan di Konfigurasi Sistem. Aktifkan konfigurasi "alat.reminder.is_active" untuk mengirim reminder.');
+
+                return;
+            }
+
+            $thresholdDays = $service->getThresholdDays();
+            $this->notifySuccess(
+                "Reminder kalibrasi dikirim: {$result['expired']} expired, {$result['pending']} jatuh tempo (≤{$thresholdDays} hari), {$result['queued']} email queued."
+            );
+        } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
+            $this->notifyError('Anda tidak memiliki izin untuk mengirim reminder.');
+        } catch (\Exception $e) {
+            $this->notifyError('Terjadi kesalahan sistem. Silakan coba lagi.');
+        }
     }
 
     public function render(AlatService $service)

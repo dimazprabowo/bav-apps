@@ -93,6 +93,17 @@ class LogBookPeminjamanPolicy
             && $this->canManage($user, $logBook);
     }
 
+    /**
+     * Peminjam dapat membatalkan request sendiri selama belum dipinjam (Requested/Approved).
+     * Admin cabang/pusat dapat membatalkan request di scope-nya.
+     */
+    public function cancel(User $user, LogBookPeminjaman $logBook): bool
+    {
+        return $user->can('logbook_cancel')
+            && in_array($logBook->status, [LogBookStatus::Requested, LogBookStatus::Approved])
+            && $this->canAccess($user, $logBook);
+    }
+
     public function exportExcel(User $user): bool
     {
         return $user->can('logbook_export_excel');

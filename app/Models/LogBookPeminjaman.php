@@ -24,6 +24,7 @@ class LogBookPeminjaman extends Model
         'tanggal_pinjam',
         'tanggal_kembali_rencana',
         'tanggal_kembali_aktual',
+        'deskripsi_pekerjaan',
         'status',
         'kondisi_pinjam',
         'kondisi_kembali',
@@ -31,6 +32,7 @@ class LogBookPeminjaman extends Model
         'approved_by',
         'approved_at',
         'rejection_reason',
+        'cancellation_reason',
         'created_by',
     ];
 
@@ -52,8 +54,9 @@ class LogBookPeminjaman extends Model
             ->logOnly([
                 'alat_id', 'peminjam_id', 'cabang_id',
                 'tanggal_pinjam', 'tanggal_kembali_rencana', 'tanggal_kembali_aktual',
+                'deskripsi_pekerjaan',
                 'status', 'kondisi_pinjam', 'kondisi_kembali', 'catatan',
-                'approved_by', 'approved_at', 'rejection_reason',
+                'approved_by', 'approved_at', 'rejection_reason', 'cancellation_reason',
             ])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()

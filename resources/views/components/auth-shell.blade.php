@@ -11,7 +11,7 @@
     $rowDirection = $position === 'right' ? 'lg:flex-row-reverse' : 'lg:flex-row';
 @endphp
 
-<div class="min-h-screen lg:h-screen lg:overflow-hidden flex flex-col {{ $rowDirection }} relative">
+<div class="min-h-screen flex flex-col {{ $rowDirection }} relative">
     {{-- Dark Mode Toggle (fixed, consistent across all auth pages) --}}
     <div class="fixed top-4 right-4 z-50">
         <button @click="$store.darkMode.toggle()"
@@ -32,7 +32,7 @@
     @endif
 
     {{-- Form Panel --}}
-    <div class="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-gray-50 dark:bg-gray-900 min-h-screen lg:h-screen lg:min-h-0 lg:overflow-y-auto relative overflow-hidden">
+    <div class="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-gray-50 dark:bg-gray-900 min-h-screen lg:min-h-0 relative overflow-hidden">
         {{-- Mobile Background (visible only on mobile, subtle brand gradient) --}}
         <div class="lg:hidden absolute inset-0 z-0 bg-gradient-to-br from-blue-700 via-blue-800 to-blue-900"></div>
 

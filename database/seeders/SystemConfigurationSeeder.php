@@ -49,6 +49,35 @@ class SystemConfigurationSeeder extends Seeder
                 'is_editable' => true,
                 'is_active' => true,
             ],
+
+            // Alat kalibrasi reminder configurations
+            [
+                'key' => 'alat.reminder.is_active',
+                'category' => 'notification',
+                'value' => '1',
+                'data_type' => 'boolean',
+                'description' => 'Aktifkan/nonaktifkan pengiriman email reminder kalibrasi alat harian. Nonaktifkan untuk menghentikan semua reminder otomatis.',
+                'is_editable' => true,
+                'is_active' => true,
+            ],
+            [
+                'key' => 'alat.reminder.threshold_days',
+                'category' => 'notification',
+                'value' => '30',
+                'data_type' => 'integer',
+                'description' => 'Berapa hari sebelum tanggal kalibrasi berikutnya sebuah alat dianggap "akan jatuh tempo" dan mendapat email reminder warning. Default: 30 hari.',
+                'is_editable' => true,
+                'is_active' => true,
+            ],
+            [
+                'key' => 'alat.reminder.schedule_time',
+                'category' => 'notification',
+                'value' => '08:00',
+                'data_type' => 'string',
+                'description' => 'Jam eksekusi reminder kalibrasi alat harian (format 24 jam HH:MM). Contoh: 08:00, 06:30. Perubahan akan efektif setelah cache konfigurasi di-clear.',
+                'is_editable' => true,
+                'is_active' => true,
+            ],
         ];
 
         foreach ($configurations as $config) {

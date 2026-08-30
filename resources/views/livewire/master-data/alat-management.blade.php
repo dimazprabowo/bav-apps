@@ -39,6 +39,12 @@
             @can('alat_export_pdf')
                 <x-loading-button wire:click="exportPdf" target="exportPdf" wire:key="btn-export-pdf" variant="danger" size="md" loadingText="Exporting..." title="Export PDF">PDF</x-loading-button>
             @endcan
+            @can('alat_send_reminder')
+                <x-loading-button wire:click="sendReminders" target="sendReminders" wire:key="btn-send-reminders" variant="warning" size="md" loadingText="Mengirim..." title="Kirim email reminder kalibrasi expired/jatuh tempo">
+                    <x-slot:icon><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .527-.214 1.026-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg></x-slot:icon>
+                    Kirim Reminder
+                </x-loading-button>
+            @endcan
             @can('alat_create')
                 <x-loading-button wire:click="create" target="create" wire:key="btn-create" variant="primary" size="md" loadingText="Memuat..." class="flex-1 sm:flex-none">
                     <x-slot:icon><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg></x-slot:icon>
@@ -236,7 +242,7 @@
                         <div class="bg-white dark:bg-gray-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                             <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">Tolak Alat</h3>
                             <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Alat: {{ $reviewingAlatName }}</p>
-                            <x-input-label for="rejectionReason" value="Alasan Penolakan" />
+                            <x-input-label for="rejectionReason" value="Alasan Penolakan" :required="true" />
                             <textarea wire:model="rejectionReason" id="rejectionReason" rows="3" class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 px-3 py-2 text-sm" placeholder="Jelaskan alasan penolakan..."></textarea>
                             <x-input-error :messages="$errors->get('rejectionReason')" class="mt-2" />
                         </div>

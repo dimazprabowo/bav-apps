@@ -148,13 +148,54 @@
         </div>
 
     </div>
+
+    {{-- Alat per Cabang (HANYA untuk user dengan akses seluruh cabang) --}}
+    @can('access_all_cabang')
+    @if(!empty($alatPerCabang))
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Distribusi Alat per Cabang</h3>
+            <a href="{{ route('master-data.alat.index') }}" wire:navigate
+               class="text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">
+                Lihat detail &rarr;
+            </a>
+        </div>
+
+        {{-- Card stats per cabang (responsive grid) --}}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            @foreach($alatPerCabang as $row)
+                <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ $row['cabang'] }}</p>
+                        <span class="text-xs font-bold text-blue-600 dark:text-blue-400">{{ $row['total'] }}</span>
+                    </div>
+                    <div class="flex items-center gap-3 text-xs">
+                        <span class="flex items-center gap-1 text-green-600 dark:text-green-400">
+                            <span class="w-2 h-2 bg-green-500 rounded-full"></span>{{ $row['baik'] }} Baik
+                        </span>
+                        <span class="flex items-center gap-1 text-red-600 dark:text-red-400">
+                            <span class="w-2 h-2 bg-red-500 rounded-full"></span>{{ $row['rusak'] }} Rusak
+                        </span>
+                        <span class="flex items-center gap-1 text-gray-500 dark:text-gray-400">
+                            <span class="w-2 h-2 bg-gray-400 rounded-full"></span>{{ $row['hilang'] }} Hilang
+                        </span>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        {{-- ApexCharts horizontal bar chart (nama cabang di Y-axis, jumlah di X-axis) --}}
+        <div id="alat-per-cabang-chart" class="w-full" style="min-height: 350px;"></div>
+    </div>
+    @endif
+    @endcan
     @endcan
 
     {{-- Quick Actions (only render if user has at least one relevant permission) --}}
     @canany(['users_view', 'roles_view', 'configuration_view'])
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
         <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4">Aksi Cepat</h3>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
 
             @can('users_view')
             <a href="{{ route('settings.users') }}" wire:navigate
@@ -244,3 +285,199 @@
     @endcan
 
 </div>
+
+@push('scripts')
+@can('access_all_cabang')
+@if(!empty($alatPerCabang))
+<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.1/dist/apexcharts.min.js"></script>
+<script>
+    // Render chart — guard terhadap race condition DOMContentLoaded + CDN load lambat.
+    // Pakai IIFE + polling agar chart selalu muncul meski:
+    //   - DOMContentLoaded sudah fired (saat wire:navigate re-render)
+    //   - ApexCharts CDN belum selesai di-load saat script pertama jalan
+    (function () {
+        const elId = 'alat-per-cabang-chart';
+        let pollAttempts = 0;
+        const MAX_POLL = 50; // 50 x 100ms = 5s timeout
+
+        function renderChart() {
+            const el = document.getElementById(elId);
+            if (!el || typeof ApexCharts === 'undefined') {
+                // ApexCharts belum ready atau element belum render — retry.
+                if (pollAttempts++ < MAX_POLL) {
+                    setTimeout(renderChart, 100);
+                }
+                return;
+            }
+
+            // Guard: jangan render dua kali di element yang sama (Livewire re-render).
+            if (el.dataset.chartRendered === '1') return;
+            el.dataset.chartRendered = '1';
+
+            const data = @json($alatPerCabang ?? []);
+            // Prepend nomor urut ke nama cabang (mis. "1. Cabang Utama...") sebagai penanda baris.
+            // Tooltip x.formatter strip prefix "N. " agar tetap tampil nama full.
+            const categories = data.map((r, i) => (i + 1) + '. ' + r.cabang);
+            // Render tipis untuk value 0 (agar placeholder bar tetap terlihat).
+            // Tooltip formatter akan tampilkan nilai asli (0), bukan epsilon.
+            const EPSILON = 0.01;
+            const baikData = data.map(r => Math.max(r.baik, EPSILON));
+            const rusakData = data.map(r => Math.max(r.rusak, EPSILON));
+            const hilangData = data.map(r => Math.max(r.hilang, EPSILON));
+            const isEmpty = data.length === 0;
+
+            // Skala integer: tickAmount = maxValue agar tick di interval bulat (0,1,2,...,max).
+            // Tanpa ini, forceNiceScale generate tick 0.5 → setelah round jadi duplikat (0,0,1,1,...).
+            const maxValue = isEmpty ? 10 : Math.max(...data.map(r => r.total), 1);
+
+            const isDark = document.documentElement.classList.contains('dark');
+
+            // Horizontal bar: nama cabang di Y-axis, jumlah di X-axis.
+            // Cocok untuk banyak kategori (18 cabang) dengan nama panjang.
+            // Tinggi dinamis: min 350px, +90px per kategori di atas 10 (slot tinggi → bar tebal + gap jelas).
+            const chartHeight = Math.max(350, 350 + Math.max(0, categories.length - 10) * 90);
+
+            const options = {
+                series: [
+                    { name: 'Baik', data: baikData, color: '#10b981' },
+                    { name: 'Rusak', data: rusakData, color: '#ef4444' },
+                    { name: 'Hilang', data: hilangData, color: '#9ca3af' },
+                ],
+                chart: {
+                    type: 'bar',
+                    height: chartHeight,
+                    stacked: false,
+                    toolbar: { show: false },
+                    fontFamily: 'inherit',
+                    background: 'transparent',
+                    foreColor: isDark ? '#d1d5db' : '#4b5563',
+                },
+                plotOptions: {
+                    bar: {
+                        horizontal: true,
+                        // barHeight 80%: bar tebal (slot tinggi) + gap jelas antar kategori (20%).
+                        barHeight: '80%',
+                        borderRadius: 4,
+                        borderRadiusApplication: 'end',
+                    },
+                },
+                dataLabels: { enabled: false },
+                stroke: { show: false },
+                states: {
+                    hover: { filter: { type: 'none' } },
+                    active: { filter: { type: 'none' } },
+                },
+                xaxis: {
+                    // Horizontal bar: categories di xaxis.categories (ApexCharts auto-swap ke y-axis visual).
+                    // Tapi xaxis JUGA = value axis (sumbu angka di bawah) → min/max/tickAmount di sini.
+                    categories: categories,
+                    labels: {
+                        style: { colors: isDark ? '#d1d5db' : '#4b5563', fontSize: '12px' },
+                        // Value axis = jumlah barang → integer (cegah desimal 1.5, 2.5).
+                        formatter: (val) => Math.round(val),
+                    },
+                    title: {
+                        text: 'Jumlah Alat',
+                        style: { color: isDark ? '#d1d5db' : '#4b5563', fontSize: '12px', fontWeight: 600 },
+                    },
+                    crosshairs: { show: false },
+                    // tickAmount = maxValue → tick di interval bulat (0,1,2,...,max). Tanpa 0.5 step.
+                    min: 0,
+                    max: maxValue,
+                    tickAmount: maxValue,
+                },
+                yaxis: {
+                    labels: {
+                        // Rata kiri agar nama cabang mulai dari kiri (profesional, mudah baca).
+                        align: 'left',
+                        // maxWidth luas agar nama cabang panjang tampil optimal (trim hanya untuk yg ekstrem).
+                        maxWidth: 220,
+                        style: { colors: isDark ? '#d1d5db' : '#4b5563', fontSize: '12px' },
+                        // Category axis = "N. nama cabang". Trim hanya jika > 45 char, tooltip tetap full.
+                        formatter: (val) => {
+                            const str = String(val ?? '');
+                            return str.length > 45 ? str.slice(0, 42) + '...' : str;
+                        },
+                    },
+                },
+                legend: {
+                    position: 'top',
+                    horizontalAlign: 'right',
+                    labels: { colors: isDark ? '#d1d5db' : '#4b5563' },
+                    markers: { width: 10, height: 10, radius: 5 },
+                },
+                fill: { opacity: 1 },
+                tooltip: {
+                    intersect: true,
+                    shared: false,
+                    x: {
+                        // Strip prefix "N. " dari category ber-nomor → tampilkan nama cabang full.
+                        formatter: (val) => String(val ?? '').replace(/^\d+\.\s/, ''),
+                    },
+                    y: {
+                        formatter: (val) => {
+                            // Tampilkan nilai asli (0), bukan epsilon yang dipakai untuk render tipis.
+                            const actual = val < 1 ? 0 : Math.round(val);
+                            return actual + ' alat';
+                        },
+                    },
+                    theme: isDark ? 'dark' : 'light',
+                },
+                noData: {
+                    text: 'Belum ada data alat',
+                    align: 'center',
+                    verticalAlign: 'middle',
+                    offsetX: 0,
+                    offsetY: 0,
+                    style: {
+                        color: isDark ? '#9ca3af' : '#6b7280',
+                        fontSize: '14px',
+                        fontFamily: 'inherit',
+                    },
+                },
+                grid: { borderColor: isDark ? '#374151' : '#e5e7eb', strokeDashArray: 4 },
+            };
+
+            const chart = new ApexCharts(el, options);
+            chart.render();
+
+            // Re-render on dark mode toggle via MutationObserver on <html> class
+            const observer = new MutationObserver(() => {
+                const nowDark = document.documentElement.classList.contains('dark');
+                chart.updateOptions({
+                    chart: { foreColor: nowDark ? '#d1d5db' : '#4b5563' },
+                    xaxis: {
+                        labels: {
+                            style: { colors: nowDark ? '#d1d5db' : '#4b5563' },
+                            formatter: (val) => Math.round(val),
+                        },
+                        title: { style: { color: nowDark ? '#d1d5db' : '#4b5563' } },
+                    },
+                    yaxis: {
+                        labels: {
+                            style: { colors: nowDark ? '#d1d5db' : '#4b5563' },
+                            formatter: (val) => {
+                                const str = String(val ?? '');
+                                return str.length > 45 ? str.slice(0, 42) + '...' : str;
+                            },
+                        },
+                    },
+                    legend: { labels: { colors: nowDark ? '#d1d5db' : '#4b5563' } },
+                    tooltip: { theme: nowDark ? 'dark' : 'light' },
+                    grid: { borderColor: nowDark ? '#374151' : '#e5e7eb' },
+                });
+            });
+            observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+        }
+
+        // Jalankan: langsung jika DOM sudah ready, atau tunggu DOMContentLoaded.
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', renderChart);
+        } else {
+            renderChart();
+        }
+    })();
+</script>
+@endif
+@endcan
+@endpush

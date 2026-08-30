@@ -63,7 +63,8 @@ class LogBookExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMapp
                 })
                     ->orWhereHas('peminjam', function ($q) use ($operator) {
                         $q->where('name', $operator, "%{$this->search}%");
-                    });
+                    })
+                    ->orWhere('deskripsi_pekerjaan', $operator, "%{$this->search}%");
             });
         }
 
@@ -85,6 +86,7 @@ class LogBookExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMapp
             'Kode Alat',
             'Nama Alat',
             'Peminjam',
+            'Deskripsi Pekerjaan',
             'Cabang',
             'Tanggal Pinjam',
             'Rencana Kembali',
@@ -107,6 +109,7 @@ class LogBookExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMapp
             $log->alat?->code ?? '-',
             $log->alat?->name ?? '-',
             $log->peminjam?->name ?? '-',
+            $log->deskripsi_pekerjaan ?? '-',
             $log->cabang?->name ?? '-',
             $log->tanggal_pinjam->format('d/m/Y'),
             $log->tanggal_kembali_rencana->format('d/m/Y'),

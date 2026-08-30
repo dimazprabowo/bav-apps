@@ -93,6 +93,7 @@ class RolePermissionService
                 ['name' => 'alat_review',       'label' => 'Review Alat'],
                 ['name' => 'alat_export_excel', 'label' => 'Export Excel Alat'],
                 ['name' => 'alat_export_pdf',   'label' => 'Export PDF Alat'],
+                ['name' => 'alat_send_reminder', 'label' => 'Kirim Reminder Kalibrasi'],
             ],
             'LogBook Peminjaman' => [
                 ['name' => 'logbook_view',         'label' => 'Lihat LogBook'],
@@ -101,6 +102,7 @@ class RolePermissionService
                 ['name' => 'logbook_delete',       'label' => 'Hapus LogBook'],
                 ['name' => 'logbook_approve',      'label' => 'Approve Peminjaman'],
                 ['name' => 'logbook_return',       'label' => 'Kembalikan Alat'],
+                ['name' => 'logbook_cancel',       'label' => 'Batalkan Peminjaman'],
                 ['name' => 'logbook_export_excel', 'label' => 'Export Excel LogBook'],
                 ['name' => 'logbook_export_pdf',   'label' => 'Export PDF LogBook'],
             ],

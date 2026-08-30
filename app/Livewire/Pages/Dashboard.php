@@ -33,7 +33,14 @@ class Dashboard extends Component
 
             // Equipment monitoring stats (kondisi + kalibrasi), cabang-scoped via service.
             if (Gate::allows('alat_view')) {
-                $data['alatStats'] = app(AlatService::class)->getDashboardStats();
+                $alatService = app(AlatService::class);
+                $data['alatStats'] = $alatService->getDashboardStats();
+
+                // Distribusi per cabang HANYA untuk user dengan akses seluruh cabang.
+                // User single-cabang hanya lihat 1 row → card tidak informatif, skip.
+                if (Gate::allows('access_all_cabang')) {
+                    $data['alatPerCabang'] = $alatService->getAlatPerCabangStats();
+                }
             }
         }
 

@@ -33,6 +33,8 @@ class LogBookForm extends Component
 
     public $kondisi_pinjam = 'baik';
 
+    public $deskripsi_pekerjaan;
+
     public $catatan;
 
     public function mount($logBook = null): void
@@ -49,6 +51,7 @@ class LogBookForm extends Component
                 'tanggal_pinjam' => $logBook->tanggal_pinjam->format('Y-m-d'),
                 'tanggal_kembali_rencana' => $logBook->tanggal_kembali_rencana->format('Y-m-d'),
                 'kondisi_pinjam' => $logBook->kondisi_pinjam->value,
+                'deskripsi_pekerjaan' => $logBook->deskripsi_pekerjaan,
                 'catatan' => $logBook->catatan,
             ]);
         } else {
@@ -67,6 +70,7 @@ class LogBookForm extends Component
             'tanggal_pinjam' => 'required|date|after_or_equal:today',
             'tanggal_kembali_rencana' => 'required|date|after_or_equal:tanggal_pinjam',
             'kondisi_pinjam' => ['required', 'string', 'in:'.implode(',', AlatKondisi::values())],
+            'deskripsi_pekerjaan' => 'nullable|string|max:255',
             'catatan' => 'nullable|string|max:2000',
         ];
     }
@@ -80,6 +84,7 @@ class LogBookForm extends Component
             'tanggal_pinjam' => 'tanggal pinjam',
             'tanggal_kembali_rencana' => 'tanggal kembali rencana',
             'kondisi_pinjam' => 'kondisi pinjam',
+            'deskripsi_pekerjaan' => 'deskripsi pekerjaan',
             'catatan' => 'catatan',
         ];
     }
@@ -176,6 +181,7 @@ class LogBookForm extends Component
                 'tanggal_pinjam' => $this->tanggal_pinjam,
                 'tanggal_kembali_rencana' => $this->tanggal_kembali_rencana,
                 'kondisi_pinjam' => $this->kondisi_pinjam,
+                'deskripsi_pekerjaan' => $this->deskripsi_pekerjaan,
                 'catatan' => $this->catatan,
             ];
 

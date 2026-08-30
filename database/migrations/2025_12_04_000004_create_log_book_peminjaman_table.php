@@ -16,6 +16,7 @@ return new class extends Migration
             $table->date('tanggal_pinjam');
             $table->date('tanggal_kembali_rencana');
             $table->date('tanggal_kembali_aktual')->nullable();
+            $table->string('deskripsi_pekerjaan')->nullable();
             $table->enum('status', ['requested', 'approved', 'rejected', 'borrowed', 'returned', 'overdue', 'cancelled'])->default('requested');
             $table->enum('kondisi_pinjam', ['baik', 'rusak_ringan', 'rusak_berat'])->default('baik');
             $table->enum('kondisi_kembali', ['baik', 'rusak_ringan', 'rusak_berat'])->nullable();
@@ -25,6 +26,7 @@ return new class extends Migration
             $table->foreignId('approved_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('approved_at')->nullable();
             $table->text('rejection_reason')->nullable();
+            $table->text('cancellation_reason')->nullable();
 
             $table->foreignId('created_by')->constrained('users')->restrictOnDelete();
             $table->timestamps();

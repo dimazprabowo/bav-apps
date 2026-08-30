@@ -56,6 +56,15 @@ class LogBookManagement extends Component
 
     public $catatanKembali;
 
+    // Cancel modal
+    public $showCancelModal = false;
+
+    public $cancellingLogId;
+
+    public $cancellingAlatName;
+
+    public $cancellationReason;
+
     public function mount()
     {
         $this->authorize('viewAny', LogBookPeminjaman::class);
@@ -195,6 +204,37 @@ class LogBookManagement extends Component
             $this->showRejectModal = false;
         } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
             $this->notifyError('Anda tidak memiliki izin untuk menolak peminjaman.');
+        } catch (\Exception $e) {
+            $this->notifyError('Terjadi kesalahan sistem. Silakan coba lagi.');
+        }
+    }
+
+    public function confirmCancel($id)
+    {
+        $log = LogBookPeminjaman::findOrFail($id);
+        $this->authorize('cancel', $log);
+
+        $this->cancellingLogId = $log->id;
+        $this->cancellingAlatName = $log->alat?->name ?? '-';
+        $this->cancellationReason = '';
+        $this->showCancelModal = true;
+    }
+
+    public function cancel(LogBookPeminjamanService $service)
+    {
+        $this->validate(['cancellationReason' => 'required|string|max:1000'], [
+            'cancellationReason.required' => 'Alasan pembatalan wajib diisi.',
+        ]);
+
+        try {
+            $log = LogBookPeminjaman::findOrFail($this->cancellingLogId);
+            $this->authorize('cancel', $log);
+
+            $service->cancel($log, $this->cancellationReason);
+            $this->notifySuccess('Peminjaman telah dibatalkan.');
+            $this->showCancelModal = false;
+        } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
+            $this->notifyError('Anda tidak memiliki izin untuk membatalkan peminjaman.');
         } catch (\Exception $e) {
             $this->notifyError('Terjadi kesalahan sistem. Silakan coba lagi.');
         }

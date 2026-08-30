@@ -45,6 +45,12 @@
                         <x-input-error :messages="$errors->get('tanggal_kembali_rencana')" class="mt-2" />
                     </div>
                     <div class="md:col-span-2">
+                        <x-input-label for="deskripsi_pekerjaan" value="Deskripsi Pekerjaan (opsional)" />
+                        <x-text-input wire:model="deskripsi_pekerjaan" id="deskripsi_pekerjaan" type="text" class="mt-1 block w-full" placeholder="Mis. Survei kapal PT PELNI, Kalibrasi alat proyek X" />
+                        <x-input-error :messages="$errors->get('deskripsi_pekerjaan')" class="mt-2" />
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Deskripsi pekerjaan/penggunaan alat (untuk pekerjaan pihak ketiga)</p>
+                    </div>
+                    <div class="md:col-span-2">
                         <x-input-label for="catatan" value="Catatan (opsional)" />
                         <textarea wire:model="catatan" id="catatan" rows="3" class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 px-3 py-2 text-sm" placeholder="Catatan peminjaman..."></textarea>
                         <x-input-error :messages="$errors->get('catatan')" class="mt-2" />

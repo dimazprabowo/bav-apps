@@ -368,4 +368,48 @@ class AlatService
             })->count(),
         ];
     }
+
+    /**
+     * Get alat count per cabang with kondisi breakdown for dashboard chart.
+     * Returns: [['cabang' => 'Jakarta', 'total' => N, 'baik' => N, 'rusak' => N, 'hilang' => N], ...]
+     *
+     * Cabang-scoped: users without access_all_cabang only see their own cabang.
+     */
+    public function getAlatPerCabangStats(): array
+    {
+        $canAccessAll = auth()->check() && auth()->user()->can('access_all_cabang');
+        $userCabangId = auth()->check() ? auth()->user()->cabang_id : null;
+
+        $query = Alat::query()
+            ->join('cabangs', 'alats.cabang_id', '=', 'cabangs.id')
+            ->select('cabangs.name as cabang_name');
+
+        if (! $canAccessAll) {
+            $query->where('alats.cabang_id', $userCabangId);
+        }
+
+        $rows = $query->selectRaw('
+                cabangs.name as cabang_name,
+                COUNT(*) as total,
+                SUM(CASE WHEN alats.kondisi = ? THEN 1 ELSE 0 END) as baik,
+                SUM(CASE WHEN alats.kondisi IN (?, ?) THEN 1 ELSE 0 END) as rusak,
+                SUM(CASE WHEN alats.kondisi = ? THEN 1 ELSE 0 END) as hilang
+            ', [
+            AlatKondisi::Baik->value,
+            AlatKondisi::RusakRingan->value,
+            AlatKondisi::RusakBerat->value,
+            AlatKondisi::Hilang->value,
+        ])
+            ->groupBy('cabangs.name')
+            ->orderByDesc('total')
+            ->get();
+
+        return $rows->map(fn ($r) => [
+            'cabang' => $r->cabang_name,
+            'total' => (int) $r->total,
+            'baik' => (int) $r->baik,
+            'rusak' => (int) $r->rusak,
+            'hilang' => (int) $r->hilang,
+        ])->toArray();
+    }
 }

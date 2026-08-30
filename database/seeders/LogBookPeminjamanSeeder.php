@@ -109,6 +109,63 @@ class LogBookPeminjamanSeeder extends Seeder
             ],
         ];
 
+        // Peminjaman untuk 14 cabang lainnya (1 log per cabang, variasi status).
+        // Alat diambil dari alat approved di cabang masing-masing (ALT-009 s/d ALT-022).
+        $cabangAlatPairs = [
+            ['cabang_code' => 'BJM', 'alat_code' => 'ALT-009', 'status' => LogBookStatus::Returned->value, 'days_pinjam' => 20, 'days_rencana' => 13],
+            ['cabang_code' => 'PLB', 'alat_code' => 'ALT-010', 'status' => LogBookStatus::Borrowed->value, 'days_pinjam' => 3, 'days_rencana' => 4],
+            ['cabang_code' => 'BTM', 'alat_code' => 'ALT-011', 'status' => LogBookStatus::Requested->value, 'days_pinjam' => 3, 'days_rencana' => 10],
+            ['cabang_code' => 'CRB', 'alat_code' => 'ALT-012', 'status' => LogBookStatus::Returned->value, 'days_pinjam' => 30, 'days_rencana' => 23],
+            ['cabang_code' => 'BTG', 'alat_code' => 'ALT-013', 'status' => LogBookStatus::Borrowed->value, 'days_pinjam' => 5, 'days_rencana' => 2],
+            ['cabang_code' => 'SRG', 'alat_code' => 'ALT-014', 'status' => LogBookStatus::Rejected->value, 'days_pinjam' => 1, 'days_rencana' => 8],
+            ['cabang_code' => 'AMB', 'alat_code' => 'ALT-015', 'status' => LogBookStatus::Overdue->value, 'days_pinjam' => 12, 'days_rencana' => 5],
+            ['cabang_code' => 'SMD', 'alat_code' => 'ALT-016', 'status' => LogBookStatus::Returned->value, 'days_pinjam' => 25, 'days_rencana' => 18],
+            ['cabang_code' => 'SGP', 'alat_code' => 'ALT-017', 'status' => LogBookStatus::Borrowed->value, 'days_pinjam' => 4, 'days_rencana' => 3],
+            ['cabang_code' => 'JBI', 'alat_code' => 'ALT-018', 'status' => LogBookStatus::Requested->value, 'days_pinjam' => 5, 'days_rencana' => 12],
+            ['cabang_code' => 'PNK', 'alat_code' => 'ALT-019', 'status' => LogBookStatus::Returned->value, 'days_pinjam' => 18, 'days_rencana' => 11],
+            ['cabang_code' => 'PKB', 'alat_code' => 'ALT-020', 'status' => LogBookStatus::Borrowed->value, 'days_pinjam' => 6, 'days_rencana' => 1],
+            ['cabang_code' => 'SMG', 'alat_code' => 'ALT-021', 'status' => LogBookStatus::Returned->value, 'days_pinjam' => 14, 'days_rencana' => 7],
+            ['cabang_code' => 'BTN', 'alat_code' => 'ALT-022', 'status' => LogBookStatus::Cancelled->value, 'days_pinjam' => 2, 'days_rencana' => 9],
+            // SBY tidak punya alat approved (ALT-003 pending, ALT-008 hilang) — pinjam antar-cabang dari TGP.
+            ['cabang_code' => 'SBY', 'alat_code' => 'ALT-001', 'status' => LogBookStatus::Borrowed->value, 'days_pinjam' => 7, 'days_rencana' => 0],
+        ];
+
+        foreach ($cabangAlatPairs as $pair) {
+            $cabang = Cabang::where('code', $pair['cabang_code'])->first();
+            $alat = Alat::where('code', $pair['alat_code'])->first();
+            if (! $cabang || ! $alat) {
+                continue;
+            }
+
+            $status = $pair['status'];
+            $isReturned = $status === LogBookStatus::Returned->value;
+            $isRejected = $status === LogBookStatus::Rejected->value;
+            $isCancelled = $status === LogBookStatus::Cancelled->value;
+            $needsApproval = in_array($status, [
+                LogBookStatus::Borrowed->value,
+                LogBookStatus::Returned->value,
+                LogBookStatus::Overdue->value,
+            ]);
+
+            $logs[] = [
+                'alat_id' => $alat->id,
+                'peminjam_id' => $user->id,
+                'cabang_id' => $cabang->id,
+                'tanggal_pinjam' => now()->subDays($pair['days_pinjam'])->format('Y-m-d'),
+                'tanggal_kembali_rencana' => now()->subDays($pair['days_rencana'])->format('Y-m-d'),
+                'tanggal_kembali_aktual' => $isReturned ? now()->subDays($pair['days_rencana'])->format('Y-m-d') : null,
+                'status' => $status,
+                'kondisi_pinjam' => AlatKondisi::Baik->value,
+                'kondisi_kembali' => $isReturned ? AlatKondisi::Baik->value : null,
+                'catatan' => 'Peminjaman rutin untuk kegiatan operasional cabang.',
+                'approved_by' => $needsApproval ? $admin->id : null,
+                'approved_at' => $needsApproval ? now()->subDays($pair['days_pinjam'] + 1) : null,
+                'rejection_reason' => $isRejected ? 'Alat sedang dalam kondisi rusak.' : null,
+                'cancellation_reason' => $isCancelled ? 'Peminjam membatalkan, jadwal berubah.' : null,
+                'created_by' => $user->id,
+            ];
+        }
+
         foreach ($logs as $log) {
             LogBookPeminjaman::firstOrCreate(
                 [

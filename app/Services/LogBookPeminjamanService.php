@@ -60,6 +60,7 @@ class LogBookPeminjamanService
                     ->orWhereHas('peminjam', function ($q) use ($search, $operator) {
                         $q->where('name', $operator, "%{$search}%");
                     })
+                    ->orWhere('deskripsi_pekerjaan', $operator, "%{$search}%")
                     ->orWhere('catatan', $operator, "%{$search}%");
             });
         }
@@ -159,11 +160,16 @@ class LogBookPeminjamanService
         });
     }
 
-    public function cancel(LogBookPeminjaman $logBook): LogBookPeminjaman
+    public function cancel(LogBookPeminjaman $logBook, ?string $reason = null): LogBookPeminjaman
     {
-        $logBook->update(['status' => LogBookStatus::Cancelled->value]);
+        return DB::transaction(function () use ($logBook, $reason) {
+            $logBook->update([
+                'status' => LogBookStatus::Cancelled->value,
+                'cancellation_reason' => $reason,
+            ]);
 
-        return $logBook->fresh();
+            return $logBook->fresh();
+        });
     }
 
     public function updateOverdueStatus(): int
