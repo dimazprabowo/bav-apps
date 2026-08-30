@@ -192,10 +192,22 @@ class AlatReminderService
 
     /**
      * Get users who should receive reminders (active users with alat_view permission).
+     *
+     * Cabang-scoped saat dipicu dari UI oleh admin cabang:
+     *  - Admin cabang klik → hanya user di cabangnya yang menerima
+     *  - Super admin klik / scheduled command (no auth) → semua user menerima
      */
     protected function getRecipients(): Collection
     {
-        return User::active()
+        $query = User::active();
+
+        // Jika dipicu dari UI oleh admin cabang (bukan super admin, bukan CLI),
+        // batasi recipient hanya ke user di cabang yang sama.
+        if (auth()->check() && ! auth()->user()->can('access_all_cabang')) {
+            $query->where('cabang_id', auth()->user()->cabang_id);
+        }
+
+        return $query
             ->whereHas('roles', function ($q) {
                 // Users with roles that have alat_view permission
             })
