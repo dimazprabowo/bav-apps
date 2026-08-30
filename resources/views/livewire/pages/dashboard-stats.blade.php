@@ -378,6 +378,7 @@
                     },
                     title: {
                         text: 'Jumlah Alat',
+                        align: 'left',
                         style: { color: isDark ? '#d1d5db' : '#4b5563', fontSize: '12px', fontWeight: 600 },
                     },
                     crosshairs: { show: false },
@@ -390,19 +391,19 @@
                     labels: {
                         // Rata kiri agar nama cabang mulai dari kiri (profesional, mudah baca).
                         align: 'left',
-                        // maxWidth luas agar nama cabang panjang tampil optimal (trim hanya untuk yg ekstrem).
-                        maxWidth: 220,
+                        // maxWidth luas agar nama cabang panjang tampil full tanpa trim.
+                        maxWidth: 280,
                         style: { colors: isDark ? '#d1d5db' : '#4b5563', fontSize: '12px' },
-                        // Category axis = "N. nama cabang". Trim hanya jika > 45 char, tooltip tetap full.
+                        // Category axis = "N. nama cabang". Trim hanya jika > 55 char, tooltip tetap full.
                         formatter: (val) => {
                             const str = String(val ?? '');
-                            return str.length > 45 ? str.slice(0, 42) + '...' : str;
+                            return str.length > 55 ? str.slice(0, 52) + '...' : str;
                         },
                     },
                 },
                 legend: {
                     position: 'top',
-                    horizontalAlign: 'right',
+                    horizontalAlign: 'left',
                     labels: { colors: isDark ? '#d1d5db' : '#4b5563' },
                     markers: { width: 10, height: 10, radius: 5 },
                 },
@@ -458,7 +459,7 @@
                             style: { colors: nowDark ? '#d1d5db' : '#4b5563' },
                             formatter: (val) => {
                                 const str = String(val ?? '');
-                                return str.length > 45 ? str.slice(0, 42) + '...' : str;
+                                return str.length > 55 ? str.slice(0, 52) + '...' : str;
                             },
                         },
                     },

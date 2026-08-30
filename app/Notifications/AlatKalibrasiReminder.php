@@ -2,7 +2,6 @@
 
 namespace App\Notifications;
 
-use App\Models\Alat;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -12,11 +11,18 @@ class AlatKalibrasiReminder extends Notification
     use Queueable;
 
     /**
-     * Reminder type: 'expired' (sudah lewat) atau 'pending' (akan jatuh tempo ≤30 hari).
+     * Digest payload:
+     *  - threshold_days: int
+     *  - terkalibrasi_count: int
+     *  - pending_count: int
+     *  - expired_count: int
+     *  - pending_list: array<array{code,name,merk_type,serial_number,cabang,lokasi,tanggal_kalibrasi_berikutnya}>
+     *  - expired_list: array<...>
+     *
+     * @param  array  $payload  Digest data untuk 1 user.
      */
     public function __construct(
-        public Alat $alat,
-        public string $type = 'expired'
+        public array $payload
     ) {}
 
     public function via($notifiable): array
@@ -26,28 +32,30 @@ class AlatKalibrasiReminder extends Notification
 
     public function toMail($notifiable): MailMessage
     {
-        $alat = $this->alat;
-        $latestKal = $alat->latest_kalibrasi;
-        $tanggalExpired = $latestKal?->tanggal_kalibrasi_berikutnya;
-        $cabang = $alat->cabang?->name ?? '-';
+        $p = $this->payload;
+        $expiredCount = (int) ($p['expired_count'] ?? 0);
+        $pendingCount = (int) ($p['pending_count'] ?? 0);
+        $terkalibrasiCount = (int) ($p['terkalibrasi_count'] ?? 0);
+        $thresholdDays = (int) ($p['threshold_days'] ?? 30);
 
-        $subject = $this->type === 'expired'
-            ? '[PENTING] Kalibrasi Alat Expired: '.$alat->code.' - '.$alat->name
-            : '[Pengingat] Kalibrasi Alat Jatuh Tempo: '.$alat->code.' - '.$alat->name;
-
-        $intro = $this->type === 'expired'
-            ? 'Kalibrasi alat berikut telah EXPIRED (lewat jatuh tempo):'
-            : 'Kalibrasi alat berikut akan jatuh tempo dalam ≤30 hari:';
+        // Subject dinamis: prioritaskan expired > pending > terkalibrasi.
+        $subject = 'Ringkasan Status Kalibrasi Alat';
+        if ($expiredCount > 0) {
+            $subject = "[PENTING] {$expiredCount} Alat Kalibrasi Sudah Kadaluarsa";
+        } elseif ($pendingCount > 0) {
+            $subject = "[Pengingat] {$pendingCount} Alat Kalibrasi Akan Kadaluarsa";
+        }
 
         return (new MailMessage)
             ->subject($subject)
             ->view('emails.alat-kalibrasi-reminder', [
                 'userName' => $notifiable->name ?? 'Pengguna',
-                'alat' => $alat,
-                'cabang' => $cabang,
-                'tanggalExpired' => $tanggalExpired,
-                'type' => $this->type,
-                'intro' => $intro,
+                'thresholdDays' => $thresholdDays,
+                'terkalibrasiCount' => $terkalibrasiCount,
+                'pendingCount' => $pendingCount,
+                'expiredCount' => $expiredCount,
+                'pendingList' => $p['pending_list'] ?? [],
+                'expiredList' => $p['expired_list'] ?? [],
                 'alatUrl' => url(route('master-data.alat.index')),
             ]);
     }
@@ -55,10 +63,9 @@ class AlatKalibrasiReminder extends Notification
     public function toArray($notifiable): array
     {
         return [
-            'alat_id' => $this->alat->id,
-            'alat_code' => $this->alat->code,
-            'alat_name' => $this->alat->name,
-            'type' => $this->type,
+            'terkalibrasi_count' => $this->payload['terkalibrasi_count'] ?? 0,
+            'pending_count' => $this->payload['pending_count'] ?? 0,
+            'expired_count' => $this->payload['expired_count'] ?? 0,
         ];
     }
 }

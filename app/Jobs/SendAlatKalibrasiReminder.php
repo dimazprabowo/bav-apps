@@ -2,7 +2,6 @@
 
 namespace App\Jobs;
 
-use App\Models\Alat;
 use App\Models\User;
 use App\Notifications\AlatKalibrasiReminder;
 use Illuminate\Bus\Queueable;
@@ -20,31 +19,30 @@ class SendAlatKalibrasiReminder implements ShouldQueue
 
     public int $timeout = 120;
 
+    /**
+     * @param  int  $userId  Target user ID.
+     * @param  array  $payload  Digest payload: terkalibrasi_count, pending_count, expired_count, pending_list, expired_list, threshold_days.
+     */
     public function __construct(
-        public int $alatId,
         public int $userId,
-        public string $type = 'expired'
+        public array $payload
     ) {}
 
     public function handle(): void
     {
-        $alat = Alat::with(['cabang', 'kalibrasis' => function ($q) {
-            $q->latest('tanggal_kalibrasi')->limit(1);
-        }])->find($this->alatId);
-
         $user = User::find($this->userId);
 
-        if (! $alat || ! $user) {
-            Log::warning("SendAlatKalibrasiReminder: alat({$this->alatId}) atau user({$this->userId}) tidak ditemukan.");
+        if (! $user) {
+            Log::warning("SendAlatKalibrasiReminder: user({$this->userId}) tidak ditemukan.");
 
             return;
         }
 
-        $user->notify(new AlatKalibrasiReminder($alat, $this->type));
+        $user->notify(new AlatKalibrasiReminder($this->payload));
     }
 
     public function failed(\Throwable $exception): void
     {
-        Log::error("SendAlatKalibrasiReminder FAILED: alat={$this->alatId}, user={$this->userId}, type={$this->type}. Error: {$exception->getMessage()}");
+        Log::error("SendAlatKalibrasiReminder FAILED: user={$this->userId}. Error: {$exception->getMessage()}");
     }
 }

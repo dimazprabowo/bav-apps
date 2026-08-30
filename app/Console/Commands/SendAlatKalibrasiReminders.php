@@ -28,8 +28,9 @@ class SendAlatKalibrasiReminders extends Command
             }
 
             $thresholdDays = $service->getThresholdDays();
-            $this->info("Expired: {$result['expired']} alat");
-            $this->info("Jatuh tempo (≤{$thresholdDays} hari): {$result['pending']} alat");
+            $this->info("Terkalibrasi: {$result['terkalibrasi']} alat");
+            $this->info("Akan kadaluarsa (≤{$thresholdDays} hari): {$result['pending']} alat");
+            $this->info("Sudah kadaluarsa: {$result['expired']} alat");
             $this->info("Email queued: {$result['queued']}");
 
             Log::info('Scheduled alat kalibrasi reminders sent', $result);

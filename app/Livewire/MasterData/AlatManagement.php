@@ -321,7 +321,7 @@ class AlatManagement extends Component
 
             $thresholdDays = $service->getThresholdDays();
             $this->notifySuccess(
-                "Reminder kalibrasi dikirim: {$result['expired']} expired, {$result['pending']} jatuh tempo (≤{$thresholdDays} hari), {$result['queued']} email queued."
+                "Reminder kalibrasi dikirim: {$result['terkalibrasi']} terkalibrasi, {$result['pending']} akan kadaluarsa (≤{$thresholdDays} hari), {$result['expired']} sudah kadaluarsa, {$result['queued']} email queued."
             );
         } catch (\Illuminate\Auth\Access\AuthorizationException $e) {
             $this->notifyError('Anda tidak memiliki izin untuk mengirim reminder.');
