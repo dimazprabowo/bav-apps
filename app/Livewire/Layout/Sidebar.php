@@ -20,7 +20,7 @@ class Sidebar extends Component
     public function logout(Logout $logout): void
     {
         $logout();
-        $this->redirect('/', navigate: true);
+        $this->redirect('/');
     }
 
     public function render()

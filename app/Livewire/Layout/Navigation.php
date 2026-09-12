@@ -22,7 +22,7 @@ class Navigation extends Component
     public function logout(Logout $logout): void
     {
         $logout();
-        $this->redirect('/', navigate: true);
+        $this->redirect('/');
     }
 
     public function stopImpersonating(ImpersonateService $service): void

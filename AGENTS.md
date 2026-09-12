@@ -16,11 +16,11 @@
 - **Dynamic LIKE operator**: `HasDynamicLike` trait provides `getLikeOperator()` for cross-DB LIKE/ILIKE compatibility.
 
 ## Conventions
-- **Permissions**: Named `{entity}_{action}` (e.g. `cabang_view`, `alat_review`, `logbook_approve`). Defined in `PermissionSeeder`, grouped in `RolePermissionService::getGroupedPermissions()`.
-- **Roles**: `super admin` (bypass all), `admin` (all permissions), `user` (basic read + own actions).
+- **Permissions**: Named `{entity}_{action}` (e.g. `cabang_view`, `pengadaan_approve`, `pembayaran_approve`). Defined in `PermissionSeeder`, grouped in `RolePermissionService::buildPermissionGroups()`.
+- **Roles**: `super admin` (bypass all), `admin pusat` (all permissions + access_all_cabang), `admin cabang` (own cabang only), `staff cabang` (basic read).
 - **Menu**: Built in `HasMenuItems` trait, permission-gated via `Gate::allows()`.
-- **Migrations**: Use `2024_01_01_*` prefix for core, `2025_12_04_*` for equipment monitoring module.
-- **Table naming**: Laravel auto-pluralizes — for non-English names like `log_book_peminjaman`, set `protected $table` explicitly on the model.
+- **Migrations**: Use `2024_01_01_*` prefix for core, `2025_12_06_*` for pengadaan module.
+- **Table naming**: Laravel auto-pluralizes — for non-English names that the inflector mishandles, set `protected $table` explicitly on the model.
 - **Activitylog migration**: Must be published via `php artisan vendor:publish --provider="Spatie\Activitylog\ActivitylogServiceProvider" --tag="activitylog-migrations"`.
 
 ## Build/Test Commands
@@ -36,15 +36,24 @@ php -l <file>                       # Lint a PHP file
 - `admin@app.com` / `password` — admin
 - `user@app.com` / `password` — regular user
 
-## Equipment Monitoring Module (added 2025-12)
-Entities: `Cabang` (branch), `Alat` (equipment), `AlatEvidence` (equipment documents), `LogBookPeminjaman` (loan logbook).
+## Modules
+
+### Master Data
+Entities: `Cabang` (branch), `Vendor` (supplier).
+
+### Pengadaan Aset Module
+Entities: `Pengadaan` (procurement), `PengadaanItem` (procurement line item), `PengadaanEvidence` (procurement documents), `Invoice`, `InvoicePayment`.
 
 ### Workflows
-- **Alat review**: `pending` → `approved`/`rejected` (via `alat_review` permission)
-- **LogBook**: `requested` → `approved` → `borrowed` → `returned` (or `rejected`, `overdue`, `cancelled`)
-- **Evidence files**: Uploaded via Livewire `WithFileUploads`, stored to temp, then `ProcessAlatEvidence` job moves to final disk and updates status.
+- **Pengadaan approval**: `pending` → `approved`/`rejected` (via `pengadaan_approve` permission)
+- **Payment approval**: `pending` → `approved`/`rejected` (via `pembayaran_approve` permission)
+- **Evidence files**: Uploaded via Livewire `WithFileUploads`, stored to temp, then queued Job moves to final disk and updates status.
 
 ### Routes
 - `master-data/cabangs` — Cabang management (modal-based CRUD)
-- `master-data/alat` — Alat list; `/create`, `/{alat}/edit`, `/{alat}` for form/detail
-- `operasional/logbook` — LogBook list; `/create` for loan request form
+- `master-data/vendors` — Vendor management (modal-based CRUD)
+- `pengadaan` — Pengadaan list; `/create`, `/{pengadaan}/edit`, `/{pengadaan}` for form/detail
+
+### Data Scoping
+- `access_all_cabang` permission controls cross-cabang data visibility (COE/Pusat vs Cabang).
+- `User::applyCabangScope()` is the single source of truth for cabang-scoped queries in Service/Export layers.

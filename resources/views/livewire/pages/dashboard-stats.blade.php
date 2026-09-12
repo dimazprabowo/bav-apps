@@ -65,130 +65,185 @@
     </div>
     @endcanany
 
-    {{-- Kondisi Peralatan (gated by alat_view; cabang-scoped via service) --}}
-    @can('alat_view')
+    {{-- Pengadaan Aset (gated by pengadaan_view; cabang-scoped via service) --}}
+    @can('pengadaan_view')
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Kondisi Peralatan</h3>
-            <a href="{{ route('master-data.alat.index') }}" wire:navigate
-               class="text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">
-                Lihat detail &rarr;
+        <div class="flex items-center justify-between mb-5">
+            <div>
+                <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Pengadaan Aset</h3>
+                <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">Ringkasan biaya, penagihan & pembayaran</p>
+            </div>
+            <a href="{{ route('pengadaan.index') }}" wire:navigate
+               class="inline-flex items-center gap-1 text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">
+                Lihat detail
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </a>
         </div>
 
-        {{-- Total + 3 grup kondisi (Baik / Rusak / Hilang) --}}
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-
-            {{-- Total Alat --}}
-            <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                <p class="text-xs font-medium text-gray-500 dark:text-gray-400">Total Alat</p>
-                <p class="mt-1 text-2xl font-bold text-gray-900 dark:text-white">{{ number_format($alatStats['total']) }}</p>
-                <p class="mt-0.5 text-xs text-gray-400 dark:text-gray-500">Seluruh peralatan</p>
+        {{-- Financial Overview: 4 stat cards dengan progress bar --}}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {{-- Total Biaya Aset --}}
+            <div class="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                <div class="flex items-center justify-between">
+                    <p class="text-xs font-medium text-blue-600 dark:text-blue-400">Total Biaya Aset</p>
+                    <svg class="w-4 h-4 text-blue-500 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+                </div>
+                <p class="mt-2 text-2xl font-bold text-blue-700 dark:text-blue-300">Rp {{ number_format($pengadaanStats['total_biaya'], 0, ',', '.') }}</p>
+                <p class="mt-0.5 text-xs text-blue-500/80 dark:text-blue-500/60">{{ number_format($pengadaanStats['total_pengadaan']) }} pengadaan disetujui</p>
+                <div class="mt-3">
+                    <div class="flex justify-between text-xs text-blue-500/80 dark:text-blue-500/60 mb-1">
+                        <span>Ditagih</span>
+                        <span>{{ $pengadaanStats['persentase_ditagih'] }}%</span>
+                    </div>
+                    <div class="w-full bg-blue-200/50 dark:bg-blue-900/40 rounded-full h-1.5">
+                        <div class="bg-blue-500 h-1.5 rounded-full transition-all duration-500" style="width: {{ $pengadaanStats['persentase_ditagih'] }}%"></div>
+                    </div>
+                </div>
             </div>
 
-            {{-- Baik --}}
-            <div class="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                <p class="text-xs font-medium text-green-600 dark:text-green-400">Baik</p>
-                <p class="mt-1 text-2xl font-bold text-green-700 dark:text-green-300">{{ number_format($alatStats['kondisi_baik']) }}</p>
-                <p class="mt-0.5 text-xs text-green-500/80 dark:text-green-500/60">Layak pakai</p>
+            {{-- Sudah Dibayar --}}
+            <div class="p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg">
+                <div class="flex items-center justify-between">
+                    <p class="text-xs font-medium text-emerald-600 dark:text-emerald-400">Sudah Dibayar</p>
+                    <svg class="w-4 h-4 text-emerald-500 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+                </div>
+                <p class="mt-2 text-2xl font-bold text-emerald-700 dark:text-emerald-300">Rp {{ number_format($pengadaanStats['total_dibayar'], 0, ',', '.') }}</p>
+                <p class="mt-0.5 text-xs text-emerald-500/80 dark:text-emerald-500/60">Dari Rp {{ number_format($pengadaanStats['total_invoice'], 0, ',', '.') }} invoice</p>
+                <div class="mt-3">
+                    <div class="flex justify-between text-xs text-emerald-500/80 dark:text-emerald-500/60 mb-1">
+                        <span>Pembayaran</span>
+                        <span>{{ $pengadaanStats['persentase_dibayar'] }}%</span>
+                    </div>
+                    <div class="w-full bg-emerald-200/50 dark:bg-emerald-900/40 rounded-full h-1.5">
+                        <div class="bg-emerald-500 h-1.5 rounded-full transition-all duration-500" style="width: {{ $pengadaanStats['persentase_dibayar'] }}%"></div>
+                    </div>
+                </div>
             </div>
 
-            {{-- Rusak (Ringan + Berat digabung) --}}
+            {{-- Outstanding / Sisa --}}
             <div class="p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
-                <p class="text-xs font-medium text-red-600 dark:text-red-400">Rusak</p>
-                <p class="mt-1 text-2xl font-bold text-red-700 dark:text-red-300">{{ number_format($alatStats['kondisi_rusak']) }}</p>
-                <p class="mt-0.5 text-xs text-red-500/80 dark:text-red-500/60">
-                    R. Ringan {{ $alatStats['kondisi_rusak_ringan'] }} &middot; R. Berat {{ $alatStats['kondisi_rusak_berat'] }}
-                </p>
+                <div class="flex items-center justify-between">
+                    <p class="text-xs font-medium text-red-600 dark:text-red-400">Sisa Pembayaran</p>
+                    <svg class="w-4 h-4 text-red-500 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+                <p class="mt-2 text-2xl font-bold text-red-700 dark:text-red-300">Rp {{ number_format($pengadaanStats['total_outstanding'], 0, ',', '.') }}</p>
+                <p class="mt-0.5 text-xs text-red-500/80 dark:text-red-500/60">Outstanding dari invoice</p>
             </div>
 
-            {{-- Hilang --}}
-            <div class="p-4 bg-gray-100 dark:bg-gray-700/70 rounded-lg">
-                <p class="text-xs font-medium text-gray-600 dark:text-gray-300">Hilang</p>
-                <p class="mt-1 text-2xl font-bold text-gray-700 dark:text-gray-200">{{ number_format($alatStats['kondisi_hilang']) }}</p>
-                <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">Tidak ditemukan</p>
-            </div>
-
-        </div>
-    </div>
-
-    {{-- Status Kalibrasi (gated by alat_view; cabang-scoped via service) --}}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-        {{-- Kalibrasi Expired --}}
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Kalibrasi Expired</p>
-                    <p class="mt-2 text-3xl font-bold text-red-600 dark:text-red-400">{{ number_format($alatStats['calibration_expired']) }}</p>
-                    <p class="mt-1 text-xs text-gray-400 dark:text-gray-500">Sudah jatuh tempo</p>
+            {{-- Belum Ditagih --}}
+            <div class="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
+                <div class="flex items-center justify-between">
+                    <p class="text-xs font-medium text-amber-600 dark:text-amber-400">Belum Ditagih</p>
+                    <svg class="w-4 h-4 text-amber-500 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                 </div>
-                <div class="p-3 bg-red-50 dark:bg-red-900/20 rounded-xl">
-                    <svg class="w-8 h-8 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
+                <p class="mt-2 text-2xl font-bold text-amber-700 dark:text-amber-300">Rp {{ number_format($pengadaanStats['total_belum_ditagih'], 0, ',', '.') }}</p>
+                <p class="mt-0.5 text-xs text-amber-500/80 dark:text-amber-500/60">Belum ada invoice diterbitkan</p>
             </div>
         </div>
 
-        {{-- Kalibrasi Jatuh Tempo --}}
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Kalibrasi Jatuh Tempo</p>
-                    <p class="mt-2 text-3xl font-bold text-amber-600 dark:text-amber-400">{{ number_format($alatStats['calibration_pending']) }}</p>
-                    <p class="mt-1 text-xs text-gray-400 dark:text-gray-500">&le; 30 hari ke depan</p>
-                </div>
-                <div class="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-xl">
-                    <svg class="w-8 h-8 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
-                </div>
+        {{-- Perlu Tindakan: action items dengan badge count --}}
+        @if($pengadaanStats['pengadaan_pending'] > 0 || $pengadaanStats['pembayaran_pending_approval'] > 0 || $pengadaanStats['invoice_overdue'] > 0 || $pengadaanStats['invoice_due_soon'] > 0)
+        <div class="mt-4 p-4 bg-gray-50 dark:bg-gray-700/30 rounded-lg border border-gray-200 dark:border-gray-600">
+            <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">Perlu Tindakan</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+                @if($pengadaanStats['pengadaan_pending'] > 0)
+                <a href="{{ route('pengadaan.index') }}" wire:navigate class="flex items-center gap-3 p-2.5 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-700 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors group">
+                    <span class="flex-shrink-0 px-2 py-0.5 text-xs font-bold rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400">{{ $pengadaanStats['pengadaan_pending'] }}</span>
+                    <span class="flex-1 text-xs text-gray-600 dark:text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">Pengadaan menunggu approval</span>
+                    <svg class="flex-shrink-0 w-4 h-4 text-gray-400 group-hover:text-purple-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+                @endif
+                @if($pengadaanStats['pembayaran_pending_approval'] > 0)
+                <a href="{{ route('pengadaan.index') }}" wire:navigate class="flex items-center gap-3 p-2.5 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-purple-300 dark:hover:border-purple-700 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-colors group">
+                    <span class="flex-shrink-0 px-2 py-0.5 text-xs font-bold rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400">{{ $pengadaanStats['pembayaran_pending_approval'] }}</span>
+                    <span class="flex-1 text-xs text-gray-600 dark:text-gray-400 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">Pembayaran menunggu approval</span>
+                    <svg class="flex-shrink-0 w-4 h-4 text-gray-400 group-hover:text-purple-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+                @endif
+                @if($pengadaanStats['invoice_overdue'] > 0)
+                <a href="{{ route('pengadaan.index') }}" wire:navigate class="flex items-center gap-3 p-2.5 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-red-300 dark:hover:border-red-700 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors group">
+                    <span class="flex-shrink-0 px-2 py-0.5 text-xs font-bold rounded-full bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400">{{ $pengadaanStats['invoice_overdue'] }}</span>
+                    <span class="flex-1 text-xs text-gray-600 dark:text-gray-400 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">Invoice sudah lewat jatuh tempo</span>
+                    <svg class="flex-shrink-0 w-4 h-4 text-gray-400 group-hover:text-red-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+                @endif
+                @if($pengadaanStats['invoice_due_soon'] > 0)
+                <a href="{{ route('pengadaan.index') }}" wire:navigate class="flex items-center gap-3 p-2.5 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-amber-300 dark:hover:border-amber-700 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors group">
+                    <span class="flex-shrink-0 px-2 py-0.5 text-xs font-bold rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">{{ $pengadaanStats['invoice_due_soon'] }}</span>
+                    <span class="flex-1 text-xs text-gray-600 dark:text-gray-400 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">Invoice jatuh tempo &le; 7 hari</span>
+                    <svg class="flex-shrink-0 w-4 h-4 text-gray-400 group-hover:text-amber-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+                @endif
             </div>
         </div>
+        @endif
 
-    </div>
-
-    {{-- Alat per Cabang (HANYA untuk user dengan akses seluruh cabang) --}}
-    @can('access_all_cabang')
-    @if(!empty($alatPerCabang))
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">Distribusi Alat per Cabang</h3>
-            <a href="{{ route('master-data.alat.index') }}" wire:navigate
-               class="text-xs font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors">
-                Lihat detail &rarr;
-            </a>
+        {{-- Status Invoice: breakdown lunas/sebagian/belum --}}
+        @if($pengadaanStats['invoice_total'] > 0)
+        <div class="mt-4 flex flex-wrap items-center gap-2 text-xs">
+            <span class="font-medium text-gray-500 dark:text-gray-400">Status Invoice:</span>
+            <span class="px-2.5 py-1 rounded-full bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 font-medium">
+                Total: {{ $pengadaanStats['invoice_total'] }}
+            </span>
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400 font-medium">
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                {{ $pengadaanStats['invoice_lunas'] }} Lunas
+            </span>
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-100 text-amber-800 dark:bg-amber-900/20 dark:text-amber-400 font-medium">
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM4 10a6 6 0 1012 0H4z"/></svg>
+                {{ $pengadaanStats['invoice_sebagian'] }} Sebagian
+            </span>
+            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400 font-medium">
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                {{ $pengadaanStats['invoice_belum_dibayar'] }} Belum Dibayar
+            </span>
         </div>
+        @endif
 
-        {{-- Card stats per cabang (responsive grid) --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            @foreach($alatPerCabang as $row)
-                <div class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
-                    <div class="flex items-center justify-between mb-2">
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white truncate">{{ $row['cabang'] }}</p>
-                        <span class="text-xs font-bold text-blue-600 dark:text-blue-400">{{ $row['total'] }}</span>
+        {{-- Top Vendor by Spend (dengan progress bar relatif) --}}
+        @if(!empty($pengadaanPerVendor))
+            @php($maxVendorSpend = $pengadaanPerVendor[0]['total_spend'] ?? 1)
+            <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">Top Vendor by Spend</h4>
+                <div class="space-y-3">
+                    @foreach($pengadaanPerVendor as $row)
+                        <div>
+                            <div class="flex items-center justify-between text-sm mb-1">
+                                <span class="text-gray-700 dark:text-gray-300">{{ $row['vendor'] }}</span>
+                                <span class="font-medium text-gray-900 dark:text-white">Rp {{ number_format($row['total_spend'], 0, ',', '.') }} <span class="text-gray-400 dark:text-gray-500 font-normal">({{ $row['total_pengadaan'] }}x)</span></span>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                                <div class="bg-blue-500 h-1.5 rounded-full transition-all duration-500" style="width: {{ min(100, ($row['total_spend'] / max($maxVendorSpend, 1)) * 100) }}%"></div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
+
+        {{-- Biaya Aset per Cabang (dengan progress bar relatif, access_all_cabang only) --}}
+        @can('access_all_cabang')
+            @if(!empty($pengadaanPerCabang))
+                @php($maxCabangSpend = $pengadaanPerCabang[0]['total_spend'] ?? 1)
+                <div class="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <h4 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">Biaya Aset per Cabang</h4>
+                    <div class="space-y-3">
+                        @foreach($pengadaanPerCabang as $row)
+                            <div>
+                                <div class="flex items-center justify-between text-sm mb-1">
+                                    <span class="text-gray-700 dark:text-gray-300">{{ $row['cabang'] }}</span>
+                                    <span class="font-medium text-gray-900 dark:text-white">Rp {{ number_format($row['total_spend'], 0, ',', '.') }} <span class="text-gray-400 dark:text-gray-500 font-normal">({{ $row['total_pengadaan'] }}x)</span></span>
+                                </div>
+                                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                                    <div class="bg-indigo-500 h-1.5 rounded-full transition-all duration-500" style="width: {{ min(100, ($row['total_spend'] / max($maxCabangSpend, 1)) * 100) }}%"></div>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
-                    <div class="flex items-center gap-3 text-xs">
-                        <span class="flex items-center gap-1 text-green-600 dark:text-green-400">
-                            <span class="w-2 h-2 bg-green-500 rounded-full"></span>{{ $row['baik'] }} Baik
-                        </span>
-                        <span class="flex items-center gap-1 text-red-600 dark:text-red-400">
-                            <span class="w-2 h-2 bg-red-500 rounded-full"></span>{{ $row['rusak'] }} Rusak
-                        </span>
-                        <span class="flex items-center gap-1 text-gray-500 dark:text-gray-400">
-                            <span class="w-2 h-2 bg-gray-400 rounded-full"></span>{{ $row['hilang'] }} Hilang
-                        </span>
-                    </div>
                 </div>
-            @endforeach
-        </div>
-
-        {{-- ApexCharts horizontal bar chart (nama cabang di Y-axis, jumlah di X-axis) --}}
-        <div id="alat-per-cabang-chart" class="w-full" style="min-height: 350px;"></div>
+            @endif
+        @endcan
     </div>
-    @endif
-    @endcan
     @endcan
 
     {{-- Quick Actions (only render if user has at least one relevant permission) --}}
@@ -248,8 +303,7 @@
     @endcanany
 
     {{-- System Info (gated by configuration_view — internal app info) --}}
-    @can('configuration_view')
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
+    @can('configuration_view')    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-6">
         <h3 class="text-xs font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4">Informasi System</h3>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div class="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg">
@@ -286,199 +340,3 @@
 
 </div>
 
-@push('scripts')
-@can('access_all_cabang')
-@if(!empty($alatPerCabang))
-<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.49.1/dist/apexcharts.min.js"></script>
-<script>
-    // Render chart — guard terhadap race condition DOMContentLoaded + CDN load lambat.
-    // Pakai IIFE + polling agar chart selalu muncul meski:
-    //   - DOMContentLoaded sudah fired (saat wire:navigate re-render)
-    //   - ApexCharts CDN belum selesai di-load saat script pertama jalan
-    (function () {
-        const elId = 'alat-per-cabang-chart';
-        let pollAttempts = 0;
-        const MAX_POLL = 50; // 50 x 100ms = 5s timeout
-
-        function renderChart() {
-            const el = document.getElementById(elId);
-            if (!el || typeof ApexCharts === 'undefined') {
-                // ApexCharts belum ready atau element belum render — retry.
-                if (pollAttempts++ < MAX_POLL) {
-                    setTimeout(renderChart, 100);
-                }
-                return;
-            }
-
-            // Guard: jangan render dua kali di element yang sama (Livewire re-render).
-            if (el.dataset.chartRendered === '1') return;
-            el.dataset.chartRendered = '1';
-
-            const data = @json($alatPerCabang ?? []);
-            // Prepend nomor urut ke nama cabang (mis. "1. Cabang Utama...") sebagai penanda baris.
-            // Tooltip x.formatter strip prefix "N. " agar tetap tampil nama full.
-            const categories = data.map((r, i) => (i + 1) + '. ' + r.cabang);
-            // Render tipis untuk value 0 (agar placeholder bar tetap terlihat).
-            // Tooltip formatter akan tampilkan nilai asli (0), bukan epsilon.
-            const EPSILON = 0.01;
-            const baikData = data.map(r => Math.max(r.baik, EPSILON));
-            const rusakData = data.map(r => Math.max(r.rusak, EPSILON));
-            const hilangData = data.map(r => Math.max(r.hilang, EPSILON));
-            const isEmpty = data.length === 0;
-
-            // Skala integer: tickAmount = maxValue agar tick di interval bulat (0,1,2,...,max).
-            // Tanpa ini, forceNiceScale generate tick 0.5 → setelah round jadi duplikat (0,0,1,1,...).
-            const maxValue = isEmpty ? 10 : Math.max(...data.map(r => r.total), 1);
-
-            const isDark = document.documentElement.classList.contains('dark');
-
-            // Horizontal bar: nama cabang di Y-axis, jumlah di X-axis.
-            // Cocok untuk banyak kategori (18 cabang) dengan nama panjang.
-            // Tinggi dinamis: min 350px, +90px per kategori di atas 10 (slot tinggi → bar tebal + gap jelas).
-            const chartHeight = Math.max(350, 350 + Math.max(0, categories.length - 10) * 90);
-
-            const options = {
-                series: [
-                    { name: 'Baik', data: baikData, color: '#10b981' },
-                    { name: 'Rusak', data: rusakData, color: '#ef4444' },
-                    { name: 'Hilang', data: hilangData, color: '#9ca3af' },
-                ],
-                chart: {
-                    type: 'bar',
-                    height: chartHeight,
-                    stacked: false,
-                    toolbar: { show: false },
-                    fontFamily: 'inherit',
-                    background: 'transparent',
-                    foreColor: isDark ? '#d1d5db' : '#4b5563',
-                },
-                plotOptions: {
-                    bar: {
-                        horizontal: true,
-                        // barHeight 80%: bar tebal (slot tinggi) + gap jelas antar kategori (20%).
-                        barHeight: '80%',
-                        borderRadius: 4,
-                        borderRadiusApplication: 'end',
-                    },
-                },
-                dataLabels: { enabled: false },
-                stroke: { show: false },
-                states: {
-                    hover: { filter: { type: 'none' } },
-                    active: { filter: { type: 'none' } },
-                },
-                xaxis: {
-                    // Horizontal bar: categories di xaxis.categories (ApexCharts auto-swap ke y-axis visual).
-                    // Tapi xaxis JUGA = value axis (sumbu angka di bawah) → min/max/tickAmount di sini.
-                    categories: categories,
-                    labels: {
-                        style: { colors: isDark ? '#d1d5db' : '#4b5563', fontSize: '12px' },
-                        // Value axis = jumlah barang → integer (cegah desimal 1.5, 2.5).
-                        formatter: (val) => Math.round(val),
-                    },
-                    title: {
-                        text: 'Jumlah Alat',
-                        align: 'left',
-                        style: { color: isDark ? '#d1d5db' : '#4b5563', fontSize: '12px', fontWeight: 600 },
-                    },
-                    crosshairs: { show: false },
-                    // tickAmount = maxValue → tick di interval bulat (0,1,2,...,max). Tanpa 0.5 step.
-                    min: 0,
-                    max: maxValue,
-                    tickAmount: maxValue,
-                },
-                yaxis: {
-                    labels: {
-                        // Rata kiri agar nama cabang mulai dari kiri (profesional, mudah baca).
-                        align: 'left',
-                        // maxWidth luas agar nama cabang panjang tampil full tanpa trim.
-                        maxWidth: 280,
-                        style: { colors: isDark ? '#d1d5db' : '#4b5563', fontSize: '12px' },
-                        // Category axis = "N. nama cabang". Trim hanya jika > 55 char, tooltip tetap full.
-                        formatter: (val) => {
-                            const str = String(val ?? '');
-                            return str.length > 55 ? str.slice(0, 52) + '...' : str;
-                        },
-                    },
-                },
-                legend: {
-                    position: 'top',
-                    horizontalAlign: 'left',
-                    labels: { colors: isDark ? '#d1d5db' : '#4b5563' },
-                    markers: { width: 10, height: 10, radius: 5 },
-                },
-                fill: { opacity: 1 },
-                tooltip: {
-                    intersect: true,
-                    shared: false,
-                    x: {
-                        // Strip prefix "N. " dari category ber-nomor → tampilkan nama cabang full.
-                        formatter: (val) => String(val ?? '').replace(/^\d+\.\s/, ''),
-                    },
-                    y: {
-                        formatter: (val) => {
-                            // Tampilkan nilai asli (0), bukan epsilon yang dipakai untuk render tipis.
-                            const actual = val < 1 ? 0 : Math.round(val);
-                            return actual + ' alat';
-                        },
-                    },
-                    theme: isDark ? 'dark' : 'light',
-                },
-                noData: {
-                    text: 'Belum ada data alat',
-                    align: 'center',
-                    verticalAlign: 'middle',
-                    offsetX: 0,
-                    offsetY: 0,
-                    style: {
-                        color: isDark ? '#9ca3af' : '#6b7280',
-                        fontSize: '14px',
-                        fontFamily: 'inherit',
-                    },
-                },
-                grid: { borderColor: isDark ? '#374151' : '#e5e7eb', strokeDashArray: 4 },
-            };
-
-            const chart = new ApexCharts(el, options);
-            chart.render();
-
-            // Re-render on dark mode toggle via MutationObserver on <html> class
-            const observer = new MutationObserver(() => {
-                const nowDark = document.documentElement.classList.contains('dark');
-                chart.updateOptions({
-                    chart: { foreColor: nowDark ? '#d1d5db' : '#4b5563' },
-                    xaxis: {
-                        labels: {
-                            style: { colors: nowDark ? '#d1d5db' : '#4b5563' },
-                            formatter: (val) => Math.round(val),
-                        },
-                        title: { style: { color: nowDark ? '#d1d5db' : '#4b5563' } },
-                    },
-                    yaxis: {
-                        labels: {
-                            style: { colors: nowDark ? '#d1d5db' : '#4b5563' },
-                            formatter: (val) => {
-                                const str = String(val ?? '');
-                                return str.length > 55 ? str.slice(0, 52) + '...' : str;
-                            },
-                        },
-                    },
-                    legend: { labels: { colors: nowDark ? '#d1d5db' : '#4b5563' } },
-                    tooltip: { theme: nowDark ? 'dark' : 'light' },
-                    grid: { borderColor: nowDark ? '#374151' : '#e5e7eb' },
-                });
-            });
-            observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
-        }
-
-        // Jalankan: langsung jika DOM sudah ready, atau tunggu DOMContentLoaded.
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', renderChart);
-        } else {
-            renderChart();
-        }
-    })();
-</script>
-@endif
-@endcan
-@endpush

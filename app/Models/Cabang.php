@@ -41,16 +41,6 @@ class Cabang extends Model
             ->useLogName('cabang');
     }
 
-    public function alats(): HasMany
-    {
-        return $this->hasMany(Alat::class);
-    }
-
-    public function logBookPeminjaman(): HasMany
-    {
-        return $this->hasMany(LogBookPeminjaman::class);
-    }
-
     public function users(): HasMany
     {
         return $this->hasMany(User::class);

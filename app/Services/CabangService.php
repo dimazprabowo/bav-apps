@@ -16,7 +16,7 @@ class CabangService
         ?string $statusFilter = null,
         int $perPage = 15
     ): LengthAwarePaginator {
-        $query = Cabang::withCount('alats');
+        $query = Cabang::query();
 
         if ($search) {
             $operator = $this->getLikeOperator();

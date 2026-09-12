@@ -1,7 +1,9 @@
 <x-auth-shell>
     <div class="mb-8">
         <h2 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Selamat Datang</h2>
-        <p class="text-gray-600 dark:text-gray-400 mt-2 text-sm sm:text-base">Silakan login untuk melanjutkan</p>
+        <p class="text-gray-600 dark:text-gray-400 mt-2 text-sm sm:text-base">
+            Masuk untuk mengelola pengadaan aset, vendor, invoice & pembayaran
+        </p>
     </div>
 
     <!-- Session Status -->

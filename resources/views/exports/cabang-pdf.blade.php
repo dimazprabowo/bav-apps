@@ -16,7 +16,7 @@
 <table>
     <thead>
         <tr>
-            <th>No</th><th>Kode</th><th>Nama</th><th>Alamat</th><th>PIC</th><th>Alat</th><th>Status</th>
+            <th>No</th><th>Kode</th><th>Nama</th><th>Alamat</th><th>PIC</th><th>Status</th>
         </tr>
     </thead>
     <tbody>
@@ -27,7 +27,6 @@
             <td>{{ $cabang->name }}</td>
             <td>{{ $cabang->address ?? '-' }}</td>
             <td>{{ $cabang->pic_name ?? '-' }}</td>
-            <td>{{ $cabang->alats_count }}</td>
             <td>{{ $cabang->status->label() }}</td>
         </tr>
         @endforeach

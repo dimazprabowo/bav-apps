@@ -33,8 +33,16 @@
 
     {{-- Form Panel --}}
     <div class="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8 bg-gray-50 dark:bg-gray-900 min-h-screen lg:min-h-0 relative overflow-hidden">
-        {{-- Mobile Background (visible only on mobile, subtle brand gradient) --}}
-        <div class="lg:hidden absolute inset-0 z-0 bg-gradient-to-br from-blue-700 via-blue-800 to-blue-900"></div>
+        {{-- Mobile Background (visible only on mobile, 3-photo diagonal collage + blue overlay) --}}
+        <div class="lg:hidden absolute inset-0 z-0" aria-hidden="true">
+            <div class="absolute inset-0 bg-cover bg-center"
+                 style="background-image: url('{{ asset('images/auth-photo-1.jpg') }}'); clip-path: polygon(0 0, 100% 0, 100% 35%, 0 50%);"></div>
+            <div class="absolute inset-0 bg-cover bg-center"
+                 style="background-image: url('{{ asset('images/auth-photo-4.jpg') }}'); clip-path: polygon(0 50%, 100% 35%, 100% 65%, 0 80%);"></div>
+            <div class="absolute inset-0 bg-cover bg-center"
+                 style="background-image: url('{{ asset('images/auth-photo-5.jpg') }}'); clip-path: polygon(0 80%, 100% 65%, 100% 100%, 0 100%);"></div>
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-900/90 via-blue-800/85 to-blue-900/90"></div>
+        </div>
 
         <div class="w-full max-w-md relative z-10">
             {{-- Mobile Logo (compact branding header for mobile) --}}

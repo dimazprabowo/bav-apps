@@ -11,6 +11,23 @@ if (! function_exists('email_logo_url')) {
     }
 }
 
+if (! function_exists('app_logo_url')) {
+    /**
+     * Get the logo URL used for on-page branding (login, sidebar, dsb).
+     *
+     * Dibaca dari system_config('app.logo') agar bisa diubah admin lewat
+     * Settings > System Configuration tanpa perlu deploy ulang kode.
+     * Berbeda dari email_logo_url() yang WAJIB tetap hosting eksternal
+     * (email client tidak bisa akses asset lokal aplikasi).
+     */
+    function app_logo_url(): string
+    {
+        $path = system_config('app.logo', 'images/bki-main.webp');
+
+        return filter_var($path, FILTER_VALIDATE_URL) ? $path : asset($path);
+    }
+}
+
 if (! function_exists('get_max_upload_size')) {
     /**
      * Get maximum upload size in KB for a specific field

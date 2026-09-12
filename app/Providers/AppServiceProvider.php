@@ -2,23 +2,23 @@
 
 namespace App\Providers;
 
-use App\Models\Alat;
 use App\Models\Cabang;
 use App\Models\Chat;
 use App\Models\ChatMessage;
-use App\Models\LogBookPeminjaman;
 use App\Models\Notification;
+use App\Models\Pengadaan;
 use App\Models\SystemConfiguration;
 use App\Models\User;
-use App\Policies\AlatPolicy;
+use App\Models\Vendor;
 use App\Policies\CabangPolicy;
 use App\Policies\ChatPolicy;
 use App\Policies\DashboardPolicy;
-use App\Policies\LogBookPeminjamanPolicy;
 use App\Policies\NotificationPolicy;
+use App\Policies\PengadaanPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\SystemConfigurationPolicy;
 use App\Policies\UserPolicy;
+use App\Policies\VendorPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -42,13 +42,13 @@ class AppServiceProvider extends ServiceProvider
         // Register Policies
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Cabang::class, CabangPolicy::class);
-        Gate::policy(Alat::class, AlatPolicy::class);
-        Gate::policy(LogBookPeminjaman::class, LogBookPeminjamanPolicy::class);
         Gate::policy(SystemConfiguration::class, SystemConfigurationPolicy::class);
         Gate::policy(Role::class, RolePolicy::class);
         Gate::policy(Notification::class, NotificationPolicy::class);
         Gate::policy(Chat::class, ChatPolicy::class);
         Gate::policy(ChatMessage::class, ChatPolicy::class);
+        Gate::policy(Vendor::class, VendorPolicy::class);
+        Gate::policy(Pengadaan::class, PengadaanPolicy::class);
 
         // Dashboard policy — bound to a string key (no Eloquent model)
         Gate::define('viewStats', [DashboardPolicy::class, 'viewStats']);

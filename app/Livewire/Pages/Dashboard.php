@@ -3,7 +3,7 @@
 namespace App\Livewire\Pages;
 
 use App\Models\User;
-use App\Services\AlatService;
+use App\Services\PengadaanService;
 use Illuminate\Support\Facades\Gate;
 use Livewire\Component;
 use Spatie\Permission\Models\Role;
@@ -31,15 +31,14 @@ class Dashboard extends Component
                 $data['totalRoles'] = Role::count();
             }
 
-            // Equipment monitoring stats (kondisi + kalibrasi), cabang-scoped via service.
-            if (Gate::allows('alat_view')) {
-                $alatService = app(AlatService::class);
-                $data['alatStats'] = $alatService->getDashboardStats();
+            // Pengadaan Aset stats (biaya, invoice, pembayaran), cabang-scoped via service.
+            if (Gate::allows('pengadaan_view')) {
+                $pengadaanService = app(PengadaanService::class);
+                $data['pengadaanStats'] = $pengadaanService->getDashboardStats();
+                $data['pengadaanPerVendor'] = $pengadaanService->getSpendPerVendor();
 
-                // Distribusi per cabang HANYA untuk user dengan akses seluruh cabang.
-                // User single-cabang hanya lihat 1 row → card tidak informatif, skip.
                 if (Gate::allows('access_all_cabang')) {
-                    $data['alatPerCabang'] = $alatService->getAlatPerCabangStats();
+                    $data['pengadaanPerCabang'] = $pengadaanService->getSpendPerCabang();
                 }
             }
         }

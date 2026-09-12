@@ -2,13 +2,13 @@
 
 namespace App\Livewire\Traits;
 
-use App\Models\Alat;
 use App\Models\Cabang;
 use App\Models\Chat;
-use App\Models\LogBookPeminjaman;
 use App\Models\Notification;
+use App\Models\Pengadaan;
 use App\Models\SystemConfiguration;
 use App\Models\User;
+use App\Models\Vendor;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Spatie\Permission\Models\Role;
@@ -30,8 +30,8 @@ trait HasMenuItems
         $perms = [
             'dashboard_view' => Gate::allows('viewStats'),
             'cabang_view' => Gate::allows('viewAny', Cabang::class),
-            'alat_view' => Gate::allows('viewAny', Alat::class),
-            'logbook_view' => Gate::allows('viewAny', LogBookPeminjaman::class),
+            'vendor_view' => Gate::allows('viewAny', Vendor::class),
+            'pengadaan_view' => Gate::allows('viewAny', Pengadaan::class),
             'notifications_view' => Gate::allows('viewAny', Notification::class),
             'notifications_send' => Gate::allows('send', Notification::class),
             'chat_view' => Gate::allows('viewAny', Chat::class),
@@ -60,11 +60,11 @@ trait HasMenuItems
                 'active' => $req->routeIs('master-data.cabangs'),
             ];
         }
-        if ($perms['alat_view']) {
+        if ($perms['vendor_view']) {
             $masterDataChildren[] = [
-                'name' => 'Alat',
-                'route' => 'master-data.alat.index',
-                'active' => $req->routeIs('master-data.alat.*'),
+                'name' => 'Vendor',
+                'route' => 'master-data.vendors',
+                'active' => $req->routeIs('master-data.vendors'),
             ];
         }
         if (! empty($masterDataChildren)) {
@@ -76,13 +76,13 @@ trait HasMenuItems
             ];
         }
 
-        // Operasional
-        if ($perms['logbook_view']) {
+        // Pengadaan Aset
+        if ($perms['pengadaan_view']) {
             $items[] = [
-                'name' => 'LogBook Peminjaman',
-                'route' => 'operasional.logbook.index',
-                'icon' => 'clipboard-list',
-                'active' => $req->routeIs('operasional.*'),
+                'name' => 'Pengadaan Aset',
+                'route' => 'pengadaan.index',
+                'icon' => 'shopping-cart',
+                'active' => $req->routeIs('pengadaan.*'),
             ];
         }
 

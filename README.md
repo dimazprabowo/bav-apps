@@ -1,4 +1,4 @@
-# Client App — Boilerplate Application
+# BAV Apps — Boilerplate Application
 
 <p align="center">
   <img src="https://img.shields.io/badge/Laravel-12.x-red?style=for-the-badge&logo=laravel" alt="Laravel">
@@ -16,7 +16,7 @@
 
 ## 📋 Daftar Isi
 
-1. [Tentang Client App](#-tentang-client-app)
+1. [Tentang BAV Apps](#-tentang-bav-apps)
 2. [Fitur Utama](#-fitur-utama)
 3. [Tech Stack](#-tech-stack)
 4. [Instalasi](#-instalasi)
@@ -31,9 +31,9 @@
 
 ---
 
-## 🎯 Tentang Client App
+## 🎯 Tentang BAV Apps
 
-Client App adalah aplikasi Laravel boilerplate yang dapat berfungsi sebagai:
+BAV Apps adalah aplikasi Laravel boilerplate yang dapat berfungsi sebagai:
 
 - **OAuth 2.0 Client** — Terintegrasi dengan SSO Server untuk centralized authentication
 - **Standalone Application** — Dapat berjalan mandiri tanpa SSO (mode standalone)
@@ -139,7 +139,7 @@ Aplikasi ini mendukung **dual mode operation**:
 ```bash
 # 1. Clone repository (jika dari git)
 git clone <repository-url>
-cd client-app
+cd bav-apps
 
 # 2. Install dependencies
 composer install
@@ -250,7 +250,7 @@ REVERB_SCHEME=http
 
 ### Overview
 
-Client App dapat berjalan dalam 2 mode berbeda:
+BAV Apps dapat berjalan dalam 2 mode berbeda:
 
 ### Mode 1: SSO Enabled (`IS_USING_SSO=true`)
 
@@ -352,7 +352,7 @@ Termasuk:
 
 ## 🔐 Permissions & Roles
 
-### Permissions (Client App)
+### Permissions (BAV Apps)
 
 | Permission | Deskripsi |
 |------------|----------|

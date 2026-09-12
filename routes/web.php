@@ -1,8 +1,7 @@
 <?php
 
 use App\Livewire\Actions\Logout;
-use App\Models\Alat;
-use App\Models\LogBookPeminjaman;
+use App\Models\Pengadaan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,29 +27,19 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     // Master Data Routes
     Route::prefix('master-data')->name('master-data.')->group(function () {
         Route::view('/cabangs', 'master-data.cabangs')->middleware('can:cabang_view')->name('cabangs');
-
-        // Alat (full-page form for create/edit, route-model-binding with encrypted ID)
-        Route::prefix('alat')->name('alat.')->group(function () {
-            Route::view('/', 'master-data.alats')->middleware('can:alat_view')->name('index');
-            Route::view('/create', 'master-data.alats-create')->middleware('can:alat_create')->name('create');
-            Route::get('/{alat}/edit', function (Alat $alat) {
-                return view('master-data.alats-edit', ['alat' => $alat]);
-            })->middleware('can:alat_update')->name('edit');
-            Route::get('/{alat}', function (Alat $alat) {
-                return view('master-data.alats-show', ['alat' => $alat]);
-            })->middleware('can:alat_view')->name('show');
-        });
+        Route::view('/vendors', 'master-data.vendors')->middleware('can:vendor_view')->name('vendors');
     });
 
-    // Operasional Routes
-    Route::prefix('operasional')->name('operasional.')->group(function () {
-        Route::prefix('logbook')->name('logbook.')->group(function () {
-            Route::view('/', 'operasional.logbook')->middleware('can:logbook_view')->name('index');
-            Route::view('/create', 'operasional.logbook-create')->middleware('can:logbook_create')->name('create');
-            Route::get('/{logBook}/edit', function (LogBookPeminjaman $logBook) {
-                return view('operasional.logbook-edit', ['logBook' => $logBook]);
-            })->middleware('can:logbook_update')->name('edit');
-        });
+    // Pengadaan Aset Routes (full-page form for create/edit, route-model-binding with encrypted ID)
+    Route::prefix('pengadaan')->name('pengadaan.')->group(function () {
+        Route::view('/', 'pengadaan.index')->middleware('can:pengadaan_view')->name('index');
+        Route::view('/create', 'pengadaan.create')->middleware('can:pengadaan_create')->name('create');
+        Route::get('/{pengadaan}/edit', function (Pengadaan $pengadaan) {
+            return view('pengadaan.edit', ['pengadaan' => $pengadaan]);
+        })->middleware('can:pengadaan_update')->name('edit');
+        Route::get('/{pengadaan}', function (Pengadaan $pengadaan) {
+            return view('pengadaan.show', ['pengadaan' => $pengadaan]);
+        })->middleware('can:pengadaan_view')->name('show');
     });
 
     // Notifications

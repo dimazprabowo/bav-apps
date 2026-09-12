@@ -15,10 +15,10 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             RoleSeeder::class,
             CabangSeeder::class,
+            VendorSeeder::class,
             SystemConfigurationSeeder::class,
             UserSeeder::class,
-            AlatSeeder::class,
-            LogBookPeminjamanSeeder::class,
+            PengadaanSeeder::class,
         ]);
     }
 }

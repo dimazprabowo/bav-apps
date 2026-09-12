@@ -29,10 +29,6 @@ class CabangPolicy
 
     public function delete(User $user, Cabang $cabang): bool
     {
-        if ($cabang->alats()->exists()) {
-            return false;
-        }
-
         return $user->can('cabang_delete');
     }
 

@@ -73,7 +73,7 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Terapkan scoping cabang ke query builder MODEL LAIN (Alat, LogBookPeminjaman, dst),
+     * Terapkan scoping cabang ke query builder MODEL LAIN (Pengadaan, dst),
      * KECUALI user punya akses lintas-cabang (permission `access_all_cabang`).
      * Bukan Eloquent local scope (tidak diawali "scope" agar tidak tertukar) —
      * dipanggil manual: $user->applyCabangScope($query).

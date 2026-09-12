@@ -16,7 +16,7 @@ class PermissionSeeder extends Seeder
      *
      * Konvensi penamaan:
      *   {entity}_{action}
-     *   entity : dashboard, cabang, alat, logbook, configuration, users, roles, notifications, chat
+     *   entity : dashboard, cabang, vendor, pengadaan, configuration, users, roles, notifications, chat
      *   action : view, create, update, delete, export_excel, export_pdf, send
      *
      * Format ini memudahkan grouping otomatis di UI berdasarkan entity prefix.
@@ -37,26 +37,23 @@ class PermissionSeeder extends Seeder
             'cabang_export_excel',
             'cabang_export_pdf',
 
-            // Master Data — Alat
-            'alat_view',
-            'alat_create',
-            'alat_update',
-            'alat_delete',
-            'alat_review',
-            'alat_export_excel',
-            'alat_export_pdf',
-            'alat_send_reminder',
+            // Master Data — Vendor
+            'vendor_view',
+            'vendor_create',
+            'vendor_update',
+            'vendor_delete',
+            'vendor_export_excel',
+            'vendor_export_pdf',
 
-            // Operasional — LogBook Peminjaman
-            'logbook_view',
-            'logbook_create',
-            'logbook_update',
-            'logbook_delete',
-            'logbook_approve',
-            'logbook_return',
-            'logbook_cancel',
-            'logbook_export_excel',
-            'logbook_export_pdf',
+            // Pengadaan Aset — Pengadaan (Vendor permissions ada di atas)
+            'pengadaan_view',
+            'pengadaan_create',
+            'pengadaan_update',
+            'pengadaan_delete',
+            'pengadaan_approve',
+            'pengadaan_export_excel',
+            'pengadaan_export_pdf',
+            'pembayaran_approve',
 
             // Konfigurasi System
             'configuration_view',
@@ -91,7 +88,7 @@ class PermissionSeeder extends Seeder
             'chat_delete',
 
             // Data Scope — akses lintas-cabang (COE/Pusat). Dicek di Service/Policy
-            // untuk bypass scoping cabang_id pada Alat & LogBook Peminjaman.
+            // untuk bypass scoping cabang_id pada Pengadaan.
             'access_all_cabang',
         ];
 

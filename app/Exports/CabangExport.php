@@ -28,7 +28,7 @@ class CabangExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMappi
 
     public function query()
     {
-        $query = Cabang::withCount('alats');
+        $query = Cabang::query();
 
         if ($this->search) {
             $operator = $this->getLikeOperator();
@@ -58,7 +58,6 @@ class CabangExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMappi
             'Telepon',
             'PIC',
             'Telepon PIC',
-            'Jumlah Alat',
             'Status',
             'Tanggal Dibuat',
         ];
@@ -77,7 +76,6 @@ class CabangExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMappi
             $cabang->phone ?? '-',
             $cabang->pic_name ?? '-',
             $cabang->pic_phone ?? '-',
-            $cabang->alats_count,
             $cabang->status->label(),
             $cabang->created_at->format('d/m/Y H:i'),
         ];

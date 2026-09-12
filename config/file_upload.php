@@ -47,5 +47,20 @@ return [
             'max_size' => 20480, // 20 MB
             'mimes' => ['pdf', 'jpg', 'jpeg', 'png'],
         ],
+
+        'pengadaan-evidence' => [
+            'max_size' => 20480, // 20 MB
+            'mimes' => ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx', 'xls', 'xlsx'],
+        ],
+
+        'invoice' => [
+            'max_size' => 20480, // 20 MB
+            'mimes' => ['pdf', 'jpg', 'jpeg', 'png'],
+        ],
+
+        'invoice-payment' => [
+            'max_size' => 20480, // 20 MB
+            'mimes' => ['pdf', 'jpg', 'jpeg', 'png'],
+        ],
     ],
 ];

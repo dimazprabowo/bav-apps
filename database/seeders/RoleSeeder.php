@@ -9,14 +9,13 @@ use Spatie\Permission\Models\Role;
 class RoleSeeder extends Seeder
 {
     /**
-     * Struktur role aplikasi monitoring & peminjaman alat (COE vs Cabang):
+     * Struktur role aplikasi pengadaan aset (COE vs Cabang):
      *
      * - Super Admin  : bypass semua (Gate::before di AuthServiceProvider), tetap disync semua permission.
      * - Admin Pusat  : COE — akses & kontrol penuh SEMUA cabang (punya `access_all_cabang`).
-     * - Admin Cabang : kelola alat & logbook peminjaman CABANGNYA SENDIRI saja (data-scoped di
-     *                  Service/Policy berdasarkan `access_all_cabang` TIDAK dimiliki role ini).
-     *                  Tetap bisa mengajukan peminjaman alat cabang lain (logbook_create tidak discope).
-     * - Staff Cabang : basic — lihat alat cabangnya, ajukan peminjaman (termasuk lintas-cabang).
+     * - Admin Cabang : kelola pengadaan CABANGNYA SENDIRI saja (data-scoped di Service/Policy
+     *                  berdasarkan `access_all_cabang` TIDAK dimiliki role ini).
+     * - Staff Cabang : basic — lihat pengadaan cabangnya.
      *
      * PENTING: seluruh authorization di kode (Policy/Service/Blade) HANYA membaca permission,
      * TIDAK PERNAH membaca nama role. Role di sini murni bundel permission untuk kemudahan assign.
@@ -33,42 +32,29 @@ class RoleSeeder extends Seeder
         $adminPusat = Role::firstOrCreate(['name' => 'admin pusat']);
         $adminPusat->syncPermissions(Permission::all());
 
-        // 3. Admin Cabang - Kelola alat & logbook cabang sendiri (TANPA access_all_cabang)
+        // 3. Admin Cabang - Kelola pengadaan cabang sendiri (TANPA access_all_cabang)
         $adminCabang = Role::firstOrCreate(['name' => 'admin cabang']);
         $adminCabang->syncPermissions([
             'dashboard_view',
             'cabang_view',
-            'alat_view',
-            'alat_create',
-            'alat_update',
-            'alat_delete',
-            'alat_export_excel',
-            'alat_export_pdf',
-            'alat_send_reminder',
-            'logbook_view',
-            'logbook_create',
-            'logbook_update',
-            'logbook_delete',
-            'logbook_approve',
-            'logbook_return',
-            'logbook_cancel',
-            'logbook_export_excel',
-            'logbook_export_pdf',
+            'pengadaan_view',
+            'pengadaan_create',
+            'pengadaan_update',
+            'pengadaan_delete',
+            'pengadaan_export_excel',
+            'pengadaan_export_pdf',
             'notifications_view',
             'chat_view',
             'chat_create',
             'chat_delete',
         ]);
 
-        // 4. Staff Cabang - Basic: lihat alat cabangnya, ajukan peminjaman (boleh lintas-cabang)
+        // 4. Staff Cabang - Basic: lihat pengadaan cabangnya
         $staffCabang = Role::firstOrCreate(['name' => 'staff cabang']);
         $staffCabang->syncPermissions([
             'dashboard_view',
             'cabang_view',
-            'alat_view',
-            'logbook_view',
-            'logbook_create',
-            'logbook_cancel',
+            'pengadaan_view',
             'notifications_view',
             'chat_view',
             'chat_create',
