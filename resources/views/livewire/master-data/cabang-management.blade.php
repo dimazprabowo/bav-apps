@@ -81,15 +81,11 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @can('cabang_update')
-                                    <button wire:click="toggleStatus({{ $cabang->id }})"
-                                        wire:loading.attr="disabled"
-                                        wire:target="toggleStatus({{ $cabang->id }})"
-                                        wire:key="btn-toggle-{{ $cabang->id }}"
-                                        class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-50
-                                            {{ $cabang->status->value === 'active' ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700' }}">
-                                        <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform
-                                            {{ $cabang->status->value === 'active' ? 'translate-x-6' : 'translate-x-1' }}"></span>
-                                    </button>
+                                    <x-toggle-switch wire:click="toggleStatus({{ $cabang->id }})"
+                                        :active="$cabang->status->value === 'active'"
+                                        target="toggleStatus({{ $cabang->id }})"
+                                        wire:key="toggle-status-{{ $cabang->id }}"
+                                        title="Aktifkan/Nonaktifkan" />
                                 @else
                                     <span class="px-2 py-1 text-xs font-medium rounded-full {{ $cabang->status->badgeClass() }}">
                                         {{ $cabang->status->label() }}

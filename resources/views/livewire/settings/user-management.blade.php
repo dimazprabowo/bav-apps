@@ -166,15 +166,12 @@
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 @can('toggleActive', $user)
-                                    <button wire:click="toggleActive({{ $user->id }})"
-                                        wire:loading.attr="disabled"
-                                        wire:target="toggleActive({{ $user->id }})"
-                                        wire:key="btn-toggle-{{ $user->id }}"
-                                        class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 disabled:opacity-50
-                                            {{ $user->is_active ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700' }}">
-                                        <span class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform
-                                            {{ $user->is_active ? 'translate-x-6' : 'translate-x-1' }}"></span>
-                                    </button>
+                                    <x-toggle-switch wire:click="toggleActive({{ $user->id }})"
+                                        :active="$user->is_active"
+                                        target="toggleActive({{ $user->id }})"
+                                        :disabled="$user->id == auth()->id()"
+                                        wire:key="toggle-active-{{ $user->id }}"
+                                        title="{{ $user->id == auth()->id() ? 'Tidak dapat menonaktifkan akun sendiri' : 'Aktifkan/Nonaktifkan' }}" />
                                 @else
                                     <span class="inline-flex items-center whitespace-nowrap px-2 py-1 text-xs font-medium rounded-full {{ $user->is_active ? 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400' : 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400' }}">
                                         {{ $user->is_active ? 'Aktif' : 'Nonaktif' }}
