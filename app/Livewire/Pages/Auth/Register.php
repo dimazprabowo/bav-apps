@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Pages\Auth;
 
+use App\Enums\UserApprovalStatus;
 use App\Helpers\ConfigHelper;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -41,19 +42,39 @@ class Register extends Component
 
             $validated['password'] = Hash::make($validated['password']);
 
-            event(new Registered($user = User::create($validated)));
+            $requiresApproval = ConfigHelper::isRegistrationApprovalRequired();
+            $defaultRole = ConfigHelper::getDefaultRegistrationRole();
 
-            // Assign default role 'staff cabang' to newly registered user
-            $user->assignRole('staff cabang');
+            if ($requiresApproval) {
+                // User pending approval — tidak auto-login, tidak assign role, tidak kirim email verifikasi dulu.
+                // Email verifikasi akan dikirim setelah admin menyetujui pendaftaran (lihat UserService::approveUser).
+                $validated['is_active'] = false;
+                $validated['approval_status'] = UserApprovalStatus::Pending->value;
 
-            Auth::login($user);
+                User::create($validated);
 
-            $this->dispatch('notify',
-                type: 'success',
-                message: 'Pendaftaran berhasil! Email verifikasi telah dikirim.'
-            );
+                $this->dispatch('notify',
+                    type: 'success',
+                    message: 'Pendaftaran berhasil! Akun Anda menunggu approval dari administrator. Anda akan mendapat email verifikasi setelah akun disetujui.'
+                );
+                $this->redirect(route('login'), navigate: true);
+            } else {
+                // Langsung aktif — auto-login seperti sebelumnya
+                $validated['is_active'] = true;
+                $validated['approval_status'] = UserApprovalStatus::Approved->value;
 
-            $this->redirect(route('dashboard', absolute: false), navigate: true);
+                event(new Registered($user = User::create($validated)));
+                $user->assignRole($defaultRole);
+
+                Auth::login($user);
+
+                $this->dispatch('notify',
+                    type: 'success',
+                    message: 'Pendaftaran berhasil! Email verifikasi telah dikirim.'
+                );
+
+                $this->redirect(route('dashboard', absolute: false), navigate: true);
+            }
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;
         } catch (\Exception $e) {

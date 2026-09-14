@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\UserApprovalStatus;
 use App\Models\User;
 
 class UserPolicy
@@ -60,6 +61,38 @@ class UserPolicy
     public function resetPassword(User $user, User $model): bool
     {
         return $user->can('users_update');
+    }
+
+    /**
+     * Determine whether the user can approve a pending registration.
+     */
+    public function approve(User $user, User $model): bool
+    {
+        if ($user->id === $model->id) {
+            return false;
+        }
+
+        if ($model->approval_status !== UserApprovalStatus::Pending) {
+            return false;
+        }
+
+        return $user->can('users_approve');
+    }
+
+    /**
+     * Determine whether the user can reject a pending registration.
+     */
+    public function reject(User $user, User $model): bool
+    {
+        if ($user->id === $model->id) {
+            return false;
+        }
+
+        if ($model->approval_status !== UserApprovalStatus::Pending) {
+            return false;
+        }
+
+        return $user->can('users_approve');
     }
 
     /**

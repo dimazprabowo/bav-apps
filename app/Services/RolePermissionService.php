@@ -112,6 +112,7 @@ class RolePermissionService
                 ['name' => 'users_create',       'label' => 'Tambah User'],
                 ['name' => 'users_update',       'label' => 'Edit User'],
                 ['name' => 'users_delete',       'label' => 'Hapus User'],
+                ['name' => 'users_approve',      'label' => 'Approve Pendaftaran User'],
                 ['name' => 'users_export_excel', 'label' => 'Export Excel User'],
                 ['name' => 'users_export_pdf',   'label' => 'Export PDF User'],
                 ['name' => 'users_impersonate',  'label' => 'Impersonate User'],

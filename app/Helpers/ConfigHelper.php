@@ -108,6 +108,24 @@ class ConfigHelper
     }
 
     /**
+     * Check if registration requires admin approval.
+     * When true, newly registered users need admin approval before they can login.
+     * When false, users are immediately active after registration.
+     */
+    public static function isRegistrationApprovalRequired(): bool
+    {
+        return (bool) SystemConfiguration::get('registration.requires_approval', true);
+    }
+
+    /**
+     * Get default role assigned to newly registered users.
+     */
+    public static function getDefaultRegistrationRole(): string
+    {
+        return SystemConfiguration::get('registration.default_role', 'staff cabang');
+    }
+
+    /**
      * Get application name from system configuration
      */
     public static function getAppName(): string

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Forms;
 
+use App\Enums\UserApprovalStatus;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -55,12 +56,20 @@ class LoginForm extends Form
             ]);
         }
 
-        // STEP 4: Check if user is active
-        if (! Auth::user()->is_active) {
+        // STEP 4: Check if user is active (with approval-aware messaging)
+        $user = Auth::user();
+
+        if (! $user->is_active) {
             Auth::logout();
 
+            $message = match ($user->approval_status) {
+                UserApprovalStatus::Pending => 'Akun Anda masih menunggu approval administrator. Silakan hubungi administrator.',
+                UserApprovalStatus::Rejected => 'Akun Anda telah ditolak oleh administrator. Silakan hubungi administrator.',
+                default => 'Akun Anda telah dinonaktifkan. Silakan hubungi administrator.',
+            };
+
             throw ValidationException::withMessages([
-                'form.email' => 'Akun Anda telah dinonaktifkan. Silakan hubungi administrator.',
+                'form.email' => $message,
             ]);
         }
 

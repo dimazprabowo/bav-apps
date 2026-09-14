@@ -66,6 +66,7 @@ class PermissionSeeder extends Seeder
             'users_create',
             'users_update',
             'users_delete',
+            'users_approve',
             'users_export_excel',
             'users_export_pdf',
             'users_impersonate',

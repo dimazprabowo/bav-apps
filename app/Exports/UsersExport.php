@@ -22,11 +22,14 @@ class UsersExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMappin
 
     protected ?string $isActive;
 
-    public function __construct(?string $search = null, ?string $roleFilter = null, ?string $isActive = null)
+    protected ?string $approvalStatus;
+
+    public function __construct(?string $search = null, ?string $roleFilter = null, ?string $isActive = null, ?string $approvalStatus = null)
     {
         $this->search = $search;
         $this->roleFilter = $roleFilter;
         $this->isActive = $isActive;
+        $this->approvalStatus = $approvalStatus;
     }
 
     public function query()
@@ -51,6 +54,10 @@ class UsersExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMappin
             $query->where('is_active', $this->isActive === '1');
         }
 
+        if ($this->approvalStatus !== null && $this->approvalStatus !== '') {
+            $query->where('approval_status', $this->approvalStatus);
+        }
+
         return $query->orderBy('name');
     }
 
@@ -63,6 +70,7 @@ class UsersExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMappin
             'Telepon',
             'Posisi/Jabatan',
             'Role',
+            'Status Approval',
             'Status',
             'Tanggal Dibuat',
         ];
@@ -80,6 +88,7 @@ class UsersExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMappin
             $user->phone ?? '-',
             $user->position ?? '-',
             ucfirst($user->getRoleNames()->join(', ') ?: 'No Role'),
+            $user->approval_status->label(),
             $user->is_active ? 'Aktif' : 'Nonaktif',
             $user->created_at->format('d/m/Y H:i'),
         ];

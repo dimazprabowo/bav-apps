@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\UserApprovalStatus;
 use App\Notifications\CustomResetPassword;
 use App\Notifications\CustomVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -26,6 +27,12 @@ class User extends Authenticatable implements MustVerifyEmail
         'phone',
         'position',
         'is_active',
+        'approval_status',
+        'approved_at',
+        'approved_by',
+        'rejected_at',
+        'rejected_by',
+        'rejection_reason',
         'email_verified_at',
     ];
 
@@ -40,6 +47,9 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_active' => 'boolean',
+            'approval_status' => UserApprovalStatus::class,
+            'approved_at' => 'datetime',
+            'rejected_at' => 'datetime',
         ];
     }
 
@@ -61,6 +71,16 @@ class User extends Authenticatable implements MustVerifyEmail
             ->withTimestamps();
     }
 
+    public function approver(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function rejecter(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'rejected_by');
+    }
+
     // Scopes
     public function scopeActive($query)
     {
@@ -70,6 +90,21 @@ class User extends Authenticatable implements MustVerifyEmail
     public function scopeByRole($query, string $role)
     {
         return $query->role($role);
+    }
+
+    public function scopePendingApproval($query)
+    {
+        return $query->where('approval_status', UserApprovalStatus::Pending);
+    }
+
+    public function scopeApproved($query)
+    {
+        return $query->where('approval_status', UserApprovalStatus::Approved);
+    }
+
+    public function scopeRejected($query)
+    {
+        return $query->where('approval_status', UserApprovalStatus::Rejected);
     }
 
     /**
@@ -92,6 +127,21 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getIsAdminAttribute(): bool
     {
         return $this->hasRole(['super admin', 'admin pusat']);
+    }
+
+    public function getIsPendingAttribute(): bool
+    {
+        return $this->approval_status === UserApprovalStatus::Pending;
+    }
+
+    public function getIsApprovedAttribute(): bool
+    {
+        return $this->approval_status === UserApprovalStatus::Approved;
+    }
+
+    public function getIsRejectedAttribute(): bool
+    {
+        return $this->approval_status === UserApprovalStatus::Rejected;
     }
 
     /**
