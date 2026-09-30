@@ -63,8 +63,8 @@ class PengadaanForm extends Component
 
             $this->items = $pengadaan->items->map(fn ($item) => [
                 'id' => $item->id,
-                'nama_aset' => $item->nama_aset,
-                'kategori_aset' => $item->kategori_aset,
+                'nama_item' => $item->nama_item,
+                'kategori_item' => $item->kategori_item,
                 'qty' => $item->qty,
                 'satuan' => $item->satuan,
                 'harga_satuan' => number_format((float) $item->harga_satuan, 0, '.', ''),
@@ -112,8 +112,8 @@ class PengadaanForm extends Component
                     $fail('Total biaya melebihi batas maksimal Rp 99.999.999.999.999,99.');
                 }
             }],
-            'items.*.nama_aset' => 'required|string|max:255',
-            'items.*.kategori_aset' => 'nullable|string|max:255',
+            'items.*.nama_item' => 'required|string|max:255',
+            'items.*.kategori_item' => 'nullable|string|max:255',
             'items.*.qty' => 'required|integer|min:1',
             'items.*.satuan' => 'required|string|max:30',
             'items.*.harga_satuan' => 'required|numeric|min:0|max:99999999999999',
@@ -138,8 +138,8 @@ class PengadaanForm extends Component
             'cabang_id' => 'cabang',
             'tanggal_pengadaan' => 'tanggal pengadaan',
             'catatan' => 'catatan',
-            'items.*.nama_aset' => 'nama aset',
-            'items.*.kategori_aset' => 'kategori aset',
+            'items.*.nama_item' => 'nama item',
+            'items.*.kategori_item' => 'kategori item',
             'items.*.qty' => 'jumlah',
             'items.*.satuan' => 'satuan',
             'items.*.harga_satuan' => 'harga satuan',
@@ -194,8 +194,8 @@ class PengadaanForm extends Component
     {
         $this->items[] = [
             'id' => null,
-            'nama_aset' => '',
-            'kategori_aset' => '',
+            'nama_item' => '',
+            'kategori_item' => '',
             'qty' => 1,
             'satuan' => 'unit',
             'harga_satuan' => '',
@@ -286,8 +286,8 @@ class PengadaanForm extends Component
             ];
 
             $items = collect($this->items)->map(fn ($item) => [
-                'nama_aset' => $item['nama_aset'],
-                'kategori_aset' => $item['kategori_aset'] ?: null,
+                'nama_item' => $item['nama_item'],
+                'kategori_item' => $item['kategori_item'] ?: null,
                 'qty' => (int) $item['qty'],
                 'satuan' => $item['satuan'],
                 'harga_satuan' => (float) $item['harga_satuan'],

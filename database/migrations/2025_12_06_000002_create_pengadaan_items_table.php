@@ -11,8 +11,8 @@ return new class extends Migration
         Schema::create('pengadaan_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pengadaan_id')->constrained('pengadaans')->cascadeOnDelete();
-            $table->string('nama_aset');
-            $table->string('kategori_aset')->nullable();
+            $table->string('nama_item');
+            $table->string('kategori_item')->nullable();
             $table->unsignedInteger('qty')->default(1);
             $table->string('satuan', 30)->default('unit');
             $table->decimal('harga_satuan', 15, 2);

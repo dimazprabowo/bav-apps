@@ -48,8 +48,8 @@ class PengadaanSeeder extends Seeder
                 'tanggal' => now()->subDays(2),
                 'status' => PengadaanApprovalStatus::Pending,
                 'items' => [
-                    ['nama_aset' => 'Multimeter Digital Fluke 87V', 'kategori' => 'Alat Ukur Listrik', 'qty' => 2, 'satuan' => 'unit', 'harga' => 8500000],
-                    ['nama_aset' => 'Kabel Test Set Premium', 'kategori' => 'Aksesoris', 'qty' => 5, 'satuan' => 'set', 'harga' => 1250000],
+                    ['nama_item' => 'Multimeter Digital Fluke 87V', 'kategori' => 'Alat Ukur Listrik', 'qty' => 2, 'satuan' => 'unit', 'harga' => 8500000],
+                    ['nama_item' => 'Kabel Test Set Premium', 'kategori' => 'Aksesoris', 'qty' => 5, 'satuan' => 'set', 'harga' => 1250000],
                 ],
                 'evidences' => [
                     ['name' => 'Surat Penawaran PT Sumber Alat Teknik.pdf'],
@@ -67,7 +67,7 @@ class PengadaanSeeder extends Seeder
                 'status' => PengadaanApprovalStatus::Approved,
                 'approved_at' => now()->subDays(13),
                 'items' => [
-                    ['nama_aset' => 'Caliper Digital Mitutoyo 500-196-30', 'kategori' => 'Alat Ukur Dimensi', 'qty' => 3, 'satuan' => 'unit', 'harga' => 4200000],
+                    ['nama_item' => 'Caliper Digital Mitutoyo 500-196-30', 'kategori' => 'Alat Ukur Dimensi', 'qty' => 3, 'satuan' => 'unit', 'harga' => 4200000],
                 ],
                 'evidences' => [
                     ['name' => 'Quotation CV Kalibrasi Mandiri.pdf'],
@@ -84,8 +84,8 @@ class PengadaanSeeder extends Seeder
                 'status' => PengadaanApprovalStatus::Approved,
                 'approved_at' => now()->subDays(38),
                 'items' => [
-                    ['nama_aset' => 'Marine GPS Chartplotter Garmin', 'kategori' => 'Marine Electronics', 'qty' => 1, 'satuan' => 'unit', 'harga' => 25000000],
-                    ['nama_aset' => 'VHF Marine Radio Standard Horizon', 'kategori' => 'Marine Electronics', 'qty' => 2, 'satuan' => 'unit', 'harga' => 3500000],
+                    ['nama_item' => 'Marine GPS Chartplotter Garmin', 'kategori' => 'Marine Electronics', 'qty' => 1, 'satuan' => 'unit', 'harga' => 25000000],
+                    ['nama_item' => 'VHF Marine Radio Standard Horizon', 'kategori' => 'Marine Electronics', 'qty' => 2, 'satuan' => 'unit', 'harga' => 3500000],
                 ],
                 'evidences' => [
                     ['name' => 'Penawaran Marine Equipment.pdf'],
@@ -119,7 +119,7 @@ class PengadaanSeeder extends Seeder
                 'status' => PengadaanApprovalStatus::Approved,
                 'approved_at' => now()->subDays(58),
                 'items' => [
-                    ['nama_aset' => 'Thermohygrometer Testo 608-H1', 'kategori' => 'Alat Ukur Lingkungan', 'qty' => 4, 'satuan' => 'unit', 'harga' => 3200000],
+                    ['nama_item' => 'Thermohygrometer Testo 608-H1', 'kategori' => 'Alat Ukur Lingkungan', 'qty' => 4, 'satuan' => 'unit', 'harga' => 3200000],
                 ],
                 'evidences' => [
                     ['name' => 'PO Thermohygrometer.pdf'],
@@ -154,8 +154,8 @@ class PengadaanSeeder extends Seeder
                 'status' => PengadaanApprovalStatus::Approved,
                 'approved_at' => now()->subDays(18),
                 'items' => [
-                    ['nama_aset' => 'Bor Listrik Bosch GSB 13 RE', 'kategori' => 'Power Tools', 'qty' => 6, 'satuan' => 'unit', 'harga' => 1850000],
-                    ['nama_aset' => 'Gerinda Tangan Makita 9555H', 'kategori' => 'Power Tools', 'qty' => 4, 'satuan' => 'unit', 'harga' => 1400000],
+                    ['nama_item' => 'Bor Listrik Bosch GSB 13 RE', 'kategori' => 'Power Tools', 'qty' => 6, 'satuan' => 'unit', 'harga' => 1850000],
+                    ['nama_item' => 'Gerinda Tangan Makita 9555H', 'kategori' => 'Power Tools', 'qty' => 4, 'satuan' => 'unit', 'harga' => 1400000],
                 ],
                 'evidences' => [
                     ['name' => 'Quotation Mitroteknik.pdf'],
@@ -188,7 +188,7 @@ class PengadaanSeeder extends Seeder
                 'status' => PengadaanApprovalStatus::Approved,
                 'approved_at' => now()->subDays(48),
                 'items' => [
-                    ['nama_aset' => 'Clamp Meter Fluke 376 FC', 'kategori' => 'Alat Ukur Listrik', 'qty' => 2, 'satuan' => 'unit', 'harga' => 9500000],
+                    ['nama_item' => 'Clamp Meter Fluke 376 FC', 'kategori' => 'Alat Ukur Listrik', 'qty' => 2, 'satuan' => 'unit', 'harga' => 9500000],
                 ],
                 'evidences' => [
                     ['name' => 'PO Clamp Meter.pdf'],
@@ -223,7 +223,7 @@ class PengadaanSeeder extends Seeder
                 'approved_at' => now()->subDays(8),
                 'rejection_reason' => 'Anggaran Q1 sudah habis, mohon diajukan ulang di Q2.',
                 'items' => [
-                    ['nama_aset' => 'Pressure Gauge WIKA 232.50 (Replacement)', 'kategori' => 'Alat Ukur Tekanan', 'qty' => 1, 'satuan' => 'unit', 'harga' => 1800000],
+                    ['nama_item' => 'Pressure Gauge WIKA 232.50 (Replacement)', 'kategori' => 'Alat Ukur Tekanan', 'qty' => 1, 'satuan' => 'unit', 'harga' => 1800000],
                 ],
                 'evidences' => [],
                 'invoices' => [],
@@ -238,8 +238,8 @@ class PengadaanSeeder extends Seeder
                 'status' => PengadaanApprovalStatus::Approved,
                 'approved_at' => now()->subDays(73),
                 'items' => [
-                    ['nama_aset' => 'Helm Safety SNI (Pack 10pcs)', 'kategori' => 'Safety Equipment', 'qty' => 10, 'satuan' => 'pack', 'harga' => 1500000],
-                    ['nama_aset' => 'Safety Shoes Steel Toe', 'kategori' => 'Safety Equipment', 'qty' => 20, 'satuan' => 'pasang', 'harga' => 650000],
+                    ['nama_item' => 'Helm Safety SNI (Pack 10pcs)', 'kategori' => 'Safety Equipment', 'qty' => 10, 'satuan' => 'pack', 'harga' => 1500000],
+                    ['nama_item' => 'Safety Shoes Steel Toe', 'kategori' => 'Safety Equipment', 'qty' => 20, 'satuan' => 'pasang', 'harga' => 650000],
                 ],
                 'evidences' => [
                     ['name' => 'Penawaran Safety Pro.pdf'],
@@ -265,7 +265,7 @@ class PengadaanSeeder extends Seeder
                 'status' => PengadaanApprovalStatus::Approved,
                 'approved_at' => now()->subDays(23),
                 'items' => [
-                    ['nama_aset' => 'Trolley Hydraulic 2 Ton', 'kategori' => 'Material Handling', 'qty' => 2, 'satuan' => 'unit', 'harga' => 7500000],
+                    ['nama_item' => 'Trolley Hydraulic 2 Ton', 'kategori' => 'Material Handling', 'qty' => 2, 'satuan' => 'unit', 'harga' => 7500000],
                 ],
                 'evidences' => [
                     ['name' => 'PO Trolley Hydraulic.pdf'],
@@ -300,10 +300,10 @@ class PengadaanSeeder extends Seeder
                 'status' => PengadaanApprovalStatus::Approved,
                 'approved_at' => now()->subDays(88),
                 'items' => [
-                    ['nama_aset' => 'Multimeter Digital Fluke 87V', 'kategori' => 'Alat Ukur Listrik', 'qty' => 1, 'satuan' => 'unit', 'harga' => 8500000],
-                    ['nama_aset' => 'Caliper Digital Mitutoyo 500-196-30', 'kategori' => 'Alat Ukur Dimensi', 'qty' => 1, 'satuan' => 'unit', 'harga' => 4200000],
-                    ['nama_aset' => 'Toolbox Besi 5 Laci', 'kategori' => 'Storage', 'qty' => 2, 'satuan' => 'unit', 'harga' => 2500000],
-                    ['nama_aset' => 'Multimeter Test Lead Set', 'kategori' => 'Aksesoris', 'qty' => 10, 'satuan' => 'set', 'harga' => 300000],
+                    ['nama_item' => 'Multimeter Digital Fluke 87V', 'kategori' => 'Alat Ukur Listrik', 'qty' => 1, 'satuan' => 'unit', 'harga' => 8500000],
+                    ['nama_item' => 'Caliper Digital Mitutoyo 500-196-30', 'kategori' => 'Alat Ukur Dimensi', 'qty' => 1, 'satuan' => 'unit', 'harga' => 4200000],
+                    ['nama_item' => 'Toolbox Besi 5 Laci', 'kategori' => 'Storage', 'qty' => 2, 'satuan' => 'unit', 'harga' => 2500000],
+                    ['nama_item' => 'Multimeter Test Lead Set', 'kategori' => 'Aksesoris', 'qty' => 10, 'satuan' => 'set', 'harga' => 300000],
                 ],
                 'evidences' => [
                     ['name' => 'Surat Penawaran PT Sumber Alat Teknik.pdf'],
@@ -355,7 +355,7 @@ class PengadaanSeeder extends Seeder
                 'status' => PengadaanApprovalStatus::Approved,
                 'approved_at' => now()->subDays(43),
                 'items' => [
-                    ['nama_aset' => 'Oscilloscope Rigol DS1054Z', 'kategori' => 'Alat Ukur Elektronik', 'qty' => 1, 'satuan' => 'unit', 'harga' => 12000000],
+                    ['nama_item' => 'Oscilloscope Rigol DS1054Z', 'kategori' => 'Alat Ukur Elektronik', 'qty' => 1, 'satuan' => 'unit', 'harga' => 12000000],
                 ],
                 'evidences' => [
                     ['name' => 'PO Oscilloscope Rigol.pdf'],
@@ -402,7 +402,7 @@ class PengadaanSeeder extends Seeder
                 'tanggal' => now()->subDay(),
                 'status' => PengadaanApprovalStatus::Pending,
                 'items' => [
-                    ['nama_aset' => 'Anemometer Testo 405i', 'kategori' => 'Alat Ukur Lingkungan', 'qty' => 3, 'satuan' => 'unit', 'harga' => 2800000],
+                    ['nama_item' => 'Anemometer Testo 405i', 'kategori' => 'Alat Ukur Lingkungan', 'qty' => 3, 'satuan' => 'unit', 'harga' => 2800000],
                 ],
                 'evidences' => [
                     ['name' => 'Quotation Testo.pdf', 'processing' => true],
@@ -426,8 +426,8 @@ class PengadaanSeeder extends Seeder
                     $subtotal = bcmul($item['harga'], (string) $item['qty'], 2);
                     $totalBiaya = bcadd($totalBiaya, $subtotal, 2);
                     $itemsData[] = [
-                        'nama_aset' => $item['nama_aset'],
-                        'kategori_aset' => $item['kategori'],
+                        'nama_item' => $item['nama_item'],
+                        'kategori_item' => $item['kategori'],
                         'qty' => $item['qty'],
                         'satuan' => $item['satuan'],
                         'harga_satuan' => $item['harga'],
@@ -456,7 +456,7 @@ class PengadaanSeeder extends Seeder
                     PengadaanItem::firstOrCreate(
                         [
                             'pengadaan_id' => $pengadaan->id,
-                            'nama_aset' => $itemData['nama_aset'],
+                            'nama_item' => $itemData['nama_item'],
                             'qty' => $itemData['qty'],
                         ],
                         $itemData

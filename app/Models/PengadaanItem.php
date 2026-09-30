@@ -12,8 +12,8 @@ class PengadaanItem extends Model
 
     protected $fillable = [
         'pengadaan_id',
-        'nama_aset',
-        'kategori_aset',
+        'nama_item',
+        'kategori_item',
         'qty',
         'satuan',
         'harga_satuan',

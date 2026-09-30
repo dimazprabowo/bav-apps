@@ -45,14 +45,14 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <x-input-label for="items.{{ $index }}.nama_aset" value="Nama Aset" :required="true" />
-                            <x-text-input wire:model="items.{{ $index }}.nama_aset" type="text" class="mt-1 block w-full" placeholder="Mis. Multimeter Digital" />
-                            <x-input-error :messages="$errors->get('items.'.$index.'.nama_aset')" class="mt-2" />
+                            <x-input-label for="items.{{ $index }}.nama_item" value="Nama Item" :required="true" />
+                            <x-text-input wire:model="items.{{ $index }}.nama_item" type="text" class="mt-1 block w-full" placeholder="Mis. Multimeter Digital" />
+                            <x-input-error :messages="$errors->get('items.'.$index.'.nama_item')" class="mt-2" />
                         </div>
                         <div>
-                            <x-input-label for="items.{{ $index }}.kategori_aset" value="Kategori Aset" />
-                            <x-text-input wire:model="items.{{ $index }}.kategori_aset" type="text" class="mt-1 block w-full" placeholder="Mis. Alat Ukur" />
-                            <x-input-error :messages="$errors->get('items.'.$index.'.kategori_aset')" class="mt-2" />
+                            <x-input-label for="items.{{ $index }}.kategori_item" value="Kategori Item" />
+                            <x-text-input wire:model="items.{{ $index }}.kategori_item" type="text" class="mt-1 block w-full" placeholder="Mis. Alat Ukur" />
+                            <x-input-error :messages="$errors->get('items.'.$index.'.kategori_item')" class="mt-2" />
                         </div>
                         <div>
                             <x-input-label for="items.{{ $index }}.qty" value="Qty" :required="true" />

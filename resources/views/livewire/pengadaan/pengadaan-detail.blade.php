@@ -45,16 +45,16 @@
         @endif
     </div>
 
-    {{-- Item Aset --}}
+    {{-- Item --}}
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Item Aset ({{ $pengadaan->items->count() }})</h3>
+            <h3 class="text-sm font-semibold text-gray-900 dark:text-white">Item ({{ $pengadaan->items->count() }})</h3>
         </div>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead class="bg-gray-50 dark:bg-gray-900">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nama Aset</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Nama Item</th>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Kategori</th>
                         <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Qty</th>
                         <th class="px-6 py-3 text-right text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Harga Satuan</th>
@@ -64,15 +64,15 @@
                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                     @forelse($pengadaan->items as $item)
                         <tr wire:key="item-{{ $item->id }}">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $item->nama_aset }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $item->kategori_aset ?? '-' }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $item->nama_item }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $item->kategori_item ?? '-' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-right">{{ $item->qty }} {{ $item->satuan }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-right">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-white text-right">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-gray-400">Belum ada item aset</td>
+                            <td colspan="5" class="px-6 py-8 text-center text-sm text-gray-500 dark:text-gray-400">Belum ada item</td>
                         </tr>
                     @endforelse
                 </tbody>

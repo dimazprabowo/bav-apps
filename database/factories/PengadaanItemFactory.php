@@ -22,8 +22,8 @@ class PengadaanItemFactory extends Factory
 
         return [
             'pengadaan_id' => Pengadaan::factory(),
-            'nama_aset' => fake()->words(3, true),
-            'kategori_aset' => fake()->word(),
+            'nama_item' => fake()->words(3, true),
+            'kategori_item' => fake()->word(),
             'qty' => $qty,
             'satuan' => 'unit',
             'harga_satuan' => $harga,

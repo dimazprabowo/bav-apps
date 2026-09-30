@@ -108,8 +108,8 @@ Model: `App\Models\Pengadaan` — `HasEncryptedRouteKey`, `HasFactory`, `LogsAct
 | id | bigint PK | |
 | pengadaan_id | FK → pengadaans, `cascadeOnDelete()` | |
 | alat_id | FK → alats, nullable, `nullOnDelete()` | Link opsional |
-| nama_aset | string | **Selalu diisi** (denormalized — riwayat tetap utuh walau `Alat` dihapus/rename) |
-| kategori_aset | string, nullable | Bebas teks untuk saat ini |
+| nama_item | string | **Selalu diisi** (denormalized — riwayat tetap utuh walau `Alat` dihapus/rename) |
+| kategori_item | string, nullable | Bebas teks untuk saat ini |
 | qty | integer | |
 | satuan | string, default `'unit'` | |
 | harga_satuan | decimal(15,2) | |
