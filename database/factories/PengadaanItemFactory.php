@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\KategoriItem;
 use App\Models\Pengadaan;
 use App\Models\Satuan;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -24,7 +25,7 @@ class PengadaanItemFactory extends Factory
         return [
             'pengadaan_id' => Pengadaan::factory(),
             'nama_item' => fake()->words(3, true),
-            'kategori_item' => fake()->word(),
+            'kategori_item_id' => KategoriItem::factory(),
             'qty' => $qty,
             'satuan_id' => Satuan::factory(),
             'harga_satuan' => $harga,

@@ -5,6 +5,7 @@ namespace App\Livewire\MasterData;
 use App\Enums\VendorStatus;
 use App\Exports\VendorExport;
 use App\Livewire\Traits\HasNotification;
+use App\Models\KategoriItem;
 use App\Models\Klaster;
 use App\Models\Vendor;
 use App\Services\VendorService;
@@ -48,6 +49,8 @@ class VendorManagement extends Component
 
     public $status = 'aktif';
 
+    public $kategori_item_ids = [];
+
     public $showDeleteModal = false;
 
     public $deletingVendorId;
@@ -69,8 +72,17 @@ class VendorManagement extends Component
             'phone' => 'nullable|string|max:20',
             'email' => 'nullable|email|max:255',
             'address' => 'nullable|string|max:1000',
-            'npwp' => 'nullable|string|max:30',
+            'npwp' => ['nullable', 'string', 'max:30', 'regex:/^\d{2}\.\d{3}\.\d{3}\.\d-\d{3,4}\.\d{3}$/'],
             'status' => ['required', 'string', 'in:'.implode(',', VendorStatus::values())],
+            'kategori_item_ids' => 'nullable|array',
+            'kategori_item_ids.*' => 'exists:kategori_items,id',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'npwp.regex' => 'Format NPWP tidak valid. Gunakan 15 atau 16 digit (mis. 00.000.000.0-000.000).',
         ];
     }
 
@@ -86,6 +98,7 @@ class VendorManagement extends Component
             'address' => 'alamat',
             'npwp' => 'NPWP',
             'status' => 'status',
+            'kategori_item_ids' => 'kategori item',
         ];
     }
 
@@ -125,6 +138,15 @@ class VendorManagement extends Component
         ])->toArray();
     }
 
+    public function getKategoriItemOptionsProperty(): array
+    {
+        return KategoriItem::active()->orderBy('name')->get()->map(fn ($k) => [
+            'value' => $k->id,
+            'label' => $k->name,
+            'sublabel' => $k->code,
+        ])->toArray();
+    }
+
     public function create()
     {
         $this->authorize('create', Vendor::class);
@@ -148,6 +170,7 @@ class VendorManagement extends Component
         $this->address = $vendor->address;
         $this->npwp = $vendor->npwp;
         $this->status = $vendor->status->value;
+        $this->kategori_item_ids = $vendor->kategoriItems->pluck('id')->toArray();
 
         $this->editMode = true;
         $this->showModal = true;
@@ -178,11 +201,11 @@ class VendorManagement extends Component
             if ($this->editMode) {
                 $vendor = Vendor::findOrFail($this->vendorId);
                 $this->authorize('update', $vendor);
-                $service->update($vendor, $data);
+                $service->update($vendor, $data, $this->kategori_item_ids);
                 $message = 'Vendor berhasil diupdate!';
             } else {
                 $this->authorize('create', Vendor::class);
-                $service->create($data);
+                $service->create($data, $this->kategori_item_ids);
                 $message = 'Vendor berhasil ditambahkan!';
             }
 
@@ -246,7 +269,7 @@ class VendorManagement extends Component
     {
         $this->reset([
             'vendorId', 'klaster_id', 'code', 'name', 'contact_person', 'phone',
-            'email', 'address', 'npwp', 'status',
+            'email', 'address', 'npwp', 'status', 'kategori_item_ids',
         ]);
         $this->status = VendorStatus::Aktif->value;
     }

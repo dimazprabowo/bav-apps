@@ -2,7 +2,7 @@
 
 namespace App\Exports;
 
-use App\Models\Vendor;
+use App\Models\KategoriItem;
 use App\Traits\HasDynamicLike;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromQuery;
@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class VendorExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMapping, WithStyles
+class KategoriItemExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMapping, WithStyles
 {
     use Exportable, HasDynamicLike;
 
@@ -28,16 +28,13 @@ class VendorExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMappi
 
     public function query()
     {
-        $query = Vendor::with(['klaster', 'kategoriItems']);
+        $query = KategoriItem::withCount(['vendors', 'pengadaanItems']);
 
         if ($this->search) {
             $operator = $this->getLikeOperator();
             $query->where(function ($q) use ($operator) {
                 $q->where('code', $operator, "%{$this->search}%")
-                    ->orWhere('name', $operator, "%{$this->search}%")
-                    ->orWhere('contact_person', $operator, "%{$this->search}%")
-                    ->orWhere('phone', $operator, "%{$this->search}%")
-                    ->orWhere('email', $operator, "%{$this->search}%");
+                    ->orWhere('name', $operator, "%{$this->search}%");
             });
         }
 
@@ -53,35 +50,27 @@ class VendorExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMappi
         return [
             'No',
             'Kode',
-            'Nama Vendor',
-            'Klaster',
-            'Kategori Item',
-            'Kontak',
-            'Telepon',
-            'Email',
-            'NPWP',
+            'Nama Kategori Item',
+            'Deskripsi',
+            'Jumlah Vendor',
             'Status',
             'Tanggal Dibuat',
         ];
     }
 
-    public function map($vendor): array
+    public function map($kategoriItem): array
     {
         static $no = 0;
         $no++;
 
         return [
             $no,
-            $vendor->code,
-            $vendor->name,
-            $vendor->klaster->name ?? '-',
-            $vendor->kategoriItems->pluck('name')->implode(', ') ?: '-',
-            $vendor->contact_person ?? '-',
-            $vendor->phone ?? '-',
-            $vendor->email ?? '-',
-            $vendor->npwp ?? '-',
-            $vendor->status->label(),
-            $vendor->created_at->format('d/m/Y H:i'),
+            $kategoriItem->code,
+            $kategoriItem->name,
+            $kategoriItem->description ?? '-',
+            $kategoriItem->vendors_count,
+            $kategoriItem->status->label(),
+            $kategoriItem->created_at->format('d/m/Y H:i'),
         ];
     }
 

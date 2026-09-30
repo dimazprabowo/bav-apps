@@ -11,6 +11,7 @@ use App\Models\Vendor;
 use App\Services\FileStorageService;
 use App\Services\PengadaanService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 
@@ -65,7 +66,7 @@ class PengadaanForm extends Component
             $this->items = $pengadaan->items->map(fn ($item) => [
                 'id' => $item->id,
                 'nama_item' => $item->nama_item,
-                'kategori_item' => $item->kategori_item,
+                'kategori_item_id' => $item->kategori_item_id,
                 'qty' => $item->qty,
                 'satuan_id' => $item->satuan_id,
                 'harga_satuan' => number_format((float) $item->harga_satuan, 0, '.', ''),
@@ -114,7 +115,10 @@ class PengadaanForm extends Component
                 }
             }],
             'items.*.nama_item' => 'required|string|max:255',
-            'items.*.kategori_item' => 'nullable|string|max:255',
+            'items.*.kategori_item_id' => [
+                'nullable',
+                Rule::exists('kategori_item_vendor', 'kategori_item_id')->where('vendor_id', $this->vendor_id),
+            ],
             'items.*.qty' => 'required|integer|min:1',
             'items.*.satuan_id' => 'required|exists:satuans,id',
             'items.*.harga_satuan' => 'required|numeric|min:0|max:99999999999999',
@@ -140,7 +144,7 @@ class PengadaanForm extends Component
             'tanggal_pengadaan' => 'tanggal pengadaan',
             'catatan' => 'catatan',
             'items.*.nama_item' => 'nama item',
-            'items.*.kategori_item' => 'kategori item',
+            'items.*.kategori_item_id' => 'kategori item',
             'items.*.qty' => 'jumlah',
             'items.*.satuan_id' => 'satuan',
             'items.*.harga_satuan' => 'harga satuan',
@@ -172,6 +176,38 @@ class PengadaanForm extends Component
     public function updatedKlasterId(): void
     {
         $this->vendor_id = null;
+        $this->resetItemKategoriIds();
+    }
+
+    public function updatedVendorId(): void
+    {
+        // Kategori item tergantung vendor — reset pilihan kategori di semua item
+        $this->resetItemKategoriIds();
+    }
+
+    private function resetItemKategoriIds(): void
+    {
+        foreach ($this->items as $index => $item) {
+            $this->items[$index]['kategori_item_id'] = null;
+        }
+    }
+
+    public function getKategoriItemOptionsProperty(): array
+    {
+        if (! $this->vendor_id) {
+            return [];
+        }
+
+        return Vendor::find($this->vendor_id)?->kategoriItems()
+            ->active()
+            ->orderBy('name')
+            ->get()
+            ->map(fn ($k) => [
+                'value' => $k->id,
+                'label' => $k->name,
+                'sublabel' => $k->code,
+            ])
+            ->toArray() ?? [];
     }
 
     public function getCabangOptionsProperty(): array
@@ -205,7 +241,7 @@ class PengadaanForm extends Component
         $this->items[] = [
             'id' => null,
             'nama_item' => '',
-            'kategori_item' => '',
+            'kategori_item_id' => null,
             'qty' => 1,
             'satuan_id' => Satuan::active()->where('code', 'UNIT')->value('id'),
             'harga_satuan' => '',
@@ -297,7 +333,7 @@ class PengadaanForm extends Component
 
             $items = collect($this->items)->map(fn ($item) => [
                 'nama_item' => $item['nama_item'],
-                'kategori_item' => $item['kategori_item'] ?: null,
+                'kategori_item_id' => $item['kategori_item_id'] ?: null,
                 'qty' => (int) $item['qty'],
                 'satuan_id' => $item['satuan_id'],
                 'harga_satuan' => (float) $item['harga_satuan'],

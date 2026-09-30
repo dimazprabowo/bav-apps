@@ -13,7 +13,7 @@ class PengadaanItem extends Model
     protected $fillable = [
         'pengadaan_id',
         'nama_item',
-        'kategori_item',
+        'kategori_item_id',
         'qty',
         'satuan_id',
         'harga_satuan',
@@ -37,5 +37,11 @@ class PengadaanItem extends Model
     {
         // withTrashed: satuan yang sudah soft-deleted tetap tampil di riwayat item
         return $this->belongsTo(Satuan::class)->withTrashed();
+    }
+
+    public function kategoriItem(): BelongsTo
+    {
+        // withTrashed: kategori yang sudah soft-deleted tetap tampil di riwayat item
+        return $this->belongsTo(KategoriItem::class)->withTrashed();
     }
 }

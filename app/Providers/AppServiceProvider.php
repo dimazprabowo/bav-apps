@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Cabang;
 use App\Models\Chat;
 use App\Models\ChatMessage;
+use App\Models\KategoriItem;
 use App\Models\Klaster;
 use App\Models\Notification;
 use App\Models\Pengadaan;
@@ -15,6 +16,7 @@ use App\Models\Vendor;
 use App\Policies\CabangPolicy;
 use App\Policies\ChatPolicy;
 use App\Policies\DashboardPolicy;
+use App\Policies\KategoriItemPolicy;
 use App\Policies\KlasterPolicy;
 use App\Policies\NotificationPolicy;
 use App\Policies\PengadaanPolicy;
@@ -60,6 +62,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(ChatMessage::class, ChatPolicy::class);
         Gate::policy(Vendor::class, VendorPolicy::class);
         Gate::policy(Satuan::class, SatuanPolicy::class);
+        Gate::policy(KategoriItem::class, KategoriItemPolicy::class);
         Gate::policy(Pengadaan::class, PengadaanPolicy::class);
 
         // Dashboard policy — bound to a string key (no Eloquent model)

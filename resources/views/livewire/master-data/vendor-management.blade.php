@@ -174,6 +174,11 @@
                                     <x-input-error :messages="$errors->get('klaster_id')" class="mt-2" />
                                 </div>
                                 <div class="sm:col-span-2">
+                                    <x-input-label for="kategori_item_ids" value="Kategori Item" />
+                                    <x-multi-searchable-select wire:model="kategori_item_ids" :options="$this->kategoriItemOptions" placeholder="Pilih kategori item" searchPlaceholder="Cari kategori item..." wire:key="vendor-kategori-items" />
+                                    <x-input-error :messages="$errors->get('kategori_item_ids')" class="mt-2" />
+                                </div>
+                                <div class="sm:col-span-2">
                                     <x-input-label for="address" value="Alamat" />
                                     <x-text-input wire:model="address" id="address" type="text" class="mt-1 block w-full" placeholder="Alamat lengkap" />
                                     <x-input-error :messages="$errors->get('address')" class="mt-2" />
@@ -195,7 +200,7 @@
                                 </div>
                                 <div>
                                     <x-input-label for="npwp" value="NPWP" />
-                                    <x-text-input wire:model="npwp" id="npwp" type="text" class="mt-1 block w-full" placeholder="00.000.000.0-000.000" />
+                                    <x-npwp-input wire-model="npwp" id="npwp" />
                                     <x-input-error :messages="$errors->get('npwp')" class="mt-2" />
                                 </div>
                                 <div>

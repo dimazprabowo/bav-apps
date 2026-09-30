@@ -4,6 +4,7 @@ namespace App\Livewire\Traits;
 
 use App\Models\Cabang;
 use App\Models\Chat;
+use App\Models\KategoriItem;
 use App\Models\Klaster;
 use App\Models\Notification;
 use App\Models\Pengadaan;
@@ -34,6 +35,7 @@ trait HasMenuItems
             'cabang_view' => Gate::allows('viewAny', Cabang::class),
             'klaster_view' => Gate::allows('viewAny', Klaster::class),
             'satuan_view' => Gate::allows('viewAny', Satuan::class),
+            'kategori_item_view' => Gate::allows('viewAny', KategoriItem::class),
             'vendor_view' => Gate::allows('viewAny', Vendor::class),
             'pengadaan_view' => Gate::allows('viewAny', Pengadaan::class),
             'notifications_view' => Gate::allows('viewAny', Notification::class),
@@ -76,6 +78,13 @@ trait HasMenuItems
                 'name' => 'Satuan',
                 'route' => 'master-data.satuans',
                 'active' => $req->routeIs('master-data.satuans'),
+            ];
+        }
+        if ($perms['kategori_item_view']) {
+            $masterDataChildren[] = [
+                'name' => 'Kategori Item',
+                'route' => 'master-data.kategori-items',
+                'active' => $req->routeIs('master-data.kategori-items'),
             ];
         }
         if ($perms['vendor_view']) {

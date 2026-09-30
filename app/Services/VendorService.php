@@ -6,6 +6,7 @@ use App\Enums\VendorStatus;
 use App\Models\Vendor;
 use App\Traits\HasDynamicLike;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 class VendorService
 {
@@ -16,7 +17,7 @@ class VendorService
         ?string $statusFilter = null,
         int $perPage = 15
     ): LengthAwarePaginator {
-        $query = Vendor::with('klaster')->withCount('pengadaans');
+        $query = Vendor::with('klaster')->withCount(['pengadaans', 'kategoriItems']);
 
         if ($search) {
             $operator = $this->getLikeOperator();
@@ -36,22 +37,33 @@ class VendorService
         return $query->orderBy('name')->paginate($perPage);
     }
 
-    public function create(array $data): Vendor
+    public function create(array $data, array $kategoriItemIds = []): Vendor
     {
         $data['code'] = strtoupper($data['code']);
 
-        return Vendor::create($data);
+        return DB::transaction(function () use ($data, $kategoriItemIds) {
+            $vendor = Vendor::create($data);
+            $vendor->kategoriItems()->sync($kategoriItemIds);
+
+            return $vendor;
+        });
     }
 
-    public function update(Vendor $vendor, array $data): Vendor
+    public function update(Vendor $vendor, array $data, ?array $kategoriItemIds = null): Vendor
     {
         if (isset($data['code'])) {
             $data['code'] = strtoupper($data['code']);
         }
 
-        $vendor->update($data);
+        return DB::transaction(function () use ($vendor, $data, $kategoriItemIds) {
+            $vendor->update($data);
 
-        return $vendor;
+            if ($kategoriItemIds !== null) {
+                $vendor->kategoriItems()->sync($kategoriItemIds);
+            }
+
+            return $vendor;
+        });
     }
 
     public function delete(Vendor $vendor): void

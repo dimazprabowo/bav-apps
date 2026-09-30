@@ -72,7 +72,7 @@ class PengadaanService
     /**
      * Create a Pengadaan with nested items and evidences in a single transaction.
      *
-     * @param  array<int, array{nama_item: string, kategori_item: ?string, qty: int, satuan_id: int, harga_satuan: float}>  $items
+     * @param  array<int, array{nama_item: string, kategori_item_id: ?int, qty: int, satuan_id: int, harga_satuan: float}>  $items
      * @param  array<int, array{name: string, temp_path: string, original_name: string}>  $evidences
      */
     public function create(array $data, array $items, array $evidences = []): Pengadaan
@@ -98,7 +98,7 @@ class PengadaanService
     /**
      * Update a Pengadaan header + fully replace its items + apply evidence changes.
      *
-     * @param  array<int, array{id: ?int, nama_item: string, kategori_item: ?string, qty: int, satuan_id: int, harga_satuan: float}>  $items
+     * @param  array<int, array{id: ?int, nama_item: string, kategori_item_id: ?int, qty: int, satuan_id: int, harga_satuan: float}>  $items
      * @param  array<int, array{name: string, temp_path: string, original_name: string}>  $newEvidences
      * @param  array<int>  $deletedEvidenceIds
      */
@@ -143,7 +143,7 @@ class PengadaanService
 
             $pengadaan->items()->create([
                 'nama_item' => $item['nama_item'],
-                'kategori_item' => $item['kategori_item'] ?? null,
+                'kategori_item_id' => $item['kategori_item_id'] ?? null,
                 'qty' => $qty,
                 'satuan_id' => $item['satuan_id'],
                 'harga_satuan' => $hargaSatuan,

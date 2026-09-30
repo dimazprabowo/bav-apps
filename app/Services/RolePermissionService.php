@@ -101,6 +101,14 @@ class RolePermissionService
                 ['name' => 'satuan_export_excel', 'label' => 'Export Excel Satuan'],
                 ['name' => 'satuan_export_pdf',   'label' => 'Export PDF Satuan'],
             ],
+            'Kategori Item' => [
+                ['name' => 'kategori_item_view',         'label' => 'Lihat Kategori Item'],
+                ['name' => 'kategori_item_create',       'label' => 'Tambah Kategori Item'],
+                ['name' => 'kategori_item_update',       'label' => 'Edit Kategori Item'],
+                ['name' => 'kategori_item_delete',       'label' => 'Hapus Kategori Item'],
+                ['name' => 'kategori_item_export_excel', 'label' => 'Export Excel Kategori Item'],
+                ['name' => 'kategori_item_export_pdf',   'label' => 'Export PDF Kategori Item'],
+            ],
             'Pengadaan Aset' => [
                 ['name' => 'vendor_view',         'label' => 'Lihat Vendor'],
                 ['name' => 'vendor_create',       'label' => 'Tambah Vendor'],

@@ -1,4 +1,4 @@
-@props(['items', 'totalBiaya' => 0, 'satuanOptions' => []])
+@props(['items', 'totalBiaya' => 0, 'satuanOptions' => [], 'kategoriItemOptions' => [], 'vendorId' => null])
 
 <div>
     <div class="flex items-center justify-between mb-4">
@@ -50,9 +50,15 @@
                             <x-input-error :messages="$errors->get('items.'.$index.'.nama_item')" class="mt-2" />
                         </div>
                         <div>
-                            <x-input-label for="items.{{ $index }}.kategori_item" value="Kategori Item" />
-                            <x-text-input wire:model="items.{{ $index }}.kategori_item" type="text" class="mt-1 block w-full" placeholder="Mis. Alat Ukur" />
-                            <x-input-error :messages="$errors->get('items.'.$index.'.kategori_item')" class="mt-2" />
+                            <x-input-label for="items.{{ $index }}.kategori_item_id" value="Kategori Item" />
+                            <x-searchable-select wire:model="items.{{ $index }}.kategori_item_id"
+                                :options="$kategoriItemOptions"
+                                :disabled="!$vendorId"
+                                placeholder="{{ $vendorId ? 'Pilih kategori item' : 'Pilih vendor terlebih dahulu' }}"
+                                searchPlaceholder="Cari kategori item..."
+                                emptyText="Vendor belum punya kategori item"
+                                wire:key="kategori-select-{{ $vendorId ?? 'none' }}-{{ $item['id'] ?? 'new-'.$index }}" />
+                            <x-input-error :messages="$errors->get('items.'.$index.'.kategori_item_id')" class="mt-2" />
                         </div>
                         <div>
                             <x-input-label for="items.{{ $index }}.qty" value="Qty" :required="true" />

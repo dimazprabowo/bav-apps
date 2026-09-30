@@ -109,7 +109,7 @@ Model: `App\Models\Pengadaan` — `HasEncryptedRouteKey`, `HasFactory`, `LogsAct
 | pengadaan_id | FK → pengadaans, `cascadeOnDelete()` | |
 | alat_id | FK → alats, nullable, `nullOnDelete()` | Link opsional |
 | nama_item | string | **Selalu diisi** (denormalized — riwayat tetap utuh walau `Alat` dihapus/rename) |
-| kategori_item | string, nullable | Bebas teks untuk saat ini |
+| kategori_item_id | FK `kategori_items`, nullable | Dropdown difilter kategori milik vendor terpilih (pivot `kategori_item_vendor`) |
 | qty | integer | |
 | satuan_id | FK → satuans, `restrictOnDelete()` | Master data satuan |
 | harga_satuan | decimal(15,2) | |

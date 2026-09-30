@@ -56,6 +56,8 @@ class PengadaanManagementTest extends TestCase
     {
         $user = $this->actingUserWithPermissions(['pengadaan_view', 'pengadaan_create']);
         $vendor = Vendor::factory()->create();
+        $kategoriItem = \App\Models\KategoriItem::factory()->create();
+        $vendor->kategoriItems()->sync([$kategoriItem->id]);
 
         $this->actingAs($user);
 
@@ -65,7 +67,7 @@ class PengadaanManagementTest extends TestCase
             ->set('vendor_id', $vendor->id)
             ->set('tanggal_pengadaan', now()->format('Y-m-d'))
             ->set('items', [
-                ['id' => null, 'nama_item' => 'Laptop', 'kategori_item' => 'IT', 'qty' => 2, 'satuan_id' => \App\Models\Satuan::factory()->create()->id, 'harga_satuan' => '10000000'],
+                ['id' => null, 'nama_item' => 'Laptop', 'kategori_item_id' => $kategoriItem->id, 'qty' => 2, 'satuan_id' => \App\Models\Satuan::factory()->create()->id, 'harga_satuan' => '10000000'],
             ])
             ->call('save')
             ->assertHasNoErrors();
@@ -80,6 +82,7 @@ class PengadaanManagementTest extends TestCase
         $this->assertDatabaseHas('pengadaan_items', [
             'pengadaan_id' => $pengadaan->id,
             'nama_item' => 'Laptop',
+            'kategori_item_id' => $kategoriItem->id,
             'qty' => 2,
             'subtotal' => 20000000,
         ]);
@@ -102,6 +105,47 @@ class PengadaanManagementTest extends TestCase
 
         $options = collect($component->instance()->vendorOptions);
         $this->assertEquals([$vendorA->id], $options->pluck('value')->all());
+    }
+
+    public function test_kategori_item_options_filtered_by_selected_vendor(): void
+    {
+        $user = $this->actingUserWithPermissions(['pengadaan_view', 'pengadaan_create']);
+        $vendorA = Vendor::factory()->create();
+        $vendorB = Vendor::factory()->create();
+        $kategoriA = \App\Models\KategoriItem::factory()->create();
+        $kategoriB = \App\Models\KategoriItem::factory()->create();
+        $vendorA->kategoriItems()->sync([$kategoriA->id]);
+        $vendorB->kategoriItems()->sync([$kategoriB->id]);
+
+        $this->actingAs($user);
+
+        $component = Livewire::test(PengadaanForm::class);
+        $this->assertEmpty($component->instance()->kategoriItemOptions);
+
+        $component->set('vendor_id', $vendorA->id);
+
+        $options = collect($component->instance()->kategoriItemOptions);
+        $this->assertEquals([$kategoriA->id], $options->pluck('value')->all());
+    }
+
+    public function test_item_kategori_must_belong_to_selected_vendor(): void
+    {
+        $user = $this->actingUserWithPermissions(['pengadaan_view', 'pengadaan_create']);
+        $vendor = Vendor::factory()->create();
+        $otherKategori = \App\Models\KategoriItem::factory()->create();
+
+        $this->actingAs($user);
+
+        Livewire::test(PengadaanForm::class)
+            ->set('no_pengadaan', 'PG-2026-002')
+            ->set('klaster_id', $vendor->klaster_id)
+            ->set('vendor_id', $vendor->id)
+            ->set('tanggal_pengadaan', now()->format('Y-m-d'))
+            ->set('items', [
+                ['id' => null, 'nama_item' => 'Laptop', 'kategori_item_id' => $otherKategori->id, 'qty' => 1, 'satuan_id' => \App\Models\Satuan::factory()->create()->id, 'harga_satuan' => '10000000'],
+            ])
+            ->call('save')
+            ->assertHasErrors(['items.0.kategori_item_id']);
     }
 
     public function test_user_without_create_permission_cannot_create_pengadaan(): void

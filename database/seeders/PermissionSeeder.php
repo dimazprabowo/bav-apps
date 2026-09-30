@@ -53,6 +53,14 @@ class PermissionSeeder extends Seeder
             'satuan_export_excel',
             'satuan_export_pdf',
 
+            // Kategori Item Management
+            'kategori_item_view',
+            'kategori_item_create',
+            'kategori_item_update',
+            'kategori_item_delete',
+            'kategori_item_export_excel',
+            'kategori_item_export_pdf',
+
             // Master Data — Vendor
             'vendor_view',
             'vendor_create',

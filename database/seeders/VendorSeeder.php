@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\VendorStatus;
+use App\Models\KategoriItem;
 use App\Models\Klaster;
 use App\Models\Vendor;
 use Illuminate\Database\Seeder;
@@ -12,6 +13,7 @@ class VendorSeeder extends Seeder
     public function run(): void
     {
         $klasters = Klaster::all()->keyBy('code');
+        $kategoriItems = KategoriItem::all()->keyBy('code');
 
         // 10 vendor dengan kategori bisnis beragam (alat ukur, kalibrasi, marine equipment,
         // consumables, IT, spare part, safety, logistik). Status campuran (1 nonaktif) agar
@@ -20,6 +22,7 @@ class VendorSeeder extends Seeder
         $vendors = [
             [
                 'klaster_code' => 'KLS-001',
+                'kategori_codes' => ['KTG-001', 'KTG-002', 'KTG-003', 'KTG-010'],
                 'code' => 'VDR-001',
                 'name' => 'PT Sumber Alat Teknik',
                 'contact_person' => 'Budi Santoso',
@@ -31,6 +34,7 @@ class VendorSeeder extends Seeder
             ],
             [
                 'klaster_code' => 'KLS-002',
+                'kategori_codes' => ['KTG-003'],
                 'code' => 'VDR-002',
                 'name' => 'CV Kalibrasi Mandiri',
                 'contact_person' => 'Siti Rahma',
@@ -42,6 +46,7 @@ class VendorSeeder extends Seeder
             ],
             [
                 'klaster_code' => 'KLS-003',
+                'kategori_codes' => ['KTG-004', 'KTG-011'],
                 'code' => 'VDR-003',
                 'name' => 'PT Marine Equipment Indonesia',
                 'contact_person' => 'Andi Wijaya',
@@ -53,6 +58,7 @@ class VendorSeeder extends Seeder
             ],
             [
                 'klaster_code' => 'KLS-002',
+                'kategori_codes' => ['KTG-005'],
                 'code' => 'VDR-004',
                 'name' => 'PT Fluke Calibration Indonesia',
                 'contact_person' => 'Dewi Lestari',
@@ -64,6 +70,7 @@ class VendorSeeder extends Seeder
             ],
             [
                 'klaster_code' => 'KLS-005',
+                'kategori_codes' => ['KTG-006', 'KTG-010'],
                 'code' => 'VDR-005',
                 'name' => 'CV Mitroteknik Supply',
                 'contact_person' => 'Rudi Hartono',
@@ -75,6 +82,7 @@ class VendorSeeder extends Seeder
             ],
             [
                 'klaster_code' => 'KLS-001',
+                'kategori_codes' => ['KTG-001', 'KTG-005'],
                 'code' => 'VDR-006',
                 'name' => 'PT Testo Instruments Indonesia',
                 'contact_person' => 'Maya Sari',
@@ -86,6 +94,7 @@ class VendorSeeder extends Seeder
             ],
             [
                 'klaster_code' => 'KLS-002',
+                'kategori_codes' => ['KTG-007'],
                 'code' => 'VDR-007',
                 'name' => 'PT WIKA Instrument Service',
                 'contact_person' => 'Hendra Gunawan',
@@ -97,6 +106,7 @@ class VendorSeeder extends Seeder
             ],
             [
                 'klaster_code' => 'KLS-006',
+                'kategori_codes' => ['KTG-008'],
                 'code' => 'VDR-008',
                 'name' => 'CV Safety Pro Indonesia',
                 'contact_person' => 'Lina Marlina',
@@ -108,6 +118,7 @@ class VendorSeeder extends Seeder
             ],
             [
                 'klaster_code' => 'KLS-007',
+                'kategori_codes' => ['KTG-009'],
                 'code' => 'VDR-009',
                 'name' => 'PT Mitra Logistik Maritim',
                 'contact_person' => 'Ferry Kurniawan',
@@ -119,25 +130,29 @@ class VendorSeeder extends Seeder
             ],
             [
                 'klaster_code' => 'KLS-001',
+                'kategori_codes' => ['KTG-001', 'KTG-002'],
                 'code' => 'VDR-010',
                 'name' => 'PT Mitra Teknik Lama',
                 'contact_person' => 'Eko Prasetyo',
                 'phone' => '021-4433221',
                 'email' => 'info@miteklama.co.id',
                 'address' => 'Jl. Mangga Dua No. 99, Jakarta - 14430',
-                'npwp' => '10.123.456.7-890.000',
+                'npwp' => '10.123.456.7-8900.000',
                 'status' => VendorStatus::Nonaktif->value,
             ],
         ];
 
         foreach ($vendors as $vendor) {
             $vendor['klaster_id'] = $klasters->get($vendor['klaster_code'])?->id;
-            unset($vendor['klaster_code']);
+            $kategoriIds = $kategoriItems->whereIn('code', $vendor['kategori_codes'])->pluck('id')->all();
+            unset($vendor['klaster_code'], $vendor['kategori_codes']);
 
-            Vendor::firstOrCreate(
+            $vendorModel = Vendor::firstOrCreate(
                 ['code' => $vendor['code']],
                 $vendor
             );
+
+            $vendorModel->kategoriItems()->sync($kategoriIds);
         }
     }
 }

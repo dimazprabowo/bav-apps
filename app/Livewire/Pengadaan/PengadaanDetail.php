@@ -79,7 +79,7 @@ class PengadaanDetail extends Component
     protected function loadPengadaan(): void
     {
         $this->pengadaan = $this->pengadaan->fresh([
-            'vendor', 'cabang', 'approver', 'items.satuan', 'evidences',
+            'vendor', 'cabang', 'approver', 'items.satuan', 'items.kategoriItem', 'evidences',
             'invoices.payments.approver',
         ]);
     }

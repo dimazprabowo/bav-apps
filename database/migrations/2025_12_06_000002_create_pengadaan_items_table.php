@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('pengadaan_id')->constrained('pengadaans')->cascadeOnDelete();
             $table->string('nama_item');
-            $table->string('kategori_item')->nullable();
+            $table->foreignId('kategori_item_id')->nullable()->constrained('kategori_items')->restrictOnDelete();
             $table->unsignedInteger('qty')->default(1);
             $table->foreignId('satuan_id')->constrained('satuans')->restrictOnDelete();
             $table->decimal('harga_satuan', 15, 2);
