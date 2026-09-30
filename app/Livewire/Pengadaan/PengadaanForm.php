@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Pengadaan;
 
+use App\Enums\TipeBiaya;
 use App\Livewire\Traits\HasNotification;
 use App\Models\Cabang;
 use App\Models\Klaster;
@@ -27,6 +28,12 @@ class PengadaanForm extends Component
 
     // Form fields
     public $no_pengadaan;
+
+    public $nama_pemohon;
+
+    public $tipe_biaya;
+
+    public $no_wbs;
 
     public $klaster_id;
 
@@ -56,6 +63,9 @@ class PengadaanForm extends Component
 
             $this->fill([
                 'no_pengadaan' => $pengadaan->no_pengadaan,
+                'nama_pemohon' => $pengadaan->nama_pemohon,
+                'tipe_biaya' => $pengadaan->tipe_biaya?->value,
+                'no_wbs' => $pengadaan->no_wbs,
                 'klaster_id' => $pengadaan->vendor->klaster_id,
                 'vendor_id' => $pengadaan->vendor_id,
                 'cabang_id' => $pengadaan->cabang_id,
@@ -94,6 +104,9 @@ class PengadaanForm extends Component
     {
         return [
             'no_pengadaan' => ['required', 'string', 'max:50', $this->editMode ? 'unique:pengadaans,no_pengadaan,'.$this->pengadaanId : 'unique:pengadaans,no_pengadaan'],
+            'nama_pemohon' => 'required|string|max:150',
+            'tipe_biaya' => ['required', Rule::enum(TipeBiaya::class)],
+            'no_wbs' => ['nullable', 'string', 'max:50', Rule::requiredIf($this->tipe_biaya === TipeBiaya::RabProject->value)],
             'klaster_id' => 'required|exists:klasters,id',
             'vendor_id' => 'required|exists:vendors,id',
             'cabang_id' => 'nullable|exists:cabangs,id',
@@ -138,6 +151,9 @@ class PengadaanForm extends Component
     {
         return [
             'no_pengadaan' => 'nomor pengadaan',
+            'nama_pemohon' => 'nama pemohon',
+            'tipe_biaya' => 'tipe biaya',
+            'no_wbs' => 'nomor WBS',
             'klaster_id' => 'klaster vendor',
             'vendor_id' => 'vendor',
             'cabang_id' => 'cabang',
@@ -151,6 +167,21 @@ class PengadaanForm extends Component
             'evidences.*.name' => 'nama evidence',
             'evidences.*.file' => 'file evidence',
         ];
+    }
+
+    public function updatedTipeBiaya($value): void
+    {
+        if ($value !== TipeBiaya::RabProject->value) {
+            $this->no_wbs = null;
+        }
+    }
+
+    public function getTipeBiayaOptionsProperty(): array
+    {
+        return collect(TipeBiaya::cases())->map(fn ($t) => [
+            'value' => $t->value,
+            'label' => $t->label(),
+        ])->toArray();
     }
 
     public function getKlasterOptionsProperty(): array
@@ -325,6 +356,9 @@ class PengadaanForm extends Component
         try {
             $data = [
                 'no_pengadaan' => strtoupper($this->no_pengadaan),
+                'nama_pemohon' => $this->nama_pemohon,
+                'tipe_biaya' => $this->tipe_biaya,
+                'no_wbs' => $this->no_wbs,
                 'vendor_id' => $this->vendor_id,
                 'cabang_id' => $this->cabang_id,
                 'tanggal_pengadaan' => $this->tanggal_pengadaan,

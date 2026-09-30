@@ -11,6 +11,9 @@ return new class extends Migration
         Schema::create('pengadaans', function (Blueprint $table) {
             $table->id();
             $table->string('no_pengadaan', 50)->unique();
+            $table->string('nama_pemohon', 150);
+            $table->string('tipe_biaya', 50);
+            $table->string('no_wbs', 50)->nullable();
             $table->foreignId('vendor_id')->constrained('vendors')->restrictOnDelete();
             $table->foreignId('cabang_id')->nullable()->constrained('cabangs')->nullOnDelete();
             $table->date('tanggal_pengadaan');

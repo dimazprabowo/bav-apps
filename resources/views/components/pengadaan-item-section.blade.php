@@ -25,7 +25,7 @@
     @if(count($items) > 0)
         <div class="space-y-4">
             @foreach($items as $index => $item)
-                <div wire:key="pengadaan-item-{{ $item['id'] ?? $index }}" class="p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
+                <div wire:key="pengadaan-item-{{ $vendorId ?? 'none' }}-{{ $item['id'] ?? $index }}" class="p-4 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                     <div class="flex items-start justify-between gap-2 mb-3">
                         <span class="text-xs font-semibold text-gray-500 dark:text-gray-400">Item #{{ $index + 1 }}</span>
                         @if(count($items) > 1)

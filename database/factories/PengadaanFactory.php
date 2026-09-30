@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\PengadaanApprovalStatus;
+use App\Enums\TipeBiaya;
 use App\Models\Vendor;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,6 +21,9 @@ class PengadaanFactory extends Factory
     {
         return [
             'no_pengadaan' => 'PG-'.fake()->unique()->numberBetween(1, 99999),
+            'nama_pemohon' => fake()->name(),
+            'tipe_biaya' => TipeBiaya::FixCost->value,
+            'no_wbs' => null,
             'vendor_id' => Vendor::factory(),
             'cabang_id' => null,
             'tanggal_pengadaan' => fake()->date(),

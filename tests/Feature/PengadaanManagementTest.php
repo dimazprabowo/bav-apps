@@ -63,6 +63,8 @@ class PengadaanManagementTest extends TestCase
 
         Livewire::test(PengadaanForm::class)
             ->set('no_pengadaan', 'pg-2026-001')
+            ->set('nama_pemohon', 'Budi Santoso')
+            ->set('tipe_biaya', 'Fix Cost')
             ->set('klaster_id', $vendor->klaster_id)
             ->set('vendor_id', $vendor->id)
             ->set('tanggal_pengadaan', now()->format('Y-m-d'))
@@ -74,6 +76,9 @@ class PengadaanManagementTest extends TestCase
 
         $this->assertDatabaseHas('pengadaans', [
             'no_pengadaan' => 'PG-2026-001',
+            'nama_pemohon' => 'Budi Santoso',
+            'tipe_biaya' => 'Fix Cost',
+            'no_wbs' => null,
             'vendor_id' => $vendor->id,
             'total_biaya' => 20000000,
         ]);
@@ -138,6 +143,8 @@ class PengadaanManagementTest extends TestCase
 
         Livewire::test(PengadaanForm::class)
             ->set('no_pengadaan', 'PG-2026-002')
+            ->set('nama_pemohon', 'Andi Wijaya')
+            ->set('tipe_biaya', 'Fix Cost')
             ->set('klaster_id', $vendor->klaster_id)
             ->set('vendor_id', $vendor->id)
             ->set('tanggal_pengadaan', now()->format('Y-m-d'))
@@ -146,6 +153,36 @@ class PengadaanManagementTest extends TestCase
             ])
             ->call('save')
             ->assertHasErrors(['items.0.kategori_item_id']);
+    }
+
+    public function test_no_wbs_required_when_tipe_biaya_rab_project(): void
+    {
+        $user = $this->actingUserWithPermissions(['pengadaan_view', 'pengadaan_create']);
+        $vendor = Vendor::factory()->create();
+
+        $this->actingAs($user);
+
+        Livewire::test(PengadaanForm::class)
+            ->set('no_pengadaan', 'PG-2026-003')
+            ->set('nama_pemohon', 'Siti Rahayu')
+            ->set('tipe_biaya', 'RAB Project')
+            ->set('klaster_id', $vendor->klaster_id)
+            ->set('vendor_id', $vendor->id)
+            ->set('tanggal_pengadaan', now()->format('Y-m-d'))
+            ->set('items', [
+                ['id' => null, 'nama_item' => 'Laptop', 'kategori_item_id' => null, 'qty' => 1, 'satuan_id' => \App\Models\Satuan::factory()->create()->id, 'harga_satuan' => '5000000'],
+            ])
+            ->call('save')
+            ->assertHasErrors(['no_wbs'])
+            ->set('no_wbs', 'wbs-prj-001')
+            ->call('save')
+            ->assertHasNoErrors();
+
+        $this->assertDatabaseHas('pengadaans', [
+            'no_pengadaan' => 'PG-2026-003',
+            'tipe_biaya' => 'RAB Project',
+            'no_wbs' => 'WBS-PRJ-001',
+        ]);
     }
 
     public function test_user_without_create_permission_cannot_create_pengadaan(): void

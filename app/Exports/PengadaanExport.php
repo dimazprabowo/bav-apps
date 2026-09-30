@@ -70,6 +70,9 @@ class PengadaanExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMa
         return [
             'No',
             'No. Pengadaan',
+            'Nama Pemohon',
+            'Tipe Biaya',
+            'No. WBS',
             'Vendor',
             'Cabang',
             'Tanggal Pengadaan',
@@ -89,6 +92,9 @@ class PengadaanExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMa
         return [
             $no,
             $pengadaan->no_pengadaan,
+            $pengadaan->nama_pemohon,
+            $pengadaan->tipe_biaya->label(),
+            $pengadaan->no_wbs ?? '-',
             $pengadaan->vendor->name,
             $pengadaan->cabang->name ?? 'Pusat',
             $pengadaan->tanggal_pengadaan->format('d/m/Y'),

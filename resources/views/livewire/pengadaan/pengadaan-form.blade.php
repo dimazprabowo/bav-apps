@@ -3,7 +3,30 @@
         {{-- Main Form Card --}}
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm">
             <div class="p-6">
+                {{-- Section: Informasi Pemohon & Biaya --}}
+                <h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-4">Informasi Pemohon &amp; Biaya</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <x-input-label for="nama_pemohon" value="Nama Pemohon" :required="true" />
+                        <x-text-input wire:model="nama_pemohon" id="nama_pemohon" type="text" class="mt-1 block w-full" placeholder="Mis. Budi Santoso" />
+                        <x-input-error :messages="$errors->get('nama_pemohon')" class="mt-2" />
+                    </div>
+                    <div>
+                        <x-input-label for="tipe_biaya" value="Tipe Biaya" :required="true" />
+                        <x-searchable-select wire:model.live="tipe_biaya" :options="$this->tipeBiayaOptions" placeholder="Pilih tipe biaya" />
+                        <x-input-error :messages="$errors->get('tipe_biaya')" class="mt-2" />
+                    </div>
+                    @if($tipe_biaya === \App\Enums\TipeBiaya::RabProject->value)
+                        <div class="md:col-span-2">
+                            <x-input-label for="no_wbs" value="No. WBS" :required="true" />
+                            <x-text-input wire:model="no_wbs" id="no_wbs" type="text" class="mt-1 block w-full" placeholder="Mis. WBS-2025-001" />
+                            <x-input-error :messages="$errors->get('no_wbs')" class="mt-2" />
+                        </div>
+                    @endif
+                </div>
+
                 {{-- Section: Informasi Pengadaan --}}
+                <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <x-input-label for="no_pengadaan" value="No. Pengadaan" :required="true" />
@@ -22,7 +45,7 @@
                     </div>
                     <div>
                         <x-input-label for="vendor_id" value="Vendor" :required="true" />
-                        <x-searchable-select wire:model="vendor_id" :options="$this->vendorOptions" placeholder="{{ $klaster_id ? 'Pilih vendor' : 'Pilih klaster terlebih dahulu' }}" searchPlaceholder="Cari vendor..." wire:key="vendor-select-{{ $klaster_id ?? 'none' }}" />
+                        <x-searchable-select wire:model.live="vendor_id" :options="$this->vendorOptions" placeholder="{{ $klaster_id ? 'Pilih vendor' : 'Pilih klaster terlebih dahulu' }}" searchPlaceholder="Cari vendor..." wire:key="vendor-select-{{ $klaster_id ?? 'none' }}" />
                         <x-input-error :messages="$errors->get('vendor_id')" class="mt-2" />
                     </div>
                     <div>
@@ -35,6 +58,7 @@
                         <textarea wire:model="catatan" id="catatan" rows="3" class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-blue-500 px-3 py-2 text-sm" placeholder="Catatan pengadaan..."></textarea>
                         <x-input-error :messages="$errors->get('catatan')" class="mt-2" />
                     </div>
+                </div>
                 </div>
 
                 {{-- Section: Item Aset --}}

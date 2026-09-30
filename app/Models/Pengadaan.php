@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\PengadaanApprovalStatus;
 use App\Enums\StatusInvoicePengadaan;
 use App\Enums\StatusPembayaranPengadaan;
+use App\Enums\TipeBiaya;
 use App\Traits\HasEncryptedRouteKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,6 +21,9 @@ class Pengadaan extends Model
 
     protected $fillable = [
         'no_pengadaan',
+        'nama_pemohon',
+        'tipe_biaya',
+        'no_wbs',
         'vendor_id',
         'cabang_id',
         'tanggal_pengadaan',
@@ -35,6 +39,7 @@ class Pengadaan extends Model
         'tanggal_pengadaan' => 'date',
         'total_biaya' => 'decimal:2',
         'status_approval' => PengadaanApprovalStatus::class,
+        'tipe_biaya' => TipeBiaya::class,
         'approved_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -45,7 +50,8 @@ class Pengadaan extends Model
     {
         return LogOptions::defaults()
             ->logOnly([
-                'no_pengadaan', 'vendor_id', 'cabang_id', 'tanggal_pengadaan',
+                'no_pengadaan', 'nama_pemohon', 'tipe_biaya', 'no_wbs',
+                'vendor_id', 'cabang_id', 'tanggal_pengadaan',
                 'total_biaya', 'status_approval', 'rejection_reason',
             ])
             ->logOnlyDirty()

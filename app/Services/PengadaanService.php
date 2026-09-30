@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\PaymentApprovalStatus;
 use App\Enums\PengadaanApprovalStatus;
+use App\Enums\TipeBiaya;
 use App\Jobs\ProcessPengadaanEvidence;
 use App\Models\Invoice;
 use App\Models\InvoicePayment;
@@ -79,6 +80,9 @@ class PengadaanService
     {
         return DB::transaction(function () use ($data, $items, $evidences) {
             $data['no_pengadaan'] = strtoupper($data['no_pengadaan']);
+            $data['no_wbs'] = ($data['tipe_biaya'] ?? null) === TipeBiaya::RabProject->value
+                ? strtoupper($data['no_wbs'] ?? '')
+                : null;
             $data['status_approval'] = PengadaanApprovalStatus::Pending->value;
             $data['total_biaya'] = 0;
 
@@ -107,6 +111,12 @@ class PengadaanService
         return DB::transaction(function () use ($pengadaan, $data, $items, $newEvidences, $deletedEvidenceIds) {
             if (isset($data['no_pengadaan'])) {
                 $data['no_pengadaan'] = strtoupper($data['no_pengadaan']);
+            }
+
+            if (isset($data['tipe_biaya'])) {
+                $data['no_wbs'] = $data['tipe_biaya'] === TipeBiaya::RabProject->value
+                    ? strtoupper($data['no_wbs'] ?? '')
+                    : null;
             }
 
             $pengadaan->update($data);

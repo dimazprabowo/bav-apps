@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Enums\PaymentApprovalStatus;
 use App\Enums\PengadaanApprovalStatus;
+use App\Enums\TipeBiaya;
 use App\Enums\VendorStatus;
 use App\Models\Cabang;
 use App\Models\Invoice;
@@ -47,6 +48,7 @@ class PengadaanSeeder extends Seeder
             // 1. Pending - menunggu approval, ada evidence completed
             [
                 'no' => 'PGD-2025-001',
+                'pemohon' => 'Budi Santoso',
                 'vendor_code' => 'VDR-001',
                 'cabang' => $priok,
                 'tanggal' => now()->subDays(2),
@@ -82,6 +84,9 @@ class PengadaanSeeder extends Seeder
             // 3. Approved + invoice partial (ditagih sebagian) + payment approved (sebagian)
             [
                 'no' => 'PGD-2025-003',
+                'pemohon' => 'Andi Wijaya',
+                'tipe_biaya' => TipeBiaya::RabProject,
+                'no_wbs' => 'WBS-PRJ-2025-003',
                 'vendor_code' => 'VDR-003',
                 'cabang' => $priok,
                 'tanggal' => now()->subDays(40),
@@ -298,6 +303,9 @@ class PengadaanSeeder extends Seeder
             // 10. Approved + multi-item + multi-evidence (kompleks, lunas)
             [
                 'no' => 'PGD-2025-010',
+                'pemohon' => 'Siti Rahayu',
+                'tipe_biaya' => TipeBiaya::RabProject,
+                'no_wbs' => 'WBS-LAB-2025-010',
                 'vendor_code' => 'VDR-001',
                 'cabang' => $priok,
                 'tanggal' => now()->subDays(90),
@@ -442,6 +450,9 @@ class PengadaanSeeder extends Seeder
                 $pengadaan = Pengadaan::firstOrCreate(
                     ['no_pengadaan' => $scenario['no']],
                     [
+                        'nama_pemohon' => $scenario['pemohon'] ?? $admin->name,
+                        'tipe_biaya' => ($scenario['tipe_biaya'] ?? TipeBiaya::FixCost)->value,
+                        'no_wbs' => $scenario['no_wbs'] ?? null,
                         'vendor_id' => $vendor->id,
                         'cabang_id' => $scenario['cabang']?->id,
                         'tanggal_pengadaan' => $scenario['tanggal'],
