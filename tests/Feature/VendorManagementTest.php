@@ -54,11 +54,13 @@ class VendorManagementTest extends TestCase
     public function test_user_with_permission_can_create_vendor(): void
     {
         $user = $this->actingUserWithPermissions(['vendor_view', 'vendor_create']);
+        $klaster = \App\Models\Klaster::factory()->create();
 
         $this->actingAs($user);
 
         Livewire::test(VendorManagement::class)
             ->call('create')
+            ->set('klaster_id', $klaster->id)
             ->set('code', 'vdr-999')
             ->set('name', 'PT Vendor Baru')
             ->set('status', 'aktif')
@@ -118,12 +120,14 @@ class VendorManagementTest extends TestCase
     public function test_code_must_be_unique(): void
     {
         $user = $this->actingUserWithPermissions(['vendor_view', 'vendor_create']);
-        Vendor::factory()->create(['code' => 'VDR-100']);
+        $klaster = \App\Models\Klaster::factory()->create();
+        Vendor::factory()->create(['code' => 'VDR-100', 'klaster_id' => $klaster->id]);
 
         $this->actingAs($user);
 
         Livewire::test(VendorManagement::class)
             ->call('create')
+            ->set('klaster_id', $klaster->id)
             ->set('code', 'VDR-100')
             ->set('name', 'PT Duplikat')
             ->set('status', 'aktif')

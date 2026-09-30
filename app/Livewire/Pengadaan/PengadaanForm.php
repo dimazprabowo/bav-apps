@@ -4,6 +4,7 @@ namespace App\Livewire\Pengadaan;
 
 use App\Livewire\Traits\HasNotification;
 use App\Models\Cabang;
+use App\Models\Klaster;
 use App\Models\Pengadaan;
 use App\Models\Vendor;
 use App\Services\FileStorageService;
@@ -24,6 +25,8 @@ class PengadaanForm extends Component
 
     // Form fields
     public $no_pengadaan;
+
+    public $klaster_id;
 
     public $vendor_id;
 
@@ -51,6 +54,7 @@ class PengadaanForm extends Component
 
             $this->fill([
                 'no_pengadaan' => $pengadaan->no_pengadaan,
+                'klaster_id' => $pengadaan->vendor->klaster_id,
                 'vendor_id' => $pengadaan->vendor_id,
                 'cabang_id' => $pengadaan->cabang_id,
                 'tanggal_pengadaan' => $pengadaan->tanggal_pengadaan?->format('Y-m-d'),
@@ -88,6 +92,7 @@ class PengadaanForm extends Component
     {
         return [
             'no_pengadaan' => ['required', 'string', 'max:50', $this->editMode ? 'unique:pengadaans,no_pengadaan,'.$this->pengadaanId : 'unique:pengadaans,no_pengadaan'],
+            'klaster_id' => 'required|exists:klasters,id',
             'vendor_id' => 'required|exists:vendors,id',
             'cabang_id' => 'nullable|exists:cabangs,id',
             'tanggal_pengadaan' => 'required|date',
@@ -128,6 +133,7 @@ class PengadaanForm extends Component
     {
         return [
             'no_pengadaan' => 'nomor pengadaan',
+            'klaster_id' => 'klaster vendor',
             'vendor_id' => 'vendor',
             'cabang_id' => 'cabang',
             'tanggal_pengadaan' => 'tanggal pengadaan',
@@ -142,12 +148,29 @@ class PengadaanForm extends Component
         ];
     }
 
+    public function getKlasterOptionsProperty(): array
+    {
+        return Klaster::active()->orderBy('name')->get()->map(fn ($k) => [
+            'value' => $k->id,
+            'label' => $k->name,
+        ])->toArray();
+    }
+
     public function getVendorOptionsProperty(): array
     {
-        return Vendor::active()->orderBy('name')->get()->map(fn ($v) => [
+        if (! $this->klaster_id) {
+            return [];
+        }
+
+        return Vendor::active()->where('klaster_id', $this->klaster_id)->orderBy('name')->get()->map(fn ($v) => [
             'value' => $v->id,
             'label' => $v->name,
         ])->toArray();
+    }
+
+    public function updatedKlasterId(): void
+    {
+        $this->vendor_id = null;
     }
 
     public function getCabangOptionsProperty(): array

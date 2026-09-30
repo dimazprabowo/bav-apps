@@ -16,7 +16,7 @@ class VendorService
         ?string $statusFilter = null,
         int $perPage = 15
     ): LengthAwarePaginator {
-        $query = Vendor::withCount('pengadaans');
+        $query = Vendor::with('klaster')->withCount('pengadaans');
 
         if ($search) {
             $operator = $this->getLikeOperator();

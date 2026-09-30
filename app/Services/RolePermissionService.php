@@ -85,6 +85,14 @@ class RolePermissionService
                 ['name' => 'cabang_export_excel', 'label' => 'Export Excel Cabang'],
                 ['name' => 'cabang_export_pdf',   'label' => 'Export PDF Cabang'],
             ],
+            'Klaster' => [
+                ['name' => 'klaster_view',         'label' => 'Lihat Klaster'],
+                ['name' => 'klaster_create',       'label' => 'Tambah Klaster'],
+                ['name' => 'klaster_update',       'label' => 'Edit Klaster'],
+                ['name' => 'klaster_delete',       'label' => 'Hapus Klaster'],
+                ['name' => 'klaster_export_excel', 'label' => 'Export Excel Klaster'],
+                ['name' => 'klaster_export_pdf',   'label' => 'Export PDF Klaster'],
+            ],
             'Pengadaan Aset' => [
                 ['name' => 'vendor_view',         'label' => 'Lihat Vendor'],
                 ['name' => 'vendor_create',       'label' => 'Tambah Vendor'],

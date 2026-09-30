@@ -32,8 +32,10 @@
         let num = String(e.target.value).replace(/[^\d]/g, '');
         let clean = num ? String(parseInt(num)) : '';
         this.display = this.formatRupiah(clean);
-        $wire.set('{{ $wireModel }}', clean);
         e.target.value = this.display;
+        $wire.set('{{ $wireModel }}', clean);
+        clearTimeout(this._commitTimer);
+        this._commitTimer = setTimeout(() => $wire.$commit(), 350);
     }
 }" x-init="syncFromLivewire()" x-effect="syncFromLivewire()">
     @if($label)

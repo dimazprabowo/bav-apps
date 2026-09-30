@@ -27,6 +27,7 @@ Route::middleware(['auth', 'verified', 'active'])->group(function () {
     // Master Data Routes
     Route::prefix('master-data')->name('master-data.')->group(function () {
         Route::view('/cabangs', 'master-data.cabangs')->middleware('can:cabang_view')->name('cabangs');
+        Route::view('/klasters', 'master-data.klasters')->middleware('can:klaster_view')->name('klasters');
         Route::view('/vendors', 'master-data.vendors')->middleware('can:vendor_view')->name('vendors');
     });
 

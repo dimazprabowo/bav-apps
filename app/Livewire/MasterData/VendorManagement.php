@@ -5,6 +5,7 @@ namespace App\Livewire\MasterData;
 use App\Enums\VendorStatus;
 use App\Exports\VendorExport;
 use App\Livewire\Traits\HasNotification;
+use App\Models\Klaster;
 use App\Models\Vendor;
 use App\Services\VendorService;
 use App\Traits\HasDynamicLike;
@@ -28,6 +29,8 @@ class VendorManagement extends Component
     public $editMode = false;
 
     public $vendorId;
+
+    public $klaster_id;
 
     public $code;
 
@@ -59,6 +62,7 @@ class VendorManagement extends Component
     public function rules()
     {
         return [
+            'klaster_id' => 'required|exists:klasters,id',
             'code' => ['required', 'string', 'max:50', $this->editMode ? 'unique:vendors,code,'.$this->vendorId : 'unique:vendors,code'],
             'name' => 'required|string|max:255',
             'contact_person' => 'nullable|string|max:255',
@@ -73,6 +77,7 @@ class VendorManagement extends Component
     public function validationAttributes()
     {
         return [
+            'klaster_id' => 'klaster',
             'code' => 'kode vendor',
             'name' => 'nama vendor',
             'contact_person' => 'nama kontak',
@@ -112,6 +117,14 @@ class VendorManagement extends Component
         ])->toArray();
     }
 
+    public function getKlasterOptionsProperty(): array
+    {
+        return Klaster::active()->orderBy('name')->get()->map(fn ($k) => [
+            'value' => $k->id,
+            'label' => $k->name,
+        ])->toArray();
+    }
+
     public function create()
     {
         $this->authorize('create', Vendor::class);
@@ -126,6 +139,7 @@ class VendorManagement extends Component
         $this->authorize('update', $vendor);
 
         $this->vendorId = $vendor->id;
+        $this->klaster_id = $vendor->klaster_id;
         $this->code = $vendor->code;
         $this->name = $vendor->name;
         $this->contact_person = $vendor->contact_person;
@@ -150,6 +164,7 @@ class VendorManagement extends Component
 
         try {
             $data = [
+                'klaster_id' => $this->klaster_id,
                 'code' => strtoupper($this->code),
                 'name' => $this->name,
                 'contact_person' => $this->contact_person,
@@ -230,7 +245,7 @@ class VendorManagement extends Component
     private function resetForm()
     {
         $this->reset([
-            'vendorId', 'code', 'name', 'contact_person', 'phone',
+            'vendorId', 'klaster_id', 'code', 'name', 'contact_person', 'phone',
             'email', 'address', 'npwp', 'status',
         ]);
         $this->status = VendorStatus::Aktif->value;
@@ -249,7 +264,7 @@ class VendorManagement extends Component
         $this->authorize('exportPdf', Vendor::class);
 
         $operator = $this->getLikeOperator();
-        $vendors = Vendor::query()
+        $vendors = Vendor::with('klaster')
             ->when($this->search, function ($q) use ($operator) {
                 $q->where(function ($q) use ($operator) {
                     $q->where('code', $operator, "%{$this->search}%")

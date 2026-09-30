@@ -56,7 +56,7 @@
                         </div>
                         <div>
                             <x-input-label for="items.{{ $index }}.qty" value="Qty" :required="true" />
-                            <x-text-input wire:model="items.{{ $index }}.qty" type="number" min="1" class="mt-1 block w-full" />
+                            <x-text-input wire:model.live.debounce.400ms="items.{{ $index }}.qty" type="number" min="1" class="mt-1 block w-full" />
                             <x-input-error :messages="$errors->get('items.'.$index.'.qty')" class="mt-2" />
                         </div>
                         <div>

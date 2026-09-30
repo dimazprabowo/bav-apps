@@ -8,16 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('vendors', function (Blueprint $table) {
+        Schema::create('klasters', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('klaster_id')->constrained('klasters')->restrictOnDelete();
             $table->string('code', 50)->unique();
             $table->string('name');
-            $table->string('contact_person')->nullable();
-            $table->string('phone', 20)->nullable();
-            $table->string('email')->nullable();
-            $table->text('address')->nullable();
-            $table->string('npwp', 30)->nullable();
+            $table->text('description')->nullable();
             $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
             $table->timestamps();
             $table->softDeletes();
@@ -29,6 +24,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists('vendors');
+        Schema::dropIfExists('klasters');
     }
 };

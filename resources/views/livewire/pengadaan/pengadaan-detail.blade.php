@@ -10,7 +10,7 @@
                     </span>
                 </div>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    {{ $pengadaan->tanggal_pengadaan->format('d F Y') }} • Vendor: {{ $pengadaan->vendor->name }}
+                    {{ $pengadaan->tanggal_pengadaan->format('d F Y') }} • Vendor: {{ $pengadaan->vendor->name }} ({{ $pengadaan->vendor->klaster->name }})
                     • Cabang: {{ $pengadaan->cabang->name ?? 'Pusat' }}
                 </p>
             </div>

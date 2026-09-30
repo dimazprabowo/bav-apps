@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\VendorStatus;
+use App\Models\Klaster;
 use App\Models\Vendor;
 use Illuminate\Database\Seeder;
 
@@ -10,11 +11,15 @@ class VendorSeeder extends Seeder
 {
     public function run(): void
     {
+        $klasters = Klaster::all()->keyBy('code');
+
         // 10 vendor dengan kategori bisnis beragam (alat ukur, kalibrasi, marine equipment,
         // consumables, IT, spare part, safety, logistik). Status campuran (1 nonaktif) agar
         // filter status di index maupun dashboard vendor breakdown punya variasi.
+        // klaster_code memetakan vendor ke klaster di KlasterSeeder.
         $vendors = [
             [
+                'klaster_code' => 'KLS-001',
                 'code' => 'VDR-001',
                 'name' => 'PT Sumber Alat Teknik',
                 'contact_person' => 'Budi Santoso',
@@ -25,6 +30,7 @@ class VendorSeeder extends Seeder
                 'status' => VendorStatus::Aktif->value,
             ],
             [
+                'klaster_code' => 'KLS-002',
                 'code' => 'VDR-002',
                 'name' => 'CV Kalibrasi Mandiri',
                 'contact_person' => 'Siti Rahma',
@@ -35,6 +41,7 @@ class VendorSeeder extends Seeder
                 'status' => VendorStatus::Aktif->value,
             ],
             [
+                'klaster_code' => 'KLS-003',
                 'code' => 'VDR-003',
                 'name' => 'PT Marine Equipment Indonesia',
                 'contact_person' => 'Andi Wijaya',
@@ -45,6 +52,7 @@ class VendorSeeder extends Seeder
                 'status' => VendorStatus::Aktif->value,
             ],
             [
+                'klaster_code' => 'KLS-002',
                 'code' => 'VDR-004',
                 'name' => 'PT Fluke Calibration Indonesia',
                 'contact_person' => 'Dewi Lestari',
@@ -55,6 +63,7 @@ class VendorSeeder extends Seeder
                 'status' => VendorStatus::Aktif->value,
             ],
             [
+                'klaster_code' => 'KLS-005',
                 'code' => 'VDR-005',
                 'name' => 'CV Mitroteknik Supply',
                 'contact_person' => 'Rudi Hartono',
@@ -65,6 +74,7 @@ class VendorSeeder extends Seeder
                 'status' => VendorStatus::Aktif->value,
             ],
             [
+                'klaster_code' => 'KLS-001',
                 'code' => 'VDR-006',
                 'name' => 'PT Testo Instruments Indonesia',
                 'contact_person' => 'Maya Sari',
@@ -75,6 +85,7 @@ class VendorSeeder extends Seeder
                 'status' => VendorStatus::Aktif->value,
             ],
             [
+                'klaster_code' => 'KLS-002',
                 'code' => 'VDR-007',
                 'name' => 'PT WIKA Instrument Service',
                 'contact_person' => 'Hendra Gunawan',
@@ -85,6 +96,7 @@ class VendorSeeder extends Seeder
                 'status' => VendorStatus::Aktif->value,
             ],
             [
+                'klaster_code' => 'KLS-006',
                 'code' => 'VDR-008',
                 'name' => 'CV Safety Pro Indonesia',
                 'contact_person' => 'Lina Marlina',
@@ -95,6 +107,7 @@ class VendorSeeder extends Seeder
                 'status' => VendorStatus::Aktif->value,
             ],
             [
+                'klaster_code' => 'KLS-007',
                 'code' => 'VDR-009',
                 'name' => 'PT Mitra Logistik Maritim',
                 'contact_person' => 'Ferry Kurniawan',
@@ -105,6 +118,7 @@ class VendorSeeder extends Seeder
                 'status' => VendorStatus::Aktif->value,
             ],
             [
+                'klaster_code' => 'KLS-001',
                 'code' => 'VDR-010',
                 'name' => 'PT Mitra Teknik Lama',
                 'contact_person' => 'Eko Prasetyo',
@@ -117,6 +131,9 @@ class VendorSeeder extends Seeder
         ];
 
         foreach ($vendors as $vendor) {
+            $vendor['klaster_id'] = $klasters->get($vendor['klaster_code'])?->id;
+            unset($vendor['klaster_code']);
+
             Vendor::firstOrCreate(
                 ['code' => $vendor['code']],
                 $vendor

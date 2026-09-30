@@ -16,8 +16,13 @@
                         <x-input-error :messages="$errors->get('tanggal_pengadaan')" class="mt-2" />
                     </div>
                     <div>
+                        <x-input-label for="klaster_id" value="Klaster Vendor" :required="true" />
+                        <x-searchable-select wire:model.live="klaster_id" :options="$this->klasterOptions" placeholder="Pilih klaster" searchPlaceholder="Cari klaster..." />
+                        <x-input-error :messages="$errors->get('klaster_id')" class="mt-2" />
+                    </div>
+                    <div>
                         <x-input-label for="vendor_id" value="Vendor" :required="true" />
-                        <x-searchable-select wire:model="vendor_id" :options="$this->vendorOptions" placeholder="Pilih vendor" searchPlaceholder="Cari vendor..." />
+                        <x-searchable-select wire:model="vendor_id" :options="$this->vendorOptions" placeholder="{{ $klaster_id ? 'Pilih vendor' : 'Pilih klaster terlebih dahulu' }}" searchPlaceholder="Cari vendor..." wire:key="vendor-select-{{ $klaster_id ?? 'none' }}" />
                         <x-input-error :messages="$errors->get('vendor_id')" class="mt-2" />
                     </div>
                     <div>

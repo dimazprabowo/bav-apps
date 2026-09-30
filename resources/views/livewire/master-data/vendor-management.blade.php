@@ -45,6 +45,7 @@
                 <thead class="bg-gray-50 dark:bg-gray-900">
                     <tr>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Vendor</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Klaster</th>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Kontak</th>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Email</th>
                         <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">NPWP</th>
@@ -67,6 +68,11 @@
                                         <div class="text-xs text-gray-500 dark:text-gray-400">{{ $vendor->code }}</div>
                                     </div>
                                 </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 py-1 text-xs font-medium rounded-full bg-indigo-100 text-indigo-800 dark:bg-indigo-900/20 dark:text-indigo-400">
+                                    {{ $vendor->klaster->name }}
+                                </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900 dark:text-white">{{ $vendor->contact_person ?? '-' }}</div>
@@ -124,7 +130,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-12 text-center">
+                            <td colspan="7" class="px-6 py-12 text-center">
                                 <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/></svg>
                                 <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Tidak ada vendor ditemukan</p>
                             </td>
@@ -161,6 +167,11 @@
                                     <x-input-label for="name" value="Nama Vendor" :required="true" />
                                     <x-text-input wire:model="name" id="name" type="text" class="mt-1 block w-full" placeholder="Mis. PT Sumber Makmur" />
                                     <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <x-input-label for="klaster_id" value="Klaster" :required="true" />
+                                    <x-searchable-select wire:model="klaster_id" :options="$this->klasterOptions" placeholder="Pilih klaster" searchPlaceholder="Cari klaster..." />
+                                    <x-input-error :messages="$errors->get('klaster_id')" class="mt-2" />
                                 </div>
                                 <div class="sm:col-span-2">
                                     <x-input-label for="address" value="Alamat" />

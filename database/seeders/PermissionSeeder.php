@@ -37,6 +37,14 @@ class PermissionSeeder extends Seeder
             'cabang_export_excel',
             'cabang_export_pdf',
 
+            // Master Data — Klaster
+            'klaster_view',
+            'klaster_create',
+            'klaster_update',
+            'klaster_delete',
+            'klaster_export_excel',
+            'klaster_export_pdf',
+
             // Master Data — Vendor
             'vendor_view',
             'vendor_create',

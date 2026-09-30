@@ -4,6 +4,7 @@ namespace App\Livewire\Traits;
 
 use App\Models\Cabang;
 use App\Models\Chat;
+use App\Models\Klaster;
 use App\Models\Notification;
 use App\Models\Pengadaan;
 use App\Models\SystemConfiguration;
@@ -30,6 +31,7 @@ trait HasMenuItems
         $perms = [
             'dashboard_view' => Gate::allows('viewStats'),
             'cabang_view' => Gate::allows('viewAny', Cabang::class),
+            'klaster_view' => Gate::allows('viewAny', Klaster::class),
             'vendor_view' => Gate::allows('viewAny', Vendor::class),
             'pengadaan_view' => Gate::allows('viewAny', Pengadaan::class),
             'notifications_view' => Gate::allows('viewAny', Notification::class),
@@ -58,6 +60,13 @@ trait HasMenuItems
                 'name' => 'Cabang',
                 'route' => 'master-data.cabangs',
                 'active' => $req->routeIs('master-data.cabangs'),
+            ];
+        }
+        if ($perms['klaster_view']) {
+            $masterDataChildren[] = [
+                'name' => 'Klaster',
+                'route' => 'master-data.klasters',
+                'active' => $req->routeIs('master-data.klasters'),
             ];
         }
         if ($perms['vendor_view']) {

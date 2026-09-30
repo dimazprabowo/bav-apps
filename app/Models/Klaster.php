@@ -2,34 +2,28 @@
 
 namespace App\Models;
 
-use App\Enums\VendorStatus;
+use App\Enums\KlasterStatus;
 use App\Traits\HasEncryptedRouteKey;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Vendor extends Model
+class Klaster extends Model
 {
     use HasEncryptedRouteKey, HasFactory, LogsActivity, SoftDeletes;
 
     protected $fillable = [
-        'klaster_id',
         'code',
         'name',
-        'contact_person',
-        'phone',
-        'email',
-        'address',
-        'npwp',
+        'description',
         'status',
     ];
 
     protected $casts = [
-        'status' => VendorStatus::class,
+        'status' => KlasterStatus::class,
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'deleted_at' => 'datetime',
@@ -38,30 +32,25 @@ class Vendor extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['klaster_id', 'code', 'name', 'contact_person', 'phone', 'email', 'address', 'npwp', 'status'])
+            ->logOnly(['code', 'name', 'description', 'status'])
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
-            ->useLogName('vendor');
+            ->useLogName('klaster');
     }
 
-    public function klaster(): BelongsTo
+    public function vendors(): HasMany
     {
-        return $this->belongsTo(Klaster::class);
-    }
-
-    public function pengadaans(): HasMany
-    {
-        return $this->hasMany(Pengadaan::class);
+        return $this->hasMany(Vendor::class);
     }
 
     public function scopeActive($query)
     {
-        return $query->where('status', VendorStatus::Aktif);
+        return $query->where('status', KlasterStatus::Aktif);
     }
 
     public function getIsActiveAttribute(): bool
     {
-        return $this->status === VendorStatus::Aktif;
+        return $this->status === KlasterStatus::Aktif;
     }
 
     public function getRouteKeyName(): string

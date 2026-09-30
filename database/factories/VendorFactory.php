@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\VendorStatus;
+use App\Models\Klaster;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -18,6 +19,7 @@ class VendorFactory extends Factory
     public function definition(): array
     {
         return [
+            'klaster_id' => Klaster::factory(),
             'code' => 'VDR-'.fake()->unique()->numberBetween(1, 99999),
             'name' => fake()->company(),
             'contact_person' => fake()->name(),

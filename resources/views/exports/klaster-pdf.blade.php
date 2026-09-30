@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Data Vendor</title>
+    <title>Data Klaster</title>
     <style>
         body { font-family: sans-serif; font-size: 12px; }
         table { width: 100%; border-collapse: collapse; }
@@ -12,24 +12,22 @@
     </style>
 </head>
 <body>
-<h2>Daftar Vendor</h2>
+<h2>Daftar Klaster</h2>
 <table>
     <thead>
         <tr>
-            <th>No</th><th>Kode</th><th>Nama</th><th>Klaster</th><th>Kontak</th><th>Telepon</th><th>Email</th><th>Status</th>
+            <th>No</th><th>Kode</th><th>Nama</th><th>Deskripsi</th><th>Jumlah Vendor</th><th>Status</th>
         </tr>
     </thead>
     <tbody>
-        @foreach($vendors as $i => $vendor)
+        @foreach($klasters as $i => $klaster)
         <tr>
             <td>{{ $i + 1 }}</td>
-            <td>{{ $vendor->code }}</td>
-            <td>{{ $vendor->name }}</td>
-            <td>{{ $vendor->klaster->name ?? '-' }}</td>
-            <td>{{ $vendor->contact_person ?? '-' }}</td>
-            <td>{{ $vendor->phone ?? '-' }}</td>
-            <td>{{ $vendor->email ?? '-' }}</td>
-            <td>{{ $vendor->status->label() }}</td>
+            <td>{{ $klaster->code }}</td>
+            <td>{{ $klaster->name }}</td>
+            <td>{{ $klaster->description ?? '-' }}</td>
+            <td>{{ $klaster->vendors_count }}</td>
+            <td>{{ $klaster->status->label() }}</td>
         </tr>
         @endforeach
     </tbody>

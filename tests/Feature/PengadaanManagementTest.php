@@ -61,6 +61,7 @@ class PengadaanManagementTest extends TestCase
 
         Livewire::test(PengadaanForm::class)
             ->set('no_pengadaan', 'pg-2026-001')
+            ->set('klaster_id', $vendor->klaster_id)
             ->set('vendor_id', $vendor->id)
             ->set('tanggal_pengadaan', now()->format('Y-m-d'))
             ->set('items', [
@@ -82,6 +83,25 @@ class PengadaanManagementTest extends TestCase
             'qty' => 2,
             'subtotal' => 20000000,
         ]);
+    }
+
+    public function test_vendor_options_filtered_by_selected_klaster(): void
+    {
+        $user = $this->actingUserWithPermissions(['pengadaan_view', 'pengadaan_create']);
+        $klasterA = \App\Models\Klaster::factory()->create();
+        $klasterB = \App\Models\Klaster::factory()->create();
+        $vendorA = Vendor::factory()->create(['klaster_id' => $klasterA->id]);
+        Vendor::factory()->create(['klaster_id' => $klasterB->id]);
+
+        $this->actingAs($user);
+
+        $component = Livewire::test(PengadaanForm::class);
+        $this->assertEmpty($component->instance()->vendorOptions);
+
+        $component->set('klaster_id', $klasterA->id)->assertSet('vendor_id', null);
+
+        $options = collect($component->instance()->vendorOptions);
+        $this->assertEquals([$vendorA->id], $options->pluck('value')->all());
     }
 
     public function test_user_without_create_permission_cannot_create_pengadaan(): void
