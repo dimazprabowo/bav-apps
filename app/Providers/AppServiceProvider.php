@@ -21,6 +21,7 @@ use App\Policies\UserPolicy;
 use App\Policies\VendorPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Spatie\Permission\Models\Role;
 
@@ -39,6 +40,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Force HTTPS when behind reverse proxy (Cloudflare Tunnel, load balancer, etc.)
+        if (config('app.force_https')) {
+            URL::forceScheme('https');
+        }
+
         // Register Policies
         Gate::policy(User::class, UserPolicy::class);
         Gate::policy(Cabang::class, CabangPolicy::class);
