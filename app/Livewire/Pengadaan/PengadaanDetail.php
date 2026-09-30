@@ -124,7 +124,7 @@ class PengadaanDetail extends Component
         $this->editingInvoiceId = $invoiceId;
         $this->inv_no_invoice = $invoice->no_invoice;
         $this->inv_tanggal_invoice = $invoice->tanggal_invoice?->format('Y-m-d');
-        $this->inv_jumlah = (string) $invoice->jumlah;
+        $this->inv_jumlah = number_format((float) $invoice->jumlah, 0, '.', '');
         $this->inv_jatuh_tempo = $invoice->jatuh_tempo?->format('Y-m-d');
         $this->inv_catatan = $invoice->catatan;
         $this->inv_file = null;
@@ -159,7 +159,7 @@ class PengadaanDetail extends Component
         return [
             'inv_no_invoice' => 'required|string|max:255',
             'inv_tanggal_invoice' => 'required|date',
-            'inv_jumlah' => 'required|numeric|min:0',
+            'inv_jumlah' => 'required|numeric|min:0|max:99999999999999',
             'inv_jatuh_tempo' => 'nullable|date|after_or_equal:inv_tanggal_invoice',
             'inv_catatan' => 'nullable|string|max:2000',
             'inv_file' => 'nullable|'.file_upload_validation_rule('invoice'),
@@ -170,7 +170,9 @@ class PengadaanDetail extends Component
     {
         $this->authorize('update', $this->pengadaan);
 
-        $this->validate($this->invoiceRules(), [], [
+        $this->validate($this->invoiceRules(), [
+            'inv_jumlah.max' => 'Jumlah tagihan tidak boleh melebihi Rp 99.999.999.999.999.',
+        ], [
             'inv_no_invoice' => 'no. invoice',
             'inv_tanggal_invoice' => 'tanggal invoice',
             'inv_jumlah' => 'jumlah',
@@ -284,7 +286,7 @@ class PengadaanDetail extends Component
         $this->currentInvoiceId = $invoiceId;
         $this->editingPaymentId = $paymentId;
         $this->pay_tanggal_bayar = $payment->tanggal_bayar?->format('Y-m-d');
-        $this->pay_jumlah_bayar = (string) $payment->jumlah_bayar;
+        $this->pay_jumlah_bayar = number_format((float) $payment->jumlah_bayar, 0, '.', '');
         $this->pay_metode_bayar = $payment->metode_bayar;
         $this->pay_catatan = $payment->catatan;
         $this->pay_file = null;
@@ -318,7 +320,7 @@ class PengadaanDetail extends Component
     {
         return [
             'pay_tanggal_bayar' => 'required|date',
-            'pay_jumlah_bayar' => 'required|numeric|min:0',
+            'pay_jumlah_bayar' => 'required|numeric|min:0|max:99999999999999',
             'pay_metode_bayar' => 'nullable|string|max:100',
             'pay_catatan' => 'nullable|string|max:2000',
             'pay_file' => 'nullable|'.file_upload_validation_rule('invoice-payment'),
@@ -329,7 +331,9 @@ class PengadaanDetail extends Component
     {
         $this->authorize('update', $this->pengadaan);
 
-        $this->validate($this->paymentRules(), [], [
+        $this->validate($this->paymentRules(), [
+            'pay_jumlah_bayar.max' => 'Jumlah bayar tidak boleh melebihi Rp 99.999.999.999.999.',
+        ], [
             'pay_tanggal_bayar' => 'tanggal bayar',
             'pay_jumlah_bayar' => 'jumlah bayar',
             'pay_metode_bayar' => 'metode bayar',

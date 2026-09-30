@@ -63,7 +63,7 @@ class PengadaanForm extends Component
                 'kategori_aset' => $item->kategori_aset,
                 'qty' => $item->qty,
                 'satuan' => $item->satuan,
-                'harga_satuan' => (string) $item->harga_satuan,
+                'harga_satuan' => number_format((float) $item->harga_satuan, 0, '.', ''),
             ])->toArray();
 
             $this->evidences = $pengadaan->evidences->map(fn ($e) => [
@@ -92,14 +92,35 @@ class PengadaanForm extends Component
             'cabang_id' => 'nullable|exists:cabangs,id',
             'tanggal_pengadaan' => 'required|date',
             'catatan' => 'nullable|string|max:2000',
-            'items' => 'required|array|min:1',
+            'items' => ['required', 'array', 'min:1', function ($attribute, $value, $fail) {
+                $total = 0;
+                foreach ($value as $i => $item) {
+                    $subtotal = (int) ($item['qty'] ?? 0) * (float) ($item['harga_satuan'] ?? 0);
+                    if ($subtotal > 99999999999999.99) {
+                        $fail('Subtotal item #'.($i + 1).' melebihi batas maksimal Rp 99.999.999.999.999,99.');
+
+                        return;
+                    }
+                    $total += $subtotal;
+                }
+                if ($total > 99999999999999.99) {
+                    $fail('Total biaya melebihi batas maksimal Rp 99.999.999.999.999,99.');
+                }
+            }],
             'items.*.nama_aset' => 'required|string|max:255',
             'items.*.kategori_aset' => 'nullable|string|max:255',
             'items.*.qty' => 'required|integer|min:1',
             'items.*.satuan' => 'required|string|max:30',
-            'items.*.harga_satuan' => 'required|numeric|min:0',
+            'items.*.harga_satuan' => 'required|numeric|min:0|max:99999999999999',
             'evidences.*.name' => 'required|string|max:255',
             'evidences.*.file' => 'nullable|'.file_upload_validation_rule('pengadaan-evidence'),
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'items.*.harga_satuan.max' => 'Harga satuan tidak boleh melebihi Rp 99.999.999.999.999.',
         ];
     }
 

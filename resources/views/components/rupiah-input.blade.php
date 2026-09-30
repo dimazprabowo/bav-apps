@@ -15,7 +15,8 @@
 <div x-data="{
     display: '',
     formatRupiah(val) {
-        let num = String(val ?? '').replace(/[^\d]/g, '');
+        let raw = String(val ?? '').split(/[.,]/)[0];
+        let num = raw.replace(/[^\d]/g, '');
         if (!num || parseInt(num) === 0) return '';
         return new Intl.NumberFormat('id-ID').format(parseInt(num));
     },

@@ -138,7 +138,6 @@
         @if($pengadaan->invoices->count() > 0)
             <div class="divide-y divide-gray-200 dark:divide-gray-700"
                 @if($pengadaan->invoices->contains(fn($inv) => $inv->isProcessing())) wire:poll.15s="loadPengadaan" @endif>
-            >
                 @foreach($pengadaan->invoices as $invoice)
                     <div wire:key="invoice-{{ $invoice->id }}" class="p-6">
                         <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
