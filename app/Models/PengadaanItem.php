@@ -15,7 +15,7 @@ class PengadaanItem extends Model
         'nama_item',
         'kategori_item',
         'qty',
-        'satuan',
+        'satuan_id',
         'harga_satuan',
         'subtotal',
     ];
@@ -31,5 +31,11 @@ class PengadaanItem extends Model
     public function pengadaan(): BelongsTo
     {
         return $this->belongsTo(Pengadaan::class);
+    }
+
+    public function satuan(): BelongsTo
+    {
+        // withTrashed: satuan yang sudah soft-deleted tetap tampil di riwayat item
+        return $this->belongsTo(Satuan::class)->withTrashed();
     }
 }

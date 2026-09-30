@@ -11,6 +11,7 @@ use App\Models\InvoicePayment;
 use App\Models\Pengadaan;
 use App\Models\PengadaanEvidence;
 use App\Models\PengadaanItem;
+use App\Models\Satuan;
 use App\Models\User;
 use App\Models\Vendor;
 use App\Services\FileStorageService;
@@ -31,6 +32,7 @@ class PengadaanSeeder extends Seeder
         $disk = file_disk();
 
         $vendors = Vendor::where('status', VendorStatus::Aktif->value)->get()->keyBy('code');
+        $satuanMap = Satuan::pluck('id', 'code');
         $priok = Cabang::where('code', 'TGP')->first();
         $surabaya = Cabang::where('code', 'SBY')->first();
         $makassar = Cabang::where('code', 'MKS')->first();
@@ -412,7 +414,7 @@ class PengadaanSeeder extends Seeder
             ],
         ];
 
-        DB::transaction(function () use ($scenarios, $vendors, $admin, $fileStorage, $disk) {
+        DB::transaction(function () use ($scenarios, $vendors, $satuanMap, $admin, $fileStorage, $disk) {
             foreach ($scenarios as $scenario) {
                 $vendor = $vendors->get($scenario['vendor_code']);
                 if (! $vendor) {
@@ -429,7 +431,7 @@ class PengadaanSeeder extends Seeder
                         'nama_item' => $item['nama_item'],
                         'kategori_item' => $item['kategori'],
                         'qty' => $item['qty'],
-                        'satuan' => $item['satuan'],
+                        'satuan_id' => $satuanMap[strtoupper($item['satuan'])] ?? $satuanMap['UNIT'],
                         'harga_satuan' => $item['harga'],
                         'subtotal' => $subtotal,
                     ];

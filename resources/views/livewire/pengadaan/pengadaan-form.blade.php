@@ -39,7 +39,7 @@
 
                 {{-- Section: Item Aset --}}
                 <div class="border-t border-gray-200 dark:border-gray-700 pt-6 mt-6">
-                    <x-pengadaan-item-section :items="$items" :totalBiaya="$this->totalBiaya" />
+                    <x-pengadaan-item-section :items="$items" :totalBiaya="$this->totalBiaya" :satuanOptions="$this->satuanOptions" />
                     <x-input-error :messages="$errors->get('items')" class="mt-2" />
                 </div>
 

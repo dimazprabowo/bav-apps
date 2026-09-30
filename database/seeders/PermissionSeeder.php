@@ -45,6 +45,14 @@ class PermissionSeeder extends Seeder
             'klaster_export_excel',
             'klaster_export_pdf',
 
+            // Master Data — Satuan
+            'satuan_view',
+            'satuan_create',
+            'satuan_update',
+            'satuan_delete',
+            'satuan_export_excel',
+            'satuan_export_pdf',
+
             // Master Data — Vendor
             'vendor_view',
             'vendor_create',

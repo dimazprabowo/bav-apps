@@ -66,7 +66,7 @@
                         <tr wire:key="item-{{ $item->id }}">
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $item->nama_item }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{{ $item->kategori_item ?? '-' }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-right">{{ $item->qty }} {{ $item->satuan }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-right">{{ $item->qty }} {{ $item->satuan?->name ?? '-' }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white text-right">Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-white text-right">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</td>
                         </tr>

@@ -7,6 +7,7 @@ use App\Models\Chat;
 use App\Models\Klaster;
 use App\Models\Notification;
 use App\Models\Pengadaan;
+use App\Models\Satuan;
 use App\Models\SystemConfiguration;
 use App\Models\User;
 use App\Models\Vendor;
@@ -32,6 +33,7 @@ trait HasMenuItems
             'dashboard_view' => Gate::allows('viewStats'),
             'cabang_view' => Gate::allows('viewAny', Cabang::class),
             'klaster_view' => Gate::allows('viewAny', Klaster::class),
+            'satuan_view' => Gate::allows('viewAny', Satuan::class),
             'vendor_view' => Gate::allows('viewAny', Vendor::class),
             'pengadaan_view' => Gate::allows('viewAny', Pengadaan::class),
             'notifications_view' => Gate::allows('viewAny', Notification::class),
@@ -67,6 +69,13 @@ trait HasMenuItems
                 'name' => 'Klaster',
                 'route' => 'master-data.klasters',
                 'active' => $req->routeIs('master-data.klasters'),
+            ];
+        }
+        if ($perms['satuan_view']) {
+            $masterDataChildren[] = [
+                'name' => 'Satuan',
+                'route' => 'master-data.satuans',
+                'active' => $req->routeIs('master-data.satuans'),
             ];
         }
         if ($perms['vendor_view']) {

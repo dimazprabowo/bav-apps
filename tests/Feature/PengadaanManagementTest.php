@@ -65,7 +65,7 @@ class PengadaanManagementTest extends TestCase
             ->set('vendor_id', $vendor->id)
             ->set('tanggal_pengadaan', now()->format('Y-m-d'))
             ->set('items', [
-                ['id' => null, 'nama_item' => 'Laptop', 'kategori_item' => 'IT', 'qty' => 2, 'satuan' => 'unit', 'harga_satuan' => '10000000'],
+                ['id' => null, 'nama_item' => 'Laptop', 'kategori_item' => 'IT', 'qty' => 2, 'satuan_id' => \App\Models\Satuan::factory()->create()->id, 'harga_satuan' => '10000000'],
             ])
             ->call('save')
             ->assertHasNoErrors();

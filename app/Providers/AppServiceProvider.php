@@ -8,6 +8,7 @@ use App\Models\ChatMessage;
 use App\Models\Klaster;
 use App\Models\Notification;
 use App\Models\Pengadaan;
+use App\Models\Satuan;
 use App\Models\SystemConfiguration;
 use App\Models\User;
 use App\Models\Vendor;
@@ -18,6 +19,7 @@ use App\Policies\KlasterPolicy;
 use App\Policies\NotificationPolicy;
 use App\Policies\PengadaanPolicy;
 use App\Policies\RolePolicy;
+use App\Policies\SatuanPolicy;
 use App\Policies\SystemConfigurationPolicy;
 use App\Policies\UserPolicy;
 use App\Policies\VendorPolicy;
@@ -57,6 +59,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(Chat::class, ChatPolicy::class);
         Gate::policy(ChatMessage::class, ChatPolicy::class);
         Gate::policy(Vendor::class, VendorPolicy::class);
+        Gate::policy(Satuan::class, SatuanPolicy::class);
         Gate::policy(Pengadaan::class, PengadaanPolicy::class);
 
         // Dashboard policy — bound to a string key (no Eloquent model)

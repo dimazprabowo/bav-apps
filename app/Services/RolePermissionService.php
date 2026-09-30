@@ -93,6 +93,14 @@ class RolePermissionService
                 ['name' => 'klaster_export_excel', 'label' => 'Export Excel Klaster'],
                 ['name' => 'klaster_export_pdf',   'label' => 'Export PDF Klaster'],
             ],
+            'Satuan' => [
+                ['name' => 'satuan_view',         'label' => 'Lihat Satuan'],
+                ['name' => 'satuan_create',       'label' => 'Tambah Satuan'],
+                ['name' => 'satuan_update',       'label' => 'Edit Satuan'],
+                ['name' => 'satuan_delete',       'label' => 'Hapus Satuan'],
+                ['name' => 'satuan_export_excel', 'label' => 'Export Excel Satuan'],
+                ['name' => 'satuan_export_pdf',   'label' => 'Export PDF Satuan'],
+            ],
             'Pengadaan Aset' => [
                 ['name' => 'vendor_view',         'label' => 'Lihat Vendor'],
                 ['name' => 'vendor_create',       'label' => 'Tambah Vendor'],

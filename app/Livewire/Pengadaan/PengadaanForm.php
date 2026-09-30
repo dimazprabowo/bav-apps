@@ -6,6 +6,7 @@ use App\Livewire\Traits\HasNotification;
 use App\Models\Cabang;
 use App\Models\Klaster;
 use App\Models\Pengadaan;
+use App\Models\Satuan;
 use App\Models\Vendor;
 use App\Services\FileStorageService;
 use App\Services\PengadaanService;
@@ -66,7 +67,7 @@ class PengadaanForm extends Component
                 'nama_item' => $item->nama_item,
                 'kategori_item' => $item->kategori_item,
                 'qty' => $item->qty,
-                'satuan' => $item->satuan,
+                'satuan_id' => $item->satuan_id,
                 'harga_satuan' => number_format((float) $item->harga_satuan, 0, '.', ''),
             ])->toArray();
 
@@ -115,7 +116,7 @@ class PengadaanForm extends Component
             'items.*.nama_item' => 'required|string|max:255',
             'items.*.kategori_item' => 'nullable|string|max:255',
             'items.*.qty' => 'required|integer|min:1',
-            'items.*.satuan' => 'required|string|max:30',
+            'items.*.satuan_id' => 'required|exists:satuans,id',
             'items.*.harga_satuan' => 'required|numeric|min:0|max:99999999999999',
             'evidences.*.name' => 'required|string|max:255',
             'evidences.*.file' => 'nullable|'.file_upload_validation_rule('pengadaan-evidence'),
@@ -141,7 +142,7 @@ class PengadaanForm extends Component
             'items.*.nama_item' => 'nama item',
             'items.*.kategori_item' => 'kategori item',
             'items.*.qty' => 'jumlah',
-            'items.*.satuan' => 'satuan',
+            'items.*.satuan_id' => 'satuan',
             'items.*.harga_satuan' => 'harga satuan',
             'evidences.*.name' => 'nama evidence',
             'evidences.*.file' => 'file evidence',
@@ -181,6 +182,15 @@ class PengadaanForm extends Component
         ])->toArray();
     }
 
+    public function getSatuanOptionsProperty(): array
+    {
+        return Satuan::active()->orderBy('name')->get()->map(fn ($s) => [
+            'value' => $s->id,
+            'label' => $s->name,
+            'sublabel' => $s->code,
+        ])->toArray();
+    }
+
     public function getTotalBiayaProperty(): float
     {
         return collect($this->items)->sum(fn ($item) => (int) ($item['qty'] ?? 0) * (float) ($item['harga_satuan'] ?? 0));
@@ -197,7 +207,7 @@ class PengadaanForm extends Component
             'nama_item' => '',
             'kategori_item' => '',
             'qty' => 1,
-            'satuan' => 'unit',
+            'satuan_id' => Satuan::active()->where('code', 'UNIT')->value('id'),
             'harga_satuan' => '',
         ];
     }
@@ -289,7 +299,7 @@ class PengadaanForm extends Component
                 'nama_item' => $item['nama_item'],
                 'kategori_item' => $item['kategori_item'] ?: null,
                 'qty' => (int) $item['qty'],
-                'satuan' => $item['satuan'],
+                'satuan_id' => $item['satuan_id'],
                 'harga_satuan' => (float) $item['harga_satuan'],
             ])->toArray();
 

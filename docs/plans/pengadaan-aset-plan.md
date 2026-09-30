@@ -111,7 +111,7 @@ Model: `App\Models\Pengadaan` — `HasEncryptedRouteKey`, `HasFactory`, `LogsAct
 | nama_item | string | **Selalu diisi** (denormalized — riwayat tetap utuh walau `Alat` dihapus/rename) |
 | kategori_item | string, nullable | Bebas teks untuk saat ini |
 | qty | integer | |
-| satuan | string, default `'unit'` | |
+| satuan_id | FK → satuans, `restrictOnDelete()` | Master data satuan |
 | harga_satuan | decimal(15,2) | |
 | subtotal | decimal(15,2) | `qty * harga_satuan`, dihitung di Service saat save |
 | created_at, updated_at | | Tidak perlu soft delete (child dari Pengadaan) |

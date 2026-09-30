@@ -1,4 +1,4 @@
-@props(['items', 'totalBiaya' => 0])
+@props(['items', 'totalBiaya' => 0, 'satuanOptions' => []])
 
 <div>
     <div class="flex items-center justify-between mb-4">
@@ -60,9 +60,13 @@
                             <x-input-error :messages="$errors->get('items.'.$index.'.qty')" class="mt-2" />
                         </div>
                         <div>
-                            <x-input-label for="items.{{ $index }}.satuan" value="Satuan" :required="true" />
-                            <x-text-input wire:model="items.{{ $index }}.satuan" type="text" class="mt-1 block w-full" placeholder="unit" />
-                            <x-input-error :messages="$errors->get('items.'.$index.'.satuan')" class="mt-2" />
+                            <x-input-label for="items.{{ $index }}.satuan_id" value="Satuan" :required="true" />
+                            <x-searchable-select wire:model="items.{{ $index }}.satuan_id"
+                                :options="$satuanOptions"
+                                placeholder="Pilih satuan"
+                                searchPlaceholder="Cari satuan..."
+                                wire:key="satuan-select-{{ $item['id'] ?? 'new-'.$index }}" />
+                            <x-input-error :messages="$errors->get('items.'.$index.'.satuan_id')" class="mt-2" />
                         </div>
                         <div>
                             <x-rupiah-input wire-model="items.{{ $index }}.harga_satuan" label="Harga Satuan" :required="true" id="items-{{ $index }}-harga_satuan" />

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Pengadaan;
+use App\Models\Satuan;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -25,7 +26,7 @@ class PengadaanItemFactory extends Factory
             'nama_item' => fake()->words(3, true),
             'kategori_item' => fake()->word(),
             'qty' => $qty,
-            'satuan' => 'unit',
+            'satuan_id' => Satuan::factory(),
             'harga_satuan' => $harga,
             'subtotal' => $qty * $harga,
         ];

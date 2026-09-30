@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('nama_item');
             $table->string('kategori_item')->nullable();
             $table->unsignedInteger('qty')->default(1);
-            $table->string('satuan', 30)->default('unit');
+            $table->foreignId('satuan_id')->constrained('satuans')->restrictOnDelete();
             $table->decimal('harga_satuan', 15, 2);
             $table->decimal('subtotal', 15, 2);
             $table->timestamps();
