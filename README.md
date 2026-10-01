@@ -1,4 +1,4 @@
-# BAV Apps — Boilerplate Application
+# D-BONE — Boilerplate Application
 
 <p align="center">
   <img src="https://img.shields.io/badge/Laravel-12.x-red?style=for-the-badge&logo=laravel" alt="Laravel">
@@ -16,7 +16,7 @@
 
 ## 📋 Daftar Isi
 
-1. [Tentang BAV Apps](#-tentang-bav-apps)
+1. [Tentang D-BONE](#-tentang-d-bone)
 2. [Fitur Utama](#-fitur-utama)
 3. [Tech Stack](#-tech-stack)
 4. [Instalasi](#-instalasi)
@@ -31,9 +31,9 @@
 
 ---
 
-## 🎯 Tentang BAV Apps
+## 🎯 Tentang D-BONE
 
-BAV Apps adalah aplikasi Laravel boilerplate yang dapat berfungsi sebagai:
+D-BONE adalah aplikasi Laravel boilerplate yang dapat berfungsi sebagai:
 
 - **OAuth 2.0 Client** — Terintegrasi dengan SSO Server untuk centralized authentication
 - **Standalone Application** — Dapat berjalan mandiri tanpa SSO (mode standalone)
@@ -182,7 +182,7 @@ php artisan reverb:start
 
 ```env
 # Application
-APP_NAME="Boilerplate"
+APP_NAME="D-BONE"
 APP_ENV=local
 APP_DEBUG=true
 APP_URL=http://localhost:8999
@@ -250,7 +250,7 @@ REVERB_SCHEME=http
 
 ### Overview
 
-BAV Apps dapat berjalan dalam 2 mode berbeda:
+D-BONE dapat berjalan dalam 2 mode berbeda:
 
 ### Mode 1: SSO Enabled (`IS_USING_SSO=true`)
 
@@ -352,7 +352,7 @@ Termasuk:
 
 ## 🔐 Permissions & Roles
 
-### Permissions (BAV Apps)
+### Permissions (D-BONE)
 
 | Permission | Deskripsi |
 |------------|----------|

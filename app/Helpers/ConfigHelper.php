@@ -130,6 +130,6 @@ class ConfigHelper
      */
     public static function getAppName(): string
     {
-        return SystemConfiguration::get('app.name', config('app.name', 'Boilerplate'));
+        return SystemConfiguration::get('app.name', config('app.name', 'D-BONE'));
     }
 }

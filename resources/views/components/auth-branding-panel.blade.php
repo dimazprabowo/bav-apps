@@ -1,7 +1,7 @@
 {{--
     Auth Branding Panel - Left/right side panel for guest auth pages.
 
-    BAV Apps context: pengadaan aset & vendor management for PT BKI.
+    D-BONE context: pengadaan aset & vendor management for PT BKI.
     Visual: 5-photo diagonal collage as full-bleed background (clip-path polygons),
     blue gradient overlay for text readability. Photos: maritime equipment, port
     operations, and office/business (Unsplash, free license).
