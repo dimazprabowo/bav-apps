@@ -23,6 +23,7 @@ class PengadaanFactory extends Factory
             'no_pengadaan' => 'PG-'.fake()->unique()->numberBetween(1, 99999),
             'nama_pemohon' => fake()->name(),
             'tipe_biaya' => TipeBiaya::FixCost->value,
+            'nama_project' => null,
             'no_wbs' => null,
             'vendor_id' => Vendor::factory(),
             'cabang_id' => null,

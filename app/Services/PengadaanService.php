@@ -80,9 +80,9 @@ class PengadaanService
     {
         return DB::transaction(function () use ($data, $items, $evidences) {
             $data['no_pengadaan'] = strtoupper($data['no_pengadaan']);
-            $data['no_wbs'] = ($data['tipe_biaya'] ?? null) === TipeBiaya::RabProject->value
-                ? strtoupper($data['no_wbs'] ?? '')
-                : null;
+            $isRab = ($data['tipe_biaya'] ?? null) === TipeBiaya::RabProject->value;
+            $data['nama_project'] = $isRab ? ($data['nama_project'] ?? null) : null;
+            $data['no_wbs'] = $isRab ? strtoupper($data['no_wbs'] ?? '') : null;
             $data['status_approval'] = PengadaanApprovalStatus::Pending->value;
             $data['total_biaya'] = 0;
 
@@ -114,9 +114,9 @@ class PengadaanService
             }
 
             if (isset($data['tipe_biaya'])) {
-                $data['no_wbs'] = $data['tipe_biaya'] === TipeBiaya::RabProject->value
-                    ? strtoupper($data['no_wbs'] ?? '')
-                    : null;
+                $isRab = $data['tipe_biaya'] === TipeBiaya::RabProject->value;
+                $data['nama_project'] = $isRab ? ($data['nama_project'] ?? null) : null;
+                $data['no_wbs'] = $isRab ? strtoupper($data['no_wbs'] ?? '') : null;
             }
 
             $pengadaan->update($data);

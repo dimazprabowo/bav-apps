@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('no_pengadaan', 50)->unique();
             $table->string('nama_pemohon', 150);
             $table->string('tipe_biaya', 50);
+            $table->string('nama_project', 150)->nullable();
             $table->string('no_wbs', 50)->nullable();
             $table->foreignId('vendor_id')->constrained('vendors')->restrictOnDelete();
             $table->foreignId('cabang_id')->nullable()->constrained('cabangs')->nullOnDelete();

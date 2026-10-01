@@ -17,7 +17,12 @@
                         <x-input-error :messages="$errors->get('tipe_biaya')" class="mt-2" />
                     </div>
                     @if($tipe_biaya === \App\Enums\TipeBiaya::RabProject->value)
-                        <div class="md:col-span-2">
+                        <div>
+                            <x-input-label for="nama_project" value="Nama Project" :required="true" />
+                            <x-text-input wire:model="nama_project" id="nama_project" type="text" class="mt-1 block w-full" placeholder="Mis. Project Kalibrasi Tahap 1" />
+                            <x-input-error :messages="$errors->get('nama_project')" class="mt-2" />
+                        </div>
+                        <div>
                             <x-input-label for="no_wbs" value="No. WBS" :required="true" />
                             <x-text-input wire:model="no_wbs" id="no_wbs" type="text" class="mt-1 block w-full" placeholder="Mis. WBS-2025-001" />
                             <x-input-error :messages="$errors->get('no_wbs')" class="mt-2" />

@@ -86,6 +86,7 @@ class PengadaanSeeder extends Seeder
                 'no' => 'PGD-2025-003',
                 'pemohon' => 'Andi Wijaya',
                 'tipe_biaya' => TipeBiaya::RabProject,
+                'nama_project' => 'Project Modernisasi Navigasi Kapal',
                 'no_wbs' => 'WBS-PRJ-2025-003',
                 'vendor_code' => 'VDR-003',
                 'cabang' => $priok,
@@ -305,6 +306,7 @@ class PengadaanSeeder extends Seeder
                 'no' => 'PGD-2025-010',
                 'pemohon' => 'Siti Rahayu',
                 'tipe_biaya' => TipeBiaya::RabProject,
+                'nama_project' => 'Project Paket Lab Kalibrasi Priok',
                 'no_wbs' => 'WBS-LAB-2025-010',
                 'vendor_code' => 'VDR-001',
                 'cabang' => $priok,
@@ -452,6 +454,7 @@ class PengadaanSeeder extends Seeder
                     [
                         'nama_pemohon' => $scenario['pemohon'] ?? $admin->name,
                         'tipe_biaya' => ($scenario['tipe_biaya'] ?? TipeBiaya::FixCost)->value,
+                        'nama_project' => $scenario['nama_project'] ?? null,
                         'no_wbs' => $scenario['no_wbs'] ?? null,
                         'vendor_id' => $vendor->id,
                         'cabang_id' => $scenario['cabang']?->id,

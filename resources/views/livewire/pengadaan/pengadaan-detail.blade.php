@@ -14,7 +14,7 @@
                     • Cabang: {{ $pengadaan->cabang->name ?? 'Pusat' }}
                 </p>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                    Pemohon: {{ $pengadaan->nama_pemohon }} • Tipe Biaya: {{ $pengadaan->tipe_biaya->label() }}{{ $pengadaan->no_wbs ? ' • No. WBS: '.$pengadaan->no_wbs : '' }}
+                    Pemohon: {{ $pengadaan->nama_pemohon }} • Tipe Biaya: {{ $pengadaan->tipe_biaya->label() }}{{ $pengadaan->nama_project ? ' • Project: '.$pengadaan->nama_project : '' }}{{ $pengadaan->no_wbs ? ' • No. WBS: '.$pengadaan->no_wbs : '' }}
                 </p>
             </div>
             <div class="text-right">

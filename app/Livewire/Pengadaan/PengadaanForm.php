@@ -33,6 +33,8 @@ class PengadaanForm extends Component
 
     public $tipe_biaya;
 
+    public $nama_project;
+
     public $no_wbs;
 
     public $klaster_id;
@@ -65,6 +67,7 @@ class PengadaanForm extends Component
                 'no_pengadaan' => $pengadaan->no_pengadaan,
                 'nama_pemohon' => $pengadaan->nama_pemohon,
                 'tipe_biaya' => $pengadaan->tipe_biaya?->value,
+                'nama_project' => $pengadaan->nama_project,
                 'no_wbs' => $pengadaan->no_wbs,
                 'klaster_id' => $pengadaan->vendor->klaster_id,
                 'vendor_id' => $pengadaan->vendor_id,
@@ -106,6 +109,7 @@ class PengadaanForm extends Component
             'no_pengadaan' => ['required', 'string', 'max:50', $this->editMode ? 'unique:pengadaans,no_pengadaan,'.$this->pengadaanId : 'unique:pengadaans,no_pengadaan'],
             'nama_pemohon' => 'required|string|max:150',
             'tipe_biaya' => ['required', Rule::enum(TipeBiaya::class)],
+            'nama_project' => ['nullable', 'string', 'max:150', Rule::requiredIf($this->tipe_biaya === TipeBiaya::RabProject->value)],
             'no_wbs' => ['nullable', 'string', 'max:50', Rule::requiredIf($this->tipe_biaya === TipeBiaya::RabProject->value)],
             'klaster_id' => 'required|exists:klasters,id',
             'vendor_id' => 'required|exists:vendors,id',
@@ -153,6 +157,7 @@ class PengadaanForm extends Component
             'no_pengadaan' => 'nomor pengadaan',
             'nama_pemohon' => 'nama pemohon',
             'tipe_biaya' => 'tipe biaya',
+            'nama_project' => 'nama project',
             'no_wbs' => 'nomor WBS',
             'klaster_id' => 'klaster vendor',
             'vendor_id' => 'vendor',
@@ -172,6 +177,7 @@ class PengadaanForm extends Component
     public function updatedTipeBiaya($value): void
     {
         if ($value !== TipeBiaya::RabProject->value) {
+            $this->nama_project = null;
             $this->no_wbs = null;
         }
     }
@@ -358,6 +364,7 @@ class PengadaanForm extends Component
                 'no_pengadaan' => strtoupper($this->no_pengadaan),
                 'nama_pemohon' => $this->nama_pemohon,
                 'tipe_biaya' => $this->tipe_biaya,
+                'nama_project' => $this->nama_project,
                 'no_wbs' => $this->no_wbs,
                 'vendor_id' => $this->vendor_id,
                 'cabang_id' => $this->cabang_id,

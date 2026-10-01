@@ -155,7 +155,7 @@ class PengadaanManagementTest extends TestCase
             ->assertHasErrors(['items.0.kategori_item_id']);
     }
 
-    public function test_no_wbs_required_when_tipe_biaya_rab_project(): void
+    public function test_nama_project_and_no_wbs_required_when_tipe_biaya_rab_project(): void
     {
         $user = $this->actingUserWithPermissions(['pengadaan_view', 'pengadaan_create']);
         $vendor = Vendor::factory()->create();
@@ -173,7 +173,8 @@ class PengadaanManagementTest extends TestCase
                 ['id' => null, 'nama_item' => 'Laptop', 'kategori_item_id' => null, 'qty' => 1, 'satuan_id' => \App\Models\Satuan::factory()->create()->id, 'harga_satuan' => '5000000'],
             ])
             ->call('save')
-            ->assertHasErrors(['no_wbs'])
+            ->assertHasErrors(['nama_project', 'no_wbs'])
+            ->set('nama_project', 'Project Kalibrasi Tahap 1')
             ->set('no_wbs', 'wbs-prj-001')
             ->call('save')
             ->assertHasNoErrors();
@@ -181,6 +182,7 @@ class PengadaanManagementTest extends TestCase
         $this->assertDatabaseHas('pengadaans', [
             'no_pengadaan' => 'PG-2026-003',
             'tipe_biaya' => 'RAB Project',
+            'nama_project' => 'Project Kalibrasi Tahap 1',
             'no_wbs' => 'WBS-PRJ-001',
         ]);
     }

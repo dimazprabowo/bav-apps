@@ -16,7 +16,7 @@
 <table>
     <thead>
         <tr>
-            <th>No</th><th>No. Pengadaan</th><th>Pemohon</th><th>Tipe Biaya</th><th>No. WBS</th><th>Vendor</th><th>Cabang</th><th>Tanggal</th><th>Item</th><th>Total Biaya</th><th>Status Approval</th><th>Status Invoice</th><th>Status Pembayaran</th>
+            <th>No</th><th>No. Pengadaan</th><th>Pemohon</th><th>Tipe Biaya</th><th>Project</th><th>No. WBS</th><th>Vendor</th><th>Cabang</th><th>Tanggal</th><th>Item</th><th>Total Biaya</th><th>Status Approval</th><th>Status Invoice</th><th>Status Pembayaran</th>
         </tr>
     </thead>
     <tbody>
@@ -26,6 +26,7 @@
             <td>{{ $pengadaan->no_pengadaan }}</td>
             <td>{{ $pengadaan->nama_pemohon }}</td>
             <td>{{ $pengadaan->tipe_biaya->label() }}</td>
+            <td>{{ $pengadaan->nama_project ?? '-' }}</td>
             <td>{{ $pengadaan->no_wbs ?? '-' }}</td>
             <td>{{ $pengadaan->vendor->name }}</td>
             <td>{{ $pengadaan->cabang->name ?? 'Pusat' }}</td>

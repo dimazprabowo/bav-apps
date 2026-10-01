@@ -90,6 +90,7 @@ Model: `App\Models\Vendor` — `HasEncryptedRouteKey`, `HasFactory`, `LogsActivi
 | no_pengadaan | string, unique | Uppercase |
 | nama_pemohon | string | Wajib |
 | tipe_biaya | string enum `TipeBiaya` | `Fix Cost` / `RAB Project` (value = plain text label, disimpan apa adanya) |
+| nama_project | string, nullable | Wajib saat `tipe_biaya = RAB Project` |
 | no_wbs | string, nullable | Wajib saat `tipe_biaya = RAB Project`; dinormalisasi uppercase di Service |
 | vendor_id | FK → vendors | |
 | cabang_id | FK → cabangs, nullable | Untuk data-scoping (reuse pola `access_all_cabang` seperti `AlatService::applyCabangScope`) |

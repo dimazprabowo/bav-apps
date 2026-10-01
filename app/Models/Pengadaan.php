@@ -23,6 +23,7 @@ class Pengadaan extends Model
         'no_pengadaan',
         'nama_pemohon',
         'tipe_biaya',
+        'nama_project',
         'no_wbs',
         'vendor_id',
         'cabang_id',
@@ -50,7 +51,7 @@ class Pengadaan extends Model
     {
         return LogOptions::defaults()
             ->logOnly([
-                'no_pengadaan', 'nama_pemohon', 'tipe_biaya', 'no_wbs',
+                'no_pengadaan', 'nama_pemohon', 'tipe_biaya', 'nama_project', 'no_wbs',
                 'vendor_id', 'cabang_id', 'tanggal_pengadaan',
                 'total_biaya', 'status_approval', 'rejection_reason',
             ])
